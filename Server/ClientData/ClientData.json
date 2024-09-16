@@ -1,7 +1,8 @@
 [
     {
-      "title": "Dr. Smith",
-      "Client": [
+      "Doctor": "Dr. Smith",
+      "DoctorID": 1,
+      "Clients": [
         {
           "Title": "Mrs",
           "ClientName": "Alicia Smith",
@@ -95,8 +96,9 @@
       ]
     },
     {
-      "title": "Dr. Patel",
-      "Client": [
+      "Doctor": "Dr. Patel",
+      "DoctorID": 2,
+      "Clients": [
         {
           "Title": "Mr",
           "ClientName": "James Taylor",
@@ -190,8 +192,9 @@
       ]
     },
     {
-      "title": "Dr. Garcia",
-      "Client": [
+      "Doctor": "Dr. Garcia",
+      "DoctorID": 3,
+      "Clients": [
         {
           "Title": "Ms",
           "ClientName": "Sophia Clark",
