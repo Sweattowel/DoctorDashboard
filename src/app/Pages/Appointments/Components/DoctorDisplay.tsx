@@ -21,6 +21,7 @@ interface importProps {
     selectedDoctor: string | null;
 }
 export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } : importProps) {
+    const [glow, setGlow] = useState<boolean>(false);
     const [doctor, setDoctor] = useState<Doctor>({
         id: -1,
         name: "",
@@ -43,15 +44,17 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } 
     }
     useEffect(() => {
         collectDoctorData();
+        setGlow(true);
+        setTimeout(() => setGlow(false), 500)
     },[selectedDoctor])
 
 
     return (
-        <section className='h-full w-[45%] flex justify-center items-center'>
+        <section className={`${glow ? "bg-blue-200" : ""} h-full w-[45%] flex justify-center items-center rounded-2xl transition-all ease-in-out`}>
             {doctor.id !== -1 ? (
                 <div className="border rounded-2xl h-full w-full flex flex-col items-center justify-evenly">
-                    <h2>
-                        Name: {doctor.name}
+                    <h2 className="text-2xl font-bold font-serif">
+                        {doctor.name}
                     </h2>
                     <p>
                         Speciality: {doctor.Speciality} {doctor.yearsOfExperience} YRS

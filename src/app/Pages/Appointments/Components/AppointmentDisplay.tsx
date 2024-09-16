@@ -61,10 +61,10 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
   }, [doctorID]);
 
   return (
-    <main className={`${glow ? "bg-gray-400 text-white" : "bg-white"} transition-all ease-in-out duration-500  bg-white w-[80%] h-[70vh] bg-white p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
+    <main className={`${glow ? "bg-blue-200 text-white" : "bg-white"} transition-all ease-in-out duration-500  bg-white w-[80%] h-[70vh] bg-white p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
       {appointments && doctorID !== -1 ? (
         <section className="h-full w-full flex flex-col">
-          <h2 className="h-[50px] w-full flex items-center text-xl p-5">
+          <h2 className="h-[50px] w-full flex items-center text-xl p-5 font-bold font-serif">
             Appointments for {appointments.Doctor}
           </h2>
           <ul className="h-full bg-white mt-5 p-5 border rounded-2xl overflow-auto divide-y">

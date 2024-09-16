@@ -8,7 +8,7 @@ interface DoctorSearchProps {
 }
 
 export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
-  
+    const [recentDoctor, setRecentDoctor] = useState<string>("")
     const [searchParam, setSearchParam] = useState<string>('');
     const [doctors, setDoctors] = useState<string[]>([]);
     const [displayData, setDisplayData] = useState<string[]>([]);
@@ -53,8 +53,8 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
         <ul className='flex flex-col border max-h-full text-center divide-y overflow-auto'>
           {doctors.map((doctor, index) => (
             <button
-              className='hover:opacity-60'
-              onClick={() => handleSetDoctor(doctor)}
+              className={`${recentDoctor == doctor ? "bg-blue-200 " : ""} hover:opacity-60`}
+              onClick={() => {handleSetDoctor(doctor); setRecentDoctor(doctor)}}
               key={index}
             >
               {doctor}
