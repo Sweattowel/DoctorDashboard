@@ -47,7 +47,7 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } 
 
 
     return (
-        <section className='h-full w-[50%] flex justify-center items-center'>
+        <section className='h-full w-[45%] flex justify-center items-center'>
             {doctor.id !== -1 ? (
                 <div className="border rounded-2xl h-full w-full flex flex-col items-center justify-evenly">
                     <h2>

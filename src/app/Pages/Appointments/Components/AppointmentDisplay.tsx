@@ -35,13 +35,16 @@ interface Appointment {
 export default function AppointmentDisplay({ doctorID }: importProps) {
   const [appointments, setAppointments] = useState<AppointMentStruc | null>(null);
   const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
+  const [glow, setGlow] = useState<boolean>(false);
 
   async function handleGetAppointments() {
     if (doctorID !== -1) {
       try {
-        const response = await GetDoctorAppointMents(doctorID);
+        const response : AppointMentStruc = await GetDoctorAppointMents(doctorID);
         if (response) {
           console.log(response);
+          response.Clients.sort((a, b) => new Date(b.Appointment.Date).getTime() - new Date(a.Appointment.Date).getTime())
+       
           setAppointments(response);
         }
       } catch (error) {
@@ -53,11 +56,12 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
 
   useEffect(() => {
     handleGetAppointments();
-    console.log(doctorID);
+    setGlow(true);
+    setTimeout(() => setGlow(false), 500)
   }, [doctorID]);
 
   return (
-    <main className="w-[80%] h-[70vh] bg-white p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl">
+    <main className={`${glow ? "bg-gray-400 text-white" : "bg-white"} transition-all ease-in-out duration-500  bg-white w-[80%] h-[70vh] bg-white p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
       {appointments && doctorID !== -1 ? (
         <section className="h-full w-full flex flex-col">
           <h2 className="h-[50px] w-full flex items-center text-xl p-5">
@@ -69,7 +73,7 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
                 key={index}
                 className="transition-all ease-in-out duration-500"
               >
-                <div className="flex flex-row justify-between items-center w-full h-[150px] border p-2">
+                <div className="flex flex-row justify-between items-center w-full h-[150px] p-2">
                   <button
                     className="p-2 border rounded"
                     onClick={() =>
@@ -83,21 +87,23 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
                 </div>
                 <div
                   className={`transition-all ease-in-out duration-500 ${
-                    expandedAppointment === index ? "max-h-[300px] p-2" : "max-h-0"
+                    expandedAppointment === index ? "max-h-[300px] p-2" : "max-h-1 bg-blue-200"
                   } overflow-hidden w-full border`}
                 >
                   <h2 className="w-full text-center text-xl border-b">
                     Data for {client.Title} {client.ClientName}
                   </h2>
-                  <p>ADDRESS: {client.Address}</p>
-                  <p>OCCUPATION: {client.Occupation}</p>
-                  <p>OCCUPATION: {client.Occupation}</p>
-                  
-                  <div>
-                    CONTACT INFORMATION:
-                    <p>EMAIL: {client.Email}</p>
-                    <p>PH: {client.Phone}</p>
+                  <div className="p-5">
+                    <p>ADDRESS: {client.Address}</p>
+                    <p>OCCUPATION: {client.Occupation}</p>
+                    
+                    <div>
+                        CONTACT INFORMATION:
+                        <p>EMAIL: {client.Email}</p>
+                        <p>PH: {client.Phone}</p>
+                    </div>                    
                   </div>
+
                 </div>
               </li>
             ))}

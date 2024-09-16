@@ -42,7 +42,7 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
     }, []);
   
     return (
-      <section className='flex flex-col justify-evenly w-[50%] h-full'>
+      <section className='flex flex-col justify-evenly w-[45%] h-full border rounded-2xl p-5'>
         <input
           className='border text-center rounded w-full'
           type="text"
