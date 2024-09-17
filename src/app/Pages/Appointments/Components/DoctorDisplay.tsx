@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { GetDoctorData } from "../../../../../Server/Server";
+import { GetDoctorData } from "../../../../../Server/Old/OldServer";
 
 interface DoctorImportProps {
   
@@ -50,7 +50,7 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } 
 
 
     return (
-        <section className={`${glow ? "bg-blue-200" : ""} h-full w-[45%] flex justify-center items-center rounded-2xl transition-all ease-in-out`}>
+        <section className={`${glow ? "bg-blue-400 text-white" : "bg-white"} shadow-2xl h-full w-[45%] flex justify-center items-center rounded-2xl duration-500 transition-all ease-in-out`}>
             {doctor.id !== -1 ? (
                 <div className="border rounded-2xl h-full w-full flex flex-col items-center justify-evenly">
                     <h2 className="text-2xl font-bold font-serif">
@@ -67,7 +67,7 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } 
                             <p>Email: {doctor.email}</p>
                             <p>PH: {doctor.phone}</p>
                     </div>
-                    <button className="border p-2 rounded-2xl bg-blue-200 hover:opacity-60"
+                    <button className="border p-2 rounded-2xl bg-blue-400 text-white hover:opacity-60"
                         onClick={() => handleSeeAppointments(doctor.id)}
                     >
                         See Appointments

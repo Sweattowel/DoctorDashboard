@@ -15,7 +15,7 @@ export default function NavBar(){
             </h1>
             <ul className="h-[5vh] flex justify-evenly items-center">
                 {links.map((link, index) => (
-                        <Link className="bg-blue-200 p-2 rounded hover:opacity-60"
+                        <Link className="bg-blue-400 text-white p-2 rounded hover:opacity-60"
                             key={index}
                             href={link.ref}
                         >

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { GetDoctorAppointMents } from "../../../../../Server/Server"
+import { GetDoctorAppointMents } from "../../../../../Server/Old/OldServer"
 
 interface importProps {
   doctorID: number
@@ -32,9 +32,17 @@ interface Appointment {
   PriorAppointments: []
 }
 
+const titles : string[] = [
+  "Date",
+  "Name",
+  "Purpose",
+  "Doctor",
+]
+
 export default function AppointmentDisplay({ doctorID }: importProps) {
   const [appointments, setAppointments] = useState<AppointMentStruc | null>(null);
-  const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
+  const [searchParam, setSearchParam] = useState<string>("")
+
   const [glow, setGlow] = useState<boolean>(false);
 
   async function handleGetAppointments() {
@@ -42,7 +50,7 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
       try {
         const response : AppointMentStruc = await GetDoctorAppointMents(doctorID);
         if (response) {
-          console.log(response);
+          //console.log(response);
           response.Clients.sort((a, b) => new Date(b.Appointment.Date).getTime() - new Date(a.Appointment.Date).getTime())
        
           setAppointments(response);
@@ -61,52 +69,23 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
   }, [doctorID]);
 
   return (
-    <main className={`${glow ? "bg-blue-200 text-white" : "bg-white"} transition-all ease-in-out duration-500  bg-white w-[80%] h-[70vh] bg-white p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
+    <main className={`${glow && "bg-blue-400 text-white"} rounded-2xl transition-all ease-in-out duration-500  bg-white w-[95%] h-[70vh] bg-white p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
       {appointments && doctorID !== -1 ? (
         <section className="h-full w-full flex flex-col">
           <h2 className="h-[50px] w-full flex items-center text-xl p-5 font-bold font-serif">
             Appointments for {appointments.Doctor}
           </h2>
-          <ul className="h-full bg-white mt-5 p-5 border rounded-2xl overflow-auto divide-y">
-            {appointments.Clients.map((client: Appointment, index: number) => (
-              <li
-                key={index}
-                className="transition-all ease-in-out duration-500"
-              >
-                <div className="flex flex-row justify-between items-center w-full h-[150px] p-2">
-                  <button
-                    className="p-2 border rounded"
-                    onClick={() =>
-                      setExpandedAppointment(expandedAppointment === index ? null : index)
-                    }
-                  >
-                    {expandedAppointment === index ? "COLLAPSE" : "EXPAND"}
-                  </button>
-                  <p>APP DATE: {client.Appointment.Date.replace("T", " ")}</p>
-                  <p>NAME: {client.ClientName}</p>
-                </div>
-                <div
-                  className={`transition-all ease-in-out duration-500 ${
-                    expandedAppointment === index ? "max-h-[300px] p-2" : "max-h-1 bg-blue-200"
-                  } overflow-hidden w-full border`}
-                >
-                  <h2 className="w-full text-center text-xl border-b">
-                    Data for {client.Title} {client.ClientName}
-                  </h2>
-                  <div className="p-5">
-                    <p>ADDRESS: {client.Address}</p>
-                    <p>OCCUPATION: {client.Occupation}</p>
-                    
-                    <div>
-                        CONTACT INFORMATION:
-                        <p>EMAIL: {client.Email}</p>
-                        <p>PH: {client.Phone}</p>
-                    </div>                    
-                  </div>
+          <ul className="h-full bg-white mt-5 p-5 rounded-2xl divide-y overflow-auto">
+            <ul className="flex justify-evenly items-center w-full h-[5vh] p-5 ">
+              {titles.map((title: string, index: number) => (
+                <li key={index} className="flex justify-center items-center w-full h-full">
+                  {title}
+                </li>
+              ))}
+              <input onChange={(e) => setSearchParam(e.target.value)} type="search" name="ClientFilter" className="border" placeholder="Search Client" />
+            </ul>
+            <AppointmentList appointmentParam={searchParam} data={appointments}/>
 
-                </div>
-              </li>
-            ))}
           </ul>
         </section>
       ) : (
@@ -115,5 +94,94 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
         </section>
       )}
     </main>
+  )
+}
+interface AppointmentListProps {
+  data: AppointMentStruc,
+  appointmentParam: string
+}
+
+const AppointmentList = ({ data, appointmentParam }: AppointmentListProps) => {
+  const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
+  const [displayData, setDisplayData] = useState<Appointment[]>([]);
+
+  useEffect(() => {
+    setDisplayData(data.Clients)
+  },[data])
+
+  useEffect(() => {
+    if (!displayData) return
+
+    const filteredAppointments = data.Clients.filter((client) =>
+      client.ClientName.toLowerCase().includes(appointmentParam.toLowerCase())
+    );
+
+
+    setDisplayData(filteredAppointments)
+  },[appointmentParam])
+  return (
+    <ul className="divide-y overflow-auto overflow-hidden">
+      {displayData && displayData.map((client: Appointment, index: number) => (
+        <li
+          key={index}
+          className="transition-all ease-in-out duration-500"
+        >
+          <div className="flex flex-col md:flex-row justify-between items-center w-full h-[150px] p-5">
+            <p className="flex justify-center items-center w-full h-full text-center">{client.Appointment.Date.replace("T", " ")}</p>
+            <p className="flex justify-center items-center w-full h-full text-center">{client.ClientName}</p>
+            <p className="flex justify-center items-center w-full h-full text-center">{client.Appointment.Issue}</p>
+            <p className="flex justify-center items-center w-full h-full text-center">{client.Appointment.Doctor}</p>
+            <button
+              className="flex justify-center items-center w-full h-full text-center border hover:opacity-60 hover:bg-blue-400 hover:text-white"
+              onClick={() =>
+                setExpandedAppointment(expandedAppointment === index ? null : index)
+              }
+            >
+              {expandedAppointment === index ? "COLLAPSE" : "EXPAND"}
+            </button>            
+          </div>
+          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedAppointment === index ? 'h-[200px]' : 'h-0'}`}>
+            {expandedAppointment === index && <Expansion data={client} />}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+interface expansionProps {
+  data: Appointment
+}
+
+const Expansion = ({data} : expansionProps) => {
+  const [AppointmentData, setAppointmentData] = useState<Appointment>()
+
+  useEffect(() => {
+    setAppointmentData(data)
+  },[data])
+  return (
+    <section className="p-5 border rounded-2xl overflow-hidden transition-all duration-500 ease-in-out flex flex-col justify-evenly">
+      <h2 className="text-lg font-bold font-serif">{data.Title} {data.ClientName}</h2>
+      <input placeholder={`${data.Appointment.Issue} With ${data.Appointment.Doctor}`} />
+      <input placeholder={`LEVEL: ${data.Appointment.LOA} Access`} />
+      <input placeholder={`${data.Appointment.ClientStatus}`} />
+      
+      <p className={`${data.Appointment.Result === "Pending" ? "animate-pulse" : "line-through"} bg-blue-400 border rounded p-2 w-[100px] text-center m-auto`}>{data.Appointment.Result}</p>
+    </section>
+  )
+}
+interface dropDownProps{
+  options:string[]
+}
+const dropDown = ({options} : dropDownProps) => {
+
+  return (
+    <ul>
+      {options.map((option: string, index: number) => (
+        <button>
+          {option}
+        </button>
+      ))}
+    </ul>
   )
 }

@@ -12,8 +12,8 @@ export default function Appointment() {
   const [selectedDoctor, setSelectedDoctor] = useState<string>("");
   const [doctorAppointments, setDoctorAppointments] = useState(-1);
   return (
-    <main>
-      <div className='flex w-[80vw] h-[40vh] justify-evenly items-center m-auto bg-white shadow-2xl p-5 mt-5'>
+    <main className='bg-gray-200 pb-5'>
+      <div className='flex w-[95%] h-[40vh] justify-evenly items-center m-auto  p-5 mt-5'>
         <DoctorSearch handleSetDoctor={setSelectedDoctor} />
         <DoctorDisplay selectedDoctor={selectedDoctor} handleSeeAppointments={setDoctorAppointments}/>
       </div>
