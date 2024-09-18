@@ -4,12 +4,15 @@ var express_1 = require("express");
 var cors_1 = require("cors");
 var mysql_1 = require("mysql");
 var app = (0, express_1.default)();
+
+// DB Create connectionString;
 var db = mysql_1.default.createConnection({
     host: process.env.REACT_APP_SQUARE_HOST,
     user: process.env.REACT_APP_SQUARE_USER,
     password: process.env.REACT_APP_SQUARE_PASSWORD,
     database: process.env.REACT_APP_SQUARE_DATABASE,
 });
+// Handle create local connection to DB
 db.connect(function (err) {
     if (err) {
         console.error(err);
@@ -17,12 +20,16 @@ db.connect(function (err) {
     }
     console.log('Connected to database');
 });
+// Define App Port and use libaries
 var port = 3001;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+
+// Listen for oncoming requests to the server
 app.listen(port, function () {
     console.log("Server is listening on port ".concat(port));
 });
+
 app.post('/api/CREATEDATA', function (req, res) {
     try {
         var createDoctorTable = "\n            CREATE TABLE IF NOT EXISTS Doctors (\n                id INT PRIMARY KEY AUTO_INCREMENT,\n                name VARCHAR(255) NOT NULL,\n                Speciality VARCHAR(255),\n                phone VARCHAR(20),\n                email VARCHAR(255),\n                address TEXT,\n                yearsOfExperience INT,\n                hospitalAffiliation VARCHAR(255)\n            );\n        ";
@@ -53,6 +60,7 @@ app.post('/api/CREATEDATA', function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 app.post('/api/getDoctors', function (req, res) {
     try {
         var SQL = "SELECT * FROM Doctors \n                     LEFT JOIN Appointments \n                     ON Doctors.ID = Appointments.DoctorID";
@@ -70,6 +78,7 @@ app.post('/api/getDoctors', function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 app.post('/api/getDoctorNames', function (req, res) {
     try {
         var SQL = "SELECT name FROM Doctors";
