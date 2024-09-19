@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios, { Axios } from "axios";
 import API from "../../../Interceptor"
 
@@ -40,9 +40,14 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
       }
   };
   
-    useEffect(() => {
+  const hasFetched = useRef(false);
+
+  useEffect(() => {
+    if (!hasFetched.current) {
       handleGetDoctors();
-    }, []);
+      hasFetched.current = true; // Set to true after the first call
+    }
+  }, []);
   
     return (
       <section className='flex flex-col justify-evenly w-[45%] h-full border rounded-2xl shadow-2xl p-5 bg-white'>

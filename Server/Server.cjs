@@ -84,7 +84,7 @@ app.get('/api/getDoctors', function (req, res) {
     }
 });
 
-app.get('/api/getDoctorNames', function (req, res) {
+app.get('/api/getDoctorNames', async (req, res) => {
     try {
         console.log("Getting Doctor Names");
 
