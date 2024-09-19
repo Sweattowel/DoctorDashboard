@@ -1,20 +1,33 @@
 import axios from "axios"
 
+const API = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_SERVER_ADDRESS
+})
 
-
-axios.interceptors.request.use((config) => {
+API.interceptors.request.use((config) => {
     try {
         console.log("Intercepted");
-        
-        config.headers['Authorization'] = process.env.REACT_APP_REQUEST_TOKEN;
+
+        config.headers['Authorization'] = process.env.NEXT_PUBLIC_REQUEST_TOKEN;
         config.headers['testCookie'] = findCookie("Test");
         
-        return config
+        console.log(config.headers);
+
+        return config;
+
     } catch (error) {
-        return Promise.reject(error)        
+        return Promise.reject(error);        
     }
 })
 
+export const getDoctorNames = async () => {
+    return API.get('/api/getDoctorNames');
+}
+
+
+export default API; 
+
+// HIRED HELP
 
 function findCookie(cookieTitle: string){
     // Collect Cookies from browser

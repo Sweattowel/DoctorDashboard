@@ -29,9 +29,7 @@ db.connect((err) => {
 const port = 3001
 app.use(cors());
 app.use(express.json());
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`)
-})
+
 
 app.post('/api/CREATEDATA', function (req, res) {
     try {
@@ -86,7 +84,7 @@ app.get('/api/getDoctors', function (req, res) {
     }
 });
 
-app.post('/api/getDoctorNames', function (req, res) {
+app.get('/api/getDoctorNames', function (req, res) {
     try {
         console.log("Getting Doctor Names");
 
@@ -105,3 +103,8 @@ app.post('/api/getDoctorNames', function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`)
+})

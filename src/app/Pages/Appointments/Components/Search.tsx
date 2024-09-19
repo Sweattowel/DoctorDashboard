@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import axios, { Axios } from "axios";
+import API from "../../../Interceptor"
+
 interface DoctorSearchProps {
   handleSetDoctor: (doctorName: string) => void;
 }
@@ -26,7 +28,7 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
       try {
           console.log("try get DoctorNames")
           // Use axios for the request
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`);
+          const response = await API.get(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`);
   
           // Check if response data exists and handle it
           if (response.data) {
