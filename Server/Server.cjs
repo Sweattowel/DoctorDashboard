@@ -5,6 +5,9 @@ var cors = require("cors");
 var mysql2 = require("mysql2");
 var app = express();
 
+var dotenv = require("dotenv");
+dotenv.config();
+
 // DB Create connectionString;
 var db = mysql2.createConnection({
     host: process.env.REACT_APP_SQUARE_HOST,
