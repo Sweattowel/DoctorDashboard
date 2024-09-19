@@ -27,7 +27,11 @@ db.connect((err) => {
     console.log("Connected to database")
 })
 const port = 3001
-app.use(cors());
+const corsOptions = {
+    origin: "*",
+    optionsSuccessStatus: 200,
+  };
+app.use(cors(corsOptions));
 app.use(express.json());
 
 

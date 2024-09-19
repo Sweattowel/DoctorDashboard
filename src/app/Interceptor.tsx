@@ -3,7 +3,7 @@ import axios from "axios"
 const API = axios.create({
     baseURL: process.env.NEXT_PUBLIC_SERVER_ADDRESS
 })
-
+console.log('Server Address:', process.env.NEXT_PUBLIC_SERVER_ADDRESS);
 API.interceptors.request.use((config) => {
     try {
         console.log("Intercepted");
