@@ -6,7 +6,7 @@ var mysql2 = require("mysql2");
 var app = express();
 
 var dotenv = require("dotenv");
-dotenv.config({ path: "Server"});
+dotenv.config({ path: "Server\.env"});
 console.log(    
     process.env.REACT_APP_SQUARE_HOST,
     process.env.REACT_APP_SQUARE_USER,
