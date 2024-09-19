@@ -8,16 +8,16 @@ const app = express();
 require("dotenv").config();
 
 const db = mysql.createConnection({
-    host: process.env.REACT_APP_SQUARE_HOST,
-    user: process.env.REACT_APP_SQUARE_USER,
-    password: process.env.REACT_APP_SQUARE_PASSWORD,
-    database: process.env.REACT_APP_SQUARE_DATABASE,
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
 })
 console.log(    
-    process.env.REACT_APP_SQUARE_HOST,
-    process.env.REACT_APP_SQUARE_USER,
-    process.env.REACT_APP_SQUARE_PASSWORD,
-    process.env.REACT_APP_SQUARE_DATABASE
+    process.env.DATABASE_HOST,
+    process.env.DATABASE_USER,
+    process.env.DATABASE_PASSWORD,
+    process.env.DATABASE_DATABASE
 )
 db.connect((err) => {
     if (err){
