@@ -7,7 +7,12 @@ var app = express();
 
 var dotenv = require("dotenv");
 dotenv.config({ path: "Server"});
-
+console.log(    
+    process.env.REACT_APP_SQUARE_HOST,
+    process.env.REACT_APP_SQUARE_USER,
+    process.env.REACT_APP_SQUARE_PASSWORD,
+    process.env.REACT_APP_SQUARE_DATABASE
+)
 // DB Create connectionString;
 var db = mysql2.createConnection({
     host: process.env.REACT_APP_SQUARE_HOST,
