@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var cors = require("cors");
-var mysql = require("mysql");
+var mysql2 = require("mysql2");
 var app = express();
 
 // DB Create connectionString;
-var db = mysql.createConnection({
+var db = mysql2.createConnection({
     host: process.env.REACT_APP_SQUARE_HOST,
     user: process.env.REACT_APP_SQUARE_USER,
     password: process.env.REACT_APP_SQUARE_PASSWORD,
