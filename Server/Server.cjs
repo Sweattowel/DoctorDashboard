@@ -6,7 +6,7 @@ var mysql2 = require("mysql2");
 var app = express();
 
 var dotenv = require("dotenv");
-dotenv.config();
+dotenv.config({ path: "Server"});
 
 // DB Create connectionString;
 var db = mysql2.createConnection({
