@@ -3,7 +3,7 @@ const cors = require("cors");
 const mysql = require("mysql2");
 //const bodyParser = require("body-parser");
 const app = express();
-//const axios = require("axios")
+const axios = require("axios")
 //const fs = require("fs"); 
 require("dotenv").config();
 
@@ -35,6 +35,8 @@ app.listen(port, () => {
 
 app.post('/api/CREATEDATA', function (req, res) {
     try {
+        console.log("Creating Server Data");
+
         var createDoctorTable = "\n            CREATE TABLE IF NOT EXISTS Doctors (\n                id INT PRIMARY KEY AUTO_INCREMENT,\n                name VARCHAR(255) NOT NULL,\n                Speciality VARCHAR(255),\n                phone VARCHAR(20),\n                email VARCHAR(255),\n                address TEXT,\n                yearsOfExperience INT,\n                hospitalAffiliation VARCHAR(255)\n            );\n        ";
         var fillDoctorTable = "\n            INSERT INTO Doctors (name, Speciality, phone, email, address, yearsOfExperience, hospitalAffiliation)\n            VALUES \n                ('Dr. Smith', 'Dermatologist', '+1-234-567-8901', 'dr.smith@example.com', '123 Skin Care Rd, Dermaville, SK 12345', 15, 'Skin Health Clinic'),\n                ('Dr. Patel', 'Neurologist', '+1-234-567-8902', 'dr.patel@example.com', '456 Brainy St, Neurocity, NE 23456', 10, 'NeuroHealth Center'),\n                ('Dr. Garcia', 'Pediatrician', '+1-234-567-8903', 'dr.garcia@example.com', '789 Kids Lane, Pediatricville, PD 34567', 8, 'Pediatrics Plus');\n        ";
         var createAppointmentTable = "\n            CREATE TABLE IF NOT EXISTS Appointments (\n                id INT PRIMARY KEY AUTO_INCREMENT,\n                DoctorID INT,\n                Title VARCHAR(10),\n                ClientName VARCHAR(255),\n                Occupation VARCHAR(255),\n                Address TEXT,\n                Phone VARCHAR(20),\n                Email VARCHAR(255),\n                AppointmentDate DATETIME,\n                Result VARCHAR(50),\n                FurtherAction BOOLEAN,\n                LOA INT,\n                ClientStatus VARCHAR(100),\n                Issue TEXT,\n                FOREIGN KEY (DoctorID) REFERENCES Doctors(id) ON DELETE CASCADE\n            );\n        ";
@@ -66,6 +68,8 @@ app.post('/api/CREATEDATA', function (req, res) {
 
 app.post('/api/getDoctors', function (req, res) {
     try {
+        console.log("Getting Doctors");
+
         var SQL = "SELECT * FROM Doctors \n                     LEFT JOIN Appointments \n                     ON Doctors.ID = Appointments.DoctorID";
         db.query(SQL, function (err, results) {
             if (err) {
@@ -84,6 +88,8 @@ app.post('/api/getDoctors', function (req, res) {
 
 app.post('/api/getDoctorNames', function (req, res) {
     try {
+        console.log("Getting Doctor Names");
+        
         var SQL = "SELECT name FROM Doctors";
         db.query(SQL, function (err, results) {
             if (err) {

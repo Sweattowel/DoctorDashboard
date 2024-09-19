@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-
+import axios, { Axios } from "axios";
 interface DoctorSearchProps {
   handleSetDoctor: (doctorName: string) => void;
 }
@@ -23,21 +23,19 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
     };
   
     const handleGetDoctors = async () => {
-      const response = await fetch(`http://${process.env.REACT_APP_SQUARE_SERVER_ADDRESS}:3001/api/getDoctorNames`);
+      try {
+          // Use axios for the request
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`);
+  
+          // Check if response data exists and handle it
+          if (response.data) {
+              console.log(response.data);  
 
-      if (response) {
-        console.log(response);
-        /*
-        /console.log(response)
-        const memory: string[] = []; 
-        for (let i = 0; i < response.length; i++) {
-            memory.push(response[i]);
           }
-        setDisplayData(response);
-        setDoctors(response);
-        */
+      } catch (error) {
+          console.error('Error fetching doctor names:', error);
       }
-    };
+  };
   
     useEffect(() => {
       handleGetDoctors();
