@@ -1,4 +1,3 @@
-"use strict";
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
@@ -7,7 +6,6 @@ const app = express();
 //const axios = require("axios")
 //const fs = require("fs"); 
 require("dotenv").config();
-// DB Create connectionString;
 
 const db = mysql.createConnection({
     host: process.env.REACT_APP_SQUARE_HOST,
@@ -16,30 +14,19 @@ const db = mysql.createConnection({
     database: process.env.REACT_APP_SQUARE_DATABASE,
 })
 
-console.log(    
-    process.env.REACT_APP_SQUARE_HOST,
-    process.env.REACT_APP_SQUARE_USER,
-    process.env.REACT_APP_SQUARE_PASSWORD,
-    process.env.REACT_APP_SQUARE_DATABASE
-)
-
-// Handle create local connection to DB
 db.connect((err) => {
-    if (err) {
-        console.error(err);
-        return;
+    if (err){
+        console.error(`Database failed to connect: ${err}`)
+        return
     }
-    console.log('Connected to database');
-});
-
-// Define App Port and use libaries
-const port = 3001;
+    console.log("Connected to database")
+})
+const port = 3001
 app.use(cors());
 app.use(express.json());
-// Listen for oncoming requests to the server
-app.listen(port, function () {
+app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
-});
+})
 
 app.post('/api/CREATEDATA', function (req, res) {
     try {
