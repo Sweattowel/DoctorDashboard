@@ -10,6 +10,7 @@ export default function CreateAll(){
         if (remainingPresses > 0) return;
 
         try {
+            console.log("Attempting to create Data");
             const response = await API.get(`/api/CREATEDATA`);
             
             if (response.status == 200) {
