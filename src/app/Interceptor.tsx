@@ -7,7 +7,7 @@ console.log('Server Address:', process.env.NEXT_PUBLIC_SERVER_ADDRESS);
 API.interceptors.request.use((config) => {
     try {
         console.log("Intercepted");
-        console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/CREATEDATA`)
+        console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`)
         config.headers['Authorization'] = process.env.NEXT_PUBLIC_REQUEST_TOKEN;
         config.headers['testCookie'] = findCookie("Test");
         

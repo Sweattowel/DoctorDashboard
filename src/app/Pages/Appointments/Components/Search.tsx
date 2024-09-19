@@ -28,12 +28,11 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
       try {
           console.log("try get DoctorNames")
           // Use axios for the request
-          const response = await API.get(`/api/getDoctorNames`);
+          const response = await API.get('http://192.168.0.249:3001/api/getDoctorNames');
   
           // Check if response data exists and handle it
-          if (response.data) {
-              console.log(response.data);  
-
+          if (response.status === 200) {
+              setDoctors(response.data);
           }
       } catch (error) {
           console.error('Error fetching doctor names:', error);
