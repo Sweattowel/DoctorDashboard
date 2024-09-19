@@ -24,6 +24,7 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
   
     const handleGetDoctors = async () => {
       try {
+          console.log("try get DoctorNames")
           // Use axios for the request
           const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`);
   

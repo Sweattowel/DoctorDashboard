@@ -66,7 +66,7 @@ app.post('/api/CREATEDATA', function (req, res) {
     }
 });
 
-app.post('/api/getDoctors', function (req, res) {
+app.get('/api/getDoctors', function (req, res) {
     try {
         console.log("Getting Doctors");
 
@@ -89,7 +89,7 @@ app.post('/api/getDoctors', function (req, res) {
 app.post('/api/getDoctorNames', function (req, res) {
     try {
         console.log("Getting Doctor Names");
-        
+
         var SQL = "SELECT name FROM Doctors";
         db.query(SQL, function (err, results) {
             if (err) {
