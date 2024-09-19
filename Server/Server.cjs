@@ -1,12 +1,20 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var express = require("express");
-var cors = require("cors");
-var mysql2 = require("mysql2");
-var app = express();
+const express = require("express");
+const cors = require("cors");
+const mysql = require("mysql2");
+//const bodyParser = require("body-parser");
+const app = express();
+//const axios = require("axios")
+//const fs = require("fs"); 
+require("dotenv").config();
 
-var dotenv = require("dotenv");
-dotenv.config({ path: "Server\.env"});
+const db = mysql.createConnection({
+    host: process.env.REACT_APP_SQUARE_HOST,
+    user: process.env.REACT_APP_SQUARE_USER,
+    password: process.env.REACT_APP_SQUARE_PASSWORD,
+    database: process.env.REACT_APP_SQUARE_DATABASE,
+})
+
 console.log(    
     process.env.REACT_APP_SQUARE_HOST,
     process.env.REACT_APP_SQUARE_USER,
@@ -14,12 +22,7 @@ console.log(
     process.env.REACT_APP_SQUARE_DATABASE
 )
 // DB Create connectionString;
-var db = mysql2.createConnection({
-    host: process.env.REACT_APP_SQUARE_HOST,
-    user: process.env.REACT_APP_SQUARE_USER,
-    password: process.env.REACT_APP_SQUARE_PASSWORD,
-    database: process.env.REACT_APP_SQUARE_DATABASE,
-});
+
 // Handle create local connection to DB
 db.connect(function (err) {
     if (err) {
