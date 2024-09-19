@@ -6,7 +6,7 @@ var mysql = require("mysql");
 var app = express();
 
 // DB Create connectionString;
-var db = mysql.default.createConnection({
+var db = mysql.createConnection({
     host: process.env.REACT_APP_SQUARE_HOST,
     user: process.env.REACT_APP_SQUARE_USER,
     password: process.env.REACT_APP_SQUARE_PASSWORD,
@@ -22,8 +22,8 @@ db.connect(function (err) {
 });
 // Define App Port and use libaries
 var port = 3001;
-app.use((0, cors.default)());
-app.use(express.default.json());
+app.use((0, cors)());
+app.use(express.json());
 
 // Listen for oncoming requests to the server
 app.listen(port, function () {
