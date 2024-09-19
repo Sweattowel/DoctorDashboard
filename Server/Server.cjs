@@ -13,7 +13,12 @@ const db = mysql.createConnection({
     password: process.env.REACT_APP_SQUARE_PASSWORD,
     database: process.env.REACT_APP_SQUARE_DATABASE,
 })
-
+console.log(    
+    process.env.REACT_APP_SQUARE_HOST,
+    process.env.REACT_APP_SQUARE_USER,
+    process.env.REACT_APP_SQUARE_PASSWORD,
+    process.env.REACT_APP_SQUARE_DATABASE
+)
 db.connect((err) => {
     if (err){
         console.error(`Database failed to connect: ${err}`)
