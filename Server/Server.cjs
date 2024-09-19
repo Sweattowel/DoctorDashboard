@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var cors = require("cors");
 var mysql = require("mysql");
-var app = use(express);
+var app = express();
 
 // DB Create connectionString;
 var db = mysql.default.createConnection({
