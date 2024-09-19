@@ -7,7 +7,7 @@ const API = axios.create({
 API.interceptors.request.use((config) => {
     try {
         console.log("Intercepted");
-        console.log(process.env.NEXT_PUBLIC_SERVER_ADDRESS)
+        console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`)
         config.headers['Authorization'] = process.env.NEXT_PUBLIC_REQUEST_TOKEN;
         config.headers['testCookie'] = findCookie("Test");
         
@@ -20,11 +20,13 @@ API.interceptors.request.use((config) => {
     }
 })
 
-export const getDoctorNames = async () => {
+const getDoctorNames = async () => {
     return API.get('/api/getDoctorNames');
 }
 
-
+const CreateAllData = async () => {
+    return API.get('/api/CREATEDATA');
+}
 export default API; 
 
 // HIRED HELP

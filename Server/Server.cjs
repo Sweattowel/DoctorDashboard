@@ -31,7 +31,7 @@ app.use(cors());
 app.use(express.json());
 
 
-app.post('/api/CREATEDATA', function (req, res) {
+app.get('/api/CREATEDATA', function (req, res) {
     try {
         console.log("Creating Server Data");
 
