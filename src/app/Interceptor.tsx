@@ -7,7 +7,7 @@ const API = axios.create({
 API.interceptors.request.use((config) => {
     try {
         console.log("Intercepted");
-        console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`)
+        console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/CREATEDATA`)
         config.headers['Authorization'] = process.env.NEXT_PUBLIC_REQUEST_TOKEN;
         config.headers['testCookie'] = findCookie("Test");
         
