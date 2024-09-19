@@ -23,7 +23,7 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
     };
   
     const handleGetDoctors = async () => {
-      const response = await fetch(`${process.env.REACT_APP_SQUARE_SERVER_ADDRESS}/api/getDoctorNames`);
+      const response = await fetch(`http://${process.env.REACT_APP_SQUARE_SERVER_ADDRESS}:3001/api/getDoctorNames`);
 
       if (response) {
         console.log(response);
