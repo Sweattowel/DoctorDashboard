@@ -98,13 +98,14 @@ app.get('/api/getDoctorNames', async (req, res) => {
         console.log("Getting Doctor Names");
 
         let SQL = "SELECT name FROM Doctors";
+
         db.query(SQL, function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 res.status(500).json({ error: "Database query error" });
                 return;
             }
-            res.status(200).json({ data: results });
+            res.status(200).json({ data: results.names });
         });
     }
     catch (error) {

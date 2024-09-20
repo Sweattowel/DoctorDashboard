@@ -20,11 +20,11 @@ API.interceptors.request.use((config) => {
     }
 })
 
-const getDoctorNames = async () => {
+export const getDoctorNames = async () => {
     return API.get('/api/getDoctorNames');
 }
 
-const CreateAllData = async () => {
+export const CreateAllData = async () => {
     return API.get('/api/CREATEDATA');
 }
 export default API; 
