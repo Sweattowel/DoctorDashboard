@@ -1,16 +1,19 @@
-import CreateAll from "@/app/DEV/CreateAllButton"
 import Link from "next/link"
 
 const links = [
     {
         title: "Home",
         ref: "/"
-    }
+    },    
+    {
+        title: "Profile",
+        ref: "/Pages/Authorization/Login"
+    },
 ]
 export default function NavBar(){
 
     return (
-        <main className="h-[5vh] flex shadow justify-evenly items-center p-2">
+        <main className="h-[5vh] flex shadow justify-evenly items-center p-2 bg-white">
             <h1 className="text-2xl font-serif font-bold">
                 Medicite
             </h1>
@@ -28,6 +31,3 @@ export default function NavBar(){
         </main>
     )
 }
-
-// CREATE DATA COMPONENT OUT OF USE
-//<CreateAll />

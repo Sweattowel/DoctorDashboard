@@ -11,12 +11,12 @@ interface SelectedDoctor {
 }
 
 export default function Appointment() {
-  const [selectedDoctor, setSelectedDoctor] = useState<SelectedDoctor>({
+  const [selectedDoctor, setSelectedDoctor] = useState<any>({
     DoctorID: -1,
     DoctorName: ""
   });
 
-  const [getAppointments, setDoctorAppointments] = useState<SelectedDoctor>({
+  const [getAppointments, setDoctorAppointments] = useState<any>({
     DoctorID: -1,
     DoctorName: ""
   });

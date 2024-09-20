@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
-import API from "../../../Interceptor";
+import API from "@/app/Interceptor";
 
 interface DoctorSearchProps {
   handleSetDoctor: (DoctorID: number, DoctorName: string) => void;

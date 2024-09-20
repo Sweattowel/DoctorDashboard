@@ -1,4 +1,4 @@
-import { GetDoctorData } from "@/app/Interceptor";
+import API from "@/app/Interceptor";
 import { useState, useEffect } from "react";
 
 
@@ -39,8 +39,8 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
   
     async function collectDoctorData(selectedDoctor: DoctorImportProps) {
       if (selectedDoctor.DoctorID !== -1) {  // Check for valid ID
-        console.log(selectedDoctor.DoctorID);
-        const response = await GetDoctorData(selectedDoctor.DoctorID);
+        const response = await API.get(`/api/getDoctorData/${selectedDoctor.DoctorID}`);
+        
         if (response.status === 200) {
           console.log(response);
           setDoctor(response.data.results[0]); // Assuming results is an array

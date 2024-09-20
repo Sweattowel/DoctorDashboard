@@ -1,8 +1,7 @@
 'use client'
 
-import { GetDoctorAppointMents } from "@/app/Interceptor"
+import API from "@/app/Interceptor"
 import { useEffect, useState } from "react"
-//import { GetDoctorAppointMents } from "../../../../../Server/Old/OldServer"
 
 interface importProps {
   DoctorID: number,
@@ -50,7 +49,8 @@ export default function AppointmentDisplay({ DoctorID, DoctorName }: importProps
   async function handleGetAppointments() {
     if (DoctorID !== -1 && DoctorName != "") {
       try {
-        const response = await GetDoctorAppointMents(DoctorID);
+        const response = await API.get((`/api/getAppointments/${DoctorID}`));
+
         if (response.status == 200) {
           console.log(response);
           let newData = response.data.results.sort((a : any, b : any) => new Date(b.AppointmentDate).getTime() - new Date(a.AppointmentDate).getTime())

@@ -19,7 +19,7 @@ API.interceptors.request.use((config) => {
         return Promise.reject(error);        
     }
 })
-
+/* HATED this from the get go, wasnt using it properly and it was unnecessarily centralised, found a better method using common sense...
 export const getDoctorNames = async () => {
     return API.get('/api/getDoctorNames');
 }
@@ -34,6 +34,7 @@ export const GetDoctorData = async (DoctorID: number) => {
 export const GetDoctorAppointMents = async (DoctorID : number) => {
     return API.get(`/api/getAppointments/${DoctorID}`)
 }
+*/
 export default API; 
 
 // HIRED HELP
