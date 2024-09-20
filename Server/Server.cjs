@@ -72,17 +72,18 @@ app.get('/api/CREATEDATA', function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-app.get('/api/getDoctorData' , function (req, res) {
+app.get('/api/getDoctorData/:DoctorID' , function (req, res) {
     try {
-        const SQL = "SELECT * FROM Doctors WHERE id = ? AND name = ?"
-        const {DoctorID, DoctorName } = req.query;
+        const SQL = "SELECT * FROM Doctors WHERE id = ?"
+        const { DoctorID } = req.params;
         
-        if (!DoctorID || !DoctorName) { res.status(400).json({ error: "Bad Request"})};
+        if (!DoctorID) { res.status(400).json({ error: "Bad Request"})};
 
-        db.execute(SQL, [DoctorID, DoctorName], function (err, results) {
+        db.execute(SQL, [DoctorID], function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 res.status(500).json({ error: "Database query error" });
+                return
             }
             res.status(200).json({ results })
         } )
@@ -100,6 +101,7 @@ app.get('/api/getDoctors', function (req, res) {
             if (err) {
                 console.error("Error executing query:", err);
                 res.status(500).json({ error: "Database query error" });
+                return;
             }
             res.status(200).json({ data: results });
         });

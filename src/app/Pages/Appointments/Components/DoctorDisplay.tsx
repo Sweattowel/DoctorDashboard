@@ -37,7 +37,7 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } 
 
     async function collectDoctorData(selectedDoctor : DoctorImportProps){
         if (selectedDoctor.DoctorName !== ''){
-            const response = await API.get("/api/getDoctorData", {
+            const response = await API.get(`/api/getDoctorData/${selectedDoctor.DoctorID}`, {
                 params: {
                     DoctorID : selectedDoctor.DoctorID,
                     DoctorName : selectedDoctor.DoctorName                    
