@@ -45,19 +45,19 @@ app.get('/api/CREATEDATA', function (req, res) {
         let fillAppointmentTable = "\n            INSERT INTO Appointments \n                (DoctorID, Title, ClientName, Occupation, Address, Phone, Email, AppointmentDate, Result, FurtherAction, LOA, ClientStatus, Issue)\n            VALUES\n                (1, 'Mrs', 'Alicia Smith', 'Nurse', '123 Example Way', '000-000-000', 'TestEmail12@34.com', '2024-09-15 10:00:00', 'N/A', false, 1, 'Healthy', 'General Checkup'),\n                (1, 'Mr', 'Robert Brown', 'Teacher', '456 Sample Road', '111-111-111', 'robert.brown@email.com', '2024-09-16 11:00:00', 'Pending', true, 2, 'Needs Follow-Up', 'Blood Pressure'),\n                (1, 'Ms', 'Emily Davis', 'Engineer', '789 Test Avenue', '222-222-222', 'emily.davis@email.com', '2024-09-17 14:00:00', 'Completed', false, 0, 'Healthy', 'Routine Checkup'),\n                (1, 'Mr', 'Michael Wilson', 'Lawyer', '101 Data Street', '333-333-333', 'michael.wilson@email.com', '2024-09-18 09:00:00', 'Completed', false, 0, 'Healthy', 'Routine Examination'),\n                (1, 'Ms', 'Sarah Moore', 'Artist', '202 Example Blvd', '444-444-444', 'sarah.moore@email.com', '2024-09-19 15:00:00', 'Completed', false, 0, 'Healthy', 'Health Review');\n        ";
         // Execute queries
         console.log("Begin")
-        db.query(createDoctorTable, function (err) {
+        db.execute(createDoctorTable, function (err) {
             console.log("Creating doctor table");
             if (err)
                 throw err;
-            db.query(fillDoctorTable, function (err) {
+            db.execute(fillDoctorTable, function (err) {
                 console.log("Filling doctor table");
                 if (err)
                     throw err;
-                db.query(createAppointmentTable, function (err) {
+                db.execute(createAppointmentTable, function (err) {
                     console.log("Creating Appointment table");
                     if (err)
                         throw err;
-                    db.query(fillAppointmentTable, function (err) {
+                    db.execute(fillAppointmentTable, function (err) {
                         console.log("Filling Appointment table");
                         if (err)
                             throw err;
@@ -72,17 +72,34 @@ app.get('/api/CREATEDATA', function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+app.get('/api/getDoctorData' , function (req, res) {
+    try {
+        const SQL = "SELECT * FROM Doctors WHERE id = ? AND name = ?"
+        const {DoctorID, DoctorName } = req.params;
+        
+        if (!DoctorID || !DoctorName) { res.status(400).json({ error: "Bad Request"})};
 
+        db.execute(SQL, [DoctorID, DoctorName], function (err, results) {
+            if (err) {
+                console.error("Error executing query:", err);
+                res.status(500).json({ error: "Database query error" });
+            }
+            res.status(200).json({ results })
+        } )
+    } catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 app.get('/api/getDoctors', function (req, res) {
     try {
         console.log("Getting Doctors");
 
         let SQL = "SELECT * FROM Doctors \n                     LEFT JOIN Appointments \n                     ON Doctors.ID = Appointments.DoctorID";
-        db.query(SQL, function (err, results) {
+        db.execute(SQL, function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 res.status(500).json({ error: "Database query error" });
-                return;
             }
             res.status(200).json({ data: results });
         });
@@ -97,15 +114,15 @@ app.get('/api/getDoctorNames', async (req, res) => {
     try {
         console.log("Getting Doctor Names");
 
-        let SQL = "SELECT name FROM Doctors";
+        let SQL = "SELECT id, name FROM Doctors";
 
-        db.query(SQL, function (err, results) {
+        db.execute(SQL, function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 res.status(500).json({ error: "Database query error" });
                 return;
             }
-            res.status(200).json({ data: results });
+            res.status(200).json({ results });
         });
     }
     catch (error) {

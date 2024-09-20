@@ -1,56 +1,65 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
-import axios, { Axios } from "axios";
 import API from "../../../Interceptor"
 
 interface DoctorSearchProps {
   handleSetDoctor: (doctorName: string) => void;
 }
-interface DoctorNameDisplayStruc {
-  name: string
-}
+
 export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
+  // CONSTANTS
     const [recentDoctor, setRecentDoctor] = useState<string>("")
     const [searchParam, setSearchParam] = useState<string>('');
-    const [doctors, setDoctors] = useState<DoctorNameDisplayStruc[]>([]);
-    const [displayData, setDisplayData] = useState<DoctorNameDisplayStruc[]>([]);
-
+    const [doctors, setDoctors] = useState<string[]>([]);
+    const [displayData, setDisplayData] = useState<string[]>([]);
+  
+  // FILTERING OF DOCTORS TO SEARCH PARAMETERS
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
       const query = e.target.value.toLowerCase();
+      if (query == "") {
+        setDisplayData(doctors);
+        setSearchParam("");
+        return;
+      }
       setSearchParam(query);
   
       const filteredDoctors = displayData.filter((doctor) =>
-        doctor.name.toLowerCase().includes(query)
+        doctor.toLowerCase().includes(query)
       );
-      setDoctors(filteredDoctors);
+      setDisplayData(filteredDoctors);
     };
-  
+
+  // INITIAL COLLECTION OF DOCTOR NAMES
     const handleGetDoctors = async () => {
       try {
           console.log("try get DoctorNames")
-          // Use axios for the request
-          // Try using axios instead of API to attempt a regular call that gets intercepted? worth a test 
+          
           const response = await API.get('/api/getDoctorNames');
   
           // Check if response data exists and handle it
           if (response.status === 200) {
-              //setDoctors(response.data);
-              console.log(response.data)
+              const newData : string[] = response.data.data.map(
+                (doctor: { name : string }) => doctor.name
+              );
+
+              setDoctors(newData);
+              setDisplayData(newData);
           }
       } catch (error) {
           console.error('Error fetching doctor names:', error);
       }
-  };
-  
-  const hasFetched = useRef(false);
+    };
 
-  useEffect(() => {
-    if (!hasFetched.current) {
-      handleGetDoctors();
-      hasFetched.current = true; // Set to true after the first call
-    }
-  }, []);
+  // DEFINE AND USE REFERENCE TO CALL HANDLEGETDOCTORS ON COMPONENT MOUNT
+    const hasFetched = useRef(false);
+
+    useEffect(() => {
+      if (!hasFetched.current) {
+        handleGetDoctors();
+        hasFetched.current = true;
+      }
+    }, []);
   
     return (
       <section className='flex flex-col justify-evenly w-[45%] h-full border rounded-2xl shadow-2xl p-5 bg-white'>
@@ -62,13 +71,13 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
           placeholder='Search Doctors'
         />
         <ul className='flex flex-col h-[80%] text-center divide-y overflow-auto border-l'>
-          {doctors.map((doctor : DoctorNameDisplayStruc, index) => (
+          {displayData.map((doctor : string, index : number) => (
             <button
-              className={`${recentDoctor == doctor.name ? "bg-blue-400 text-white" : ""} hover:opacity-60`}
-              onClick={() => {handleSetDoctor(doctor.name); setRecentDoctor(doctor.name)}}
+              className={`${recentDoctor == doctor ? "bg-blue-400 text-white" : ""} hover:opacity-60`}
+              onClick={() => {handleSetDoctor(doctor); setRecentDoctor(doctor)}}
               key={index}
             >
-              {doctor.name}
+              {doctor}
             </button>
           ))}
         </ul>

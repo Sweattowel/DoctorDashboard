@@ -27,6 +27,9 @@ export const getDoctorNames = async () => {
 export const CreateAllData = async () => {
     return API.get('/api/CREATEDATA');
 }
+export const GetDoctorData = async (doctorID : number, doctorName : string) => {
+    return API.get('/api/getDoctorData');
+}
 export default API; 
 
 // HIRED HELP

@@ -1,7 +1,8 @@
 'use client'
 
+import API from "@/app/Interceptor";
 import { useEffect, useState } from "react";
-import { GetDoctorData } from "../../../../../Server/Old/OldServer";
+//import { GetDoctorData } from "../../../../../Server/Old/OldServer";
 
 interface DoctorImportProps {
   
@@ -33,17 +34,20 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } 
         hospitalAffiliation: ""
     })
 
-    async function collectDoctorData(){
+    async function collectDoctorData(DoctorID : number, DoctorName : string){
         if (selectedDoctor !== ''){
-            const response = await GetDoctorData(selectedDoctor!)
-            if (response){
+            const response = await API.get("/api/getDoctorData", {
+                DoctorID : DoctorID,
+                DoctorName : DoctorName
+            })
+            if (response.st){
                 //console.log(response)
                 setDoctor(response)
             }
         }
     }
     useEffect(() => {
-        collectDoctorData();
+        //collectDoctorData(selectedDoctor);
         setGlow(true);
         setTimeout(() => setGlow(false), 500)
     },[selectedDoctor])

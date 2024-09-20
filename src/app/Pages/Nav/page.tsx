@@ -14,7 +14,7 @@ export default function NavBar(){
             <h1 className="text-2xl font-serif font-bold">
                 Medicite
             </h1>
-            <CreateAll />
+            
             <ul className="h-[5vh] flex justify-evenly items-center">
                 {links.map((link, index) => (
                         <Link className="bg-blue-400 text-white p-2 rounded hover:opacity-60"
@@ -28,3 +28,6 @@ export default function NavBar(){
         </main>
     )
 }
+
+// CREATE DATA COMPONENT OUT OF USE
+//<CreateAll />
