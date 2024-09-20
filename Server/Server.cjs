@@ -105,7 +105,7 @@ app.get('/api/getDoctorNames', async (req, res) => {
                 res.status(500).json({ error: "Database query error" });
                 return;
             }
-            res.status(200).json({ data: results.names });
+            res.status(200).json({ data: results });
         });
     }
     catch (error) {
