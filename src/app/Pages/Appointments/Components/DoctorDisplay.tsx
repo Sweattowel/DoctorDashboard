@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 //import { GetDoctorData } from "../../../../../Server/Old/OldServer";
 
 interface DoctorImportProps {
-  
+  DoctorID: number,
+  DoctorName: string
 }
 interface Doctor {
     id: number;
@@ -19,7 +20,7 @@ interface Doctor {
 }
 interface importProps {
     handleSeeAppointments: (doctorID: number) => void;
-    selectedDoctor: string | null;
+    selectedDoctor: DoctorImportProps;
 }
 export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } : importProps) {
     const [glow, setGlow] = useState<boolean>(false);
@@ -34,20 +35,22 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments } 
         hospitalAffiliation: ""
     })
 
-    async function collectDoctorData(DoctorID : number, DoctorName : string){
-        if (selectedDoctor !== ''){
+    async function collectDoctorData(selectedDoctor : DoctorImportProps){
+        if (selectedDoctor.DoctorName !== ''){
             const response = await API.get("/api/getDoctorData", {
-                DoctorID : DoctorID,
-                DoctorName : DoctorName
+                params: {
+                    DoctorID : selectedDoctor.DoctorID,
+                    DoctorName : selectedDoctor.DoctorName                    
+                }
             })
-            if (response.st){
-                //console.log(response)
-                setDoctor(response)
+            if (response.status == 200){
+                console.log(response)
+                //setDoctor(response)
             }
         }
     }
     useEffect(() => {
-        //collectDoctorData(selectedDoctor);
+        collectDoctorData(selectedDoctor);
         setGlow(true);
         setTimeout(() => setGlow(false), 500)
     },[selectedDoctor])

@@ -4,15 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import API from "../../../Interceptor"
 
 interface DoctorSearchProps {
-  handleSetDoctor: (doctorName: string) => void;
+  handleSetDoctor: (doctorName: string, doctorID: number) => void;
 }
-
+interface DoctorDisplayStruc {
+  DoctorName : string,
+  DoctorID : number
+  
+}
 export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
   // CONSTANTS
     const [recentDoctor, setRecentDoctor] = useState<string>("")
     const [searchParam, setSearchParam] = useState<string>('');
-    const [doctors, setDoctors] = useState<string[]>([]);
-    const [displayData, setDisplayData] = useState<string[]>([]);
+    const [doctors, setDoctors] = useState<DoctorDisplayStruc[]>([]);
+    const [displayData, setDisplayData] = useState<DoctorDisplayStruc[]>([]);
   
   // FILTERING OF DOCTORS TO SEARCH PARAMETERS
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +29,7 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
       setSearchParam(query);
   
       const filteredDoctors = displayData.filter((doctor) =>
-        doctor.toLowerCase().includes(query)
+        doctor.DoctorName.toLowerCase().includes(query)
       );
       setDisplayData(filteredDoctors);
     };
@@ -35,14 +39,18 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
       try {
           console.log("try get DoctorNames")
           
-          const response = await API.get('/api/getDoctorNames');
+          const response = await API.get('/api/getDoctorNames', {timeout : 2000});
   
           // Check if response data exists and handle it
           if (response.status === 200) {
-              const newData : string[] = response.data.data.map(
-                (doctor: { name : string }) => doctor.name
+            console.log(response)
+              const newData : DoctorDisplayStruc[] = response.data.results.map(
+                (doctor: { name : string, id : number }) => ({
+                  DoctorName: doctor.name, 
+                  DoctorID: doctor.id
+                })
               );
-
+              console.log(newData)
               setDoctors(newData);
               setDisplayData(newData);
           }
@@ -71,13 +79,13 @@ export default function DoctorSearch({ handleSetDoctor } : DoctorSearchProps) {
           placeholder='Search Doctors'
         />
         <ul className='flex flex-col h-[80%] text-center divide-y overflow-auto border-l'>
-          {displayData.map((doctor : string, index : number) => (
+          {displayData.map((doctor : DoctorDisplayStruc, index : number) => (
             <button
-              className={`${recentDoctor == doctor ? "bg-blue-400 text-white" : ""} hover:opacity-60`}
-              onClick={() => {handleSetDoctor(doctor); setRecentDoctor(doctor)}}
+              className={`${recentDoctor == doctor.DoctorName ? "bg-blue-400 text-white" : ""} hover:opacity-60`}
+              onClick={() => {handleSetDoctor(doctor.DoctorName, doctor.DoctorID); setRecentDoctor(doctor.DoctorName)}}
               key={index}
             >
-              {doctor}
+              {doctor.DoctorID}: {doctor.DoctorName}
             </button>
           ))}
         </ul>

@@ -75,7 +75,7 @@ app.get('/api/CREATEDATA', function (req, res) {
 app.get('/api/getDoctorData' , function (req, res) {
     try {
         const SQL = "SELECT * FROM Doctors WHERE id = ? AND name = ?"
-        const {DoctorID, DoctorName } = req.params;
+        const {DoctorID, DoctorName } = req.query;
         
         if (!DoctorID || !DoctorName) { res.status(400).json({ error: "Bad Request"})};
 
