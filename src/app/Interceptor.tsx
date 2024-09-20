@@ -3,15 +3,15 @@ import axios from "axios"
 const API = axios.create({
     baseURL: process.env.NEXT_PUBLIC_SERVER_ADDRESS
 })
-console.log('Server Address:', process.env.NEXT_PUBLIC_SERVER_ADDRESS);
+
 API.interceptors.request.use((config) => {
     try {
         console.log("Intercepted");
-        console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`)
+        //console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`)
         config.headers['Authorization'] = process.env.NEXT_PUBLIC_REQUEST_TOKEN;
         config.headers['testCookie'] = findCookie("Test");
         
-        console.log(config.headers);
+        //console.log(config.headers);
 
         return config;
 
@@ -27,8 +27,12 @@ export const getDoctorNames = async () => {
 export const CreateAllData = async () => {
     return API.get('/api/CREATEDATA');
 }
-export const GetDoctorData = async (doctorID : number, doctorName : string) => {
-    return API.get('/api/getDoctorData');
+export const GetDoctorData = async (DoctorID: number) => {
+    console.log(DoctorID)
+    return API.get(`/api/getDoctorData/${DoctorID}`);
+}
+export const GetDoctorAppointMents = async (DoctorID : number) => {
+    return API.get(`/api/getAppointments/${DoctorID}`)
 }
 export default API; 
 

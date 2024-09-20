@@ -76,14 +76,13 @@ app.get('/api/getDoctorData/:DoctorID' , function (req, res) {
     try {
         const SQL = "SELECT * FROM Doctors WHERE id = ?"
         const { DoctorID } = req.params;
-        
+        console.log("Getting Data for ".concat(DoctorID))
         if (!DoctorID) { res.status(400).json({ error: "Bad Request"})};
 
         db.execute(SQL, [DoctorID], function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
-                res.status(500).json({ error: "Database query error" });
-                return
+                return res.status(500).json({ error: "Database query error" });
             }
             res.status(200).json({ results })
         } )
@@ -100,8 +99,7 @@ app.get('/api/getDoctors', function (req, res) {
         db.execute(SQL, function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
-                res.status(500).json({ error: "Database query error" });
-                return;
+                return res.status(500).json({ error: "Database query error" });
             }
             res.status(200).json({ data: results });
         });
@@ -133,7 +131,27 @@ app.get('/api/getDoctorNames', async (req, res) => {
     }
 });
 
+app.get("/api/getAppointments/:DoctorID", function (req, res) {
+    try {
+        const {DoctorID} = req.params;
+        console.log("Getting appointmentData for DoctorID ".concat(DoctorID));       
 
+        let SQL = "SELECT * FROM Appointments WHERE DoctorID = ?";
+
+        db.execute(SQL,[DoctorID], function (err, results) {
+            if (err) {
+                console.error("Error executing query:", err);
+                res.status(500).json({ error: "Database query error" });
+                return;
+            }
+            res.status(200).json({ results });
+        });
+    }
+    catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
 })

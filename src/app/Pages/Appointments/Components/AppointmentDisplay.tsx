@@ -1,7 +1,8 @@
 'use client'
 
+import { GetDoctorAppointMents } from "@/app/Interceptor"
 import { useEffect, useState } from "react"
-import { GetDoctorAppointMents } from "../../../../../Server/Old/OldServer"
+//import { GetDoctorAppointMents } from "../../../../../Server/Old/OldServer"
 
 interface importProps {
   doctorID: number
@@ -48,12 +49,12 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
   async function handleGetAppointments() {
     if (doctorID !== -1) {
       try {
-        const response : AppointMentStruc = await GetDoctorAppointMents(doctorID);
+        const response = await GetDoctorAppointMents(doctorID);
         if (response) {
-          //console.log(response);
-          response.Clients.sort((a, b) => new Date(b.Appointment.Date).getTime() - new Date(a.Appointment.Date).getTime())
+          console.log(response);
+          //response.Clients.sort((a, b) => new Date(b.Appointment.Date).getTime() - new Date(a.Appointment.Date).getTime())
        
-          setAppointments(response);
+          //setAppointments(response);
         }
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
@@ -116,9 +117,9 @@ const AppointmentList = ({ data, appointmentParam }: AppointmentListProps) => {
       client.ClientName.toLowerCase().includes(appointmentParam.toLowerCase())
     );
 
-
     setDisplayData(filteredAppointments)
   },[appointmentParam])
+
   return (
     <ul className="divide-y overflow-auto overflow-hidden">
       {displayData && displayData.map((client: Appointment, index: number) => (
