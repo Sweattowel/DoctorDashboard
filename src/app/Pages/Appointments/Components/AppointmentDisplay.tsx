@@ -5,7 +5,8 @@ import { useEffect, useState } from "react"
 //import { GetDoctorAppointMents } from "../../../../../Server/Old/OldServer"
 
 interface importProps {
-  doctorID: number
+  DoctorID: number,
+  DoctorName: string,
 }
 
 interface AppointMentStruc {
@@ -40,21 +41,21 @@ const titles : string[] = [
   "Doctor",
 ]
 
-export default function AppointmentDisplay({ doctorID }: importProps) {
-  const [appointments, setAppointments] = useState<AppointMentStruc | null>(null);
+export default function AppointmentDisplay({ DoctorID, DoctorName }: importProps) {
+  const [appointments, setAppointments] = useState<Appointment[] | null>(null);
   const [searchParam, setSearchParam] = useState<string>("")
 
   const [glow, setGlow] = useState<boolean>(false);
 
   async function handleGetAppointments() {
-    if (doctorID !== -1) {
+    if (DoctorID !== -1 && DoctorName != "") {
       try {
-        const response = await GetDoctorAppointMents(doctorID);
-        if (response) {
+        const response = await GetDoctorAppointMents(DoctorID);
+        if (response.status == 200) {
           console.log(response);
-          //response.Clients.sort((a, b) => new Date(b.Appointment.Date).getTime() - new Date(a.Appointment.Date).getTime())
-       
-          //setAppointments(response);
+          let newData = response.data.results.sort((a : any, b : any) => new Date(b.AppointmentDate).getTime() - new Date(a.AppointmentDate).getTime())
+          console.log(newData.data.results)
+          setAppointments(response.data.results);
         }
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
@@ -67,14 +68,14 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
     handleGetAppointments();
     setGlow(true);
     setTimeout(() => setGlow(false), 500)
-  }, [doctorID]);
+  }, [DoctorID]);
 
   return (
     <main className={`${glow && "bg-blue-400 text-white"} rounded-2xl transition-all ease-in-out duration-500  bg-white w-[95%] h-[70vh] bg-white p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
-      {appointments && doctorID !== -1 ? (
+      {appointments && DoctorID !== -1 ? (
         <section className="h-full w-full flex flex-col">
           <h2 className="h-[50px] w-full flex items-center text-xl p-5 font-bold font-serif">
-            Appointments for {appointments.Doctor}
+            Appointments for {DoctorName}
           </h2>
           <ul className="h-full bg-white mt-5 p-5 rounded-2xl divide-y overflow-auto">
             <ul className="flex justify-evenly items-center w-full h-[5vh] p-5 ">
@@ -85,7 +86,15 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
               ))}
               <input onChange={(e) => setSearchParam(e.target.value)} type="search" name="ClientFilter" className="border" placeholder="Search Client" />
             </ul>
-            <AppointmentList appointmentParam={searchParam} data={appointments}/>
+            <ul className="h-full w-full flex flex-col bg-blue-600">
+              {appointments.map((appointment, index) => (
+                <li className="bg-blue-800 h-[50px] w-full"
+                  key={index}
+                >
+                  {appointment.ClientName}
+                </li>
+              ))}
+            </ul>
 
           </ul>
         </section>
@@ -97,24 +106,24 @@ export default function AppointmentDisplay({ doctorID }: importProps) {
     </main>
   )
 }
+/* <AppointmentList appointmentParam={searchParam} data={appointments}/>
 interface AppointmentListProps {
-  data: AppointMentStruc,
-  appointmentParam: string
+  appointmentParam: AppointMentStruc
 }
 
-const AppointmentList = ({ data, appointmentParam }: AppointmentListProps) => {
+const AppointmentList = ({ appointmentParam }: AppointmentListProps) => {
   const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
   const [displayData, setDisplayData] = useState<Appointment[]>([]);
 
   useEffect(() => {
-    setDisplayData(data.Clients)
-  },[data])
+    setDisplayData(appointmentParam.Clients)
+  },[appointmentParam])
 
   useEffect(() => {
     if (!displayData) return
 
-    const filteredAppointments = data.Clients.filter((client) =>
-      client.ClientName.toLowerCase().includes(appointmentParam.toLowerCase())
+    const filteredAppointments = appointmentParam.Clients.filter((client) =>
+      client.ClientName.toLowerCase().includes(appointmentParam.Clients..toLowerCase())
     );
 
     setDisplayData(filteredAppointments)
@@ -186,3 +195,4 @@ const dropDown = ({options} : dropDownProps) => {
     </ul>
   )
 }
+*/

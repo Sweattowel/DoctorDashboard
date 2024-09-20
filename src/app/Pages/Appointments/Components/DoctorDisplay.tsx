@@ -19,11 +19,11 @@ interface Doctor {
   }
   
   interface importProps {
-    handleSeeAppointments: (doctorID: number) => void;
+    handleSeeAppointments: (doctorID: number, DoctorName: string) => void;
     selectedDoctor: DoctorImportProps;
   }
 
-  
+
 export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }: importProps) {
     const [glow, setGlow] = useState<boolean>(false);
     const [doctor, setDoctor] = useState<Doctor>({
@@ -75,7 +75,7 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
               <p>PH: {doctor.phone}</p>
             </div>
             <button className="border p-2 rounded-2xl bg-blue-400 text-white hover:opacity-60"
-              onClick={() => handleSeeAppointments(doctor.id)}
+              onClick={() => handleSeeAppointments(doctor.id, doctor.name, )}
             >
               See Appointments
             </button>

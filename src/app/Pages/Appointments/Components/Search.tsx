@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import API from "../../../Interceptor";
 
 interface DoctorSearchProps {
-  handleSetDoctor: (DoctorName: string, DoctorID: number) => void;
+  handleSetDoctor: (DoctorID: number, DoctorName: string) => void;
 }
 
 interface DoctorDisplayStruc {
+  DoctorID: number;  
   DoctorName: string;
-  DoctorID: number;
+ 
 }
 
 export default function DoctorSearch({ handleSetDoctor }: DoctorSearchProps) {
@@ -81,7 +82,7 @@ export default function DoctorSearch({ handleSetDoctor }: DoctorSearchProps) {
         {displayData.map((doctor: DoctorDisplayStruc, index: number) => (
           <button
             className={`${recentDoctor === doctor.DoctorName ? "bg-blue-400 text-white" : ""} hover:opacity-60`}
-            onClick={() => { handleSetDoctor(doctor.DoctorName, doctor.DoctorID); setRecentDoctor(doctor.DoctorName); }}
+            onClick={() => { handleSetDoctor( doctor.DoctorID, doctor.DoctorName ); setRecentDoctor(doctor.DoctorName); }}
             key={index}
           >
             {doctor.DoctorID}: {doctor.DoctorName}
