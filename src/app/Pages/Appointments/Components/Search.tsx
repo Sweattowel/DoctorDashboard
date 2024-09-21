@@ -81,7 +81,7 @@ export default function DoctorSearch({ handleSetDoctor }: DoctorSearchProps) {
       <ul className='flex flex-col h-[80%] text-center divide-y overflow-auto border-l'>
         {displayData.map((doctor: DoctorDisplayStruc, index: number) => (
           <button
-            className={`${recentDoctor === doctor.DoctorName ? "bg-blue-400 text-white" : ""} hover:opacity-60`}
+            className={`${recentDoctor === doctor.DoctorName ? "bg-blue-600 text-white" : ""} hover:opacity-60`}
             onClick={() => { handleSetDoctor( doctor.DoctorID, doctor.DoctorName ); setRecentDoctor(doctor.DoctorName); }}
             key={index}
           >

@@ -19,7 +19,7 @@ interface Doctor {
   }
   
   interface importProps {
-    handleSeeAppointments: (doctorID: number, DoctorName: string) => void;
+    handleSeeAppointments: (getAppointments : boolean) => void;
     selectedDoctor: DoctorImportProps;
   }
 
@@ -42,7 +42,7 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
         const response = await API.get(`/api/getDoctorData/${selectedDoctor.DoctorID}`);
         
         if (response.status === 200) {
-          console.log(response);
+          //console.log(response);
           setDoctor(response.data.results[0]); // Assuming results is an array
         }
       }
@@ -53,11 +53,12 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
         collectDoctorData(selectedDoctor);
         setGlow(true);
         setTimeout(() => setGlow(false), 500);
-      }
+      } 
+      handleSeeAppointments(false);
     }, [selectedDoctor]);
   
     return (
-      <section className={`${glow ? "bg-blue-400 text-white" : "bg-white"} shadow-2xl h-full w-[45%] flex justify-center items-center rounded-2xl duration-500 transition-all ease-in-out`}>
+      <section className={`${glow ? "bg-blue-600 text-white" : "bg-white"} shadow-2xl h-full w-[45%] flex justify-center items-center rounded-2xl duration-500 transition-all ease-in-out`}>
         {doctor.id !== -1 ? (
           <div className="border rounded-2xl h-full w-full flex flex-col items-center justify-evenly">
             <h2 className="text-2xl font-bold font-serif">
@@ -74,8 +75,8 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
               <p>Email: {doctor.email}</p>
               <p>PH: {doctor.phone}</p>
             </div>
-            <button className="border p-2 rounded-2xl bg-blue-400 text-white hover:opacity-60"
-              onClick={() => handleSeeAppointments(doctor.id, doctor.name, )}
+            <button className="border p-2 rounded-2xl bg-blue-600 text-white hover:opacity-60"
+              onClick={() => {handleSeeAppointments(true); console.log("clicked")}}
             >
               See Appointments
             </button>

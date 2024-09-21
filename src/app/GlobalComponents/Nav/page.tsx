@@ -6,6 +6,10 @@ const links = [
         ref: "/"
     },    
     {
+        title: "Book",
+        ref: "/Pages/Appointments"
+    },    
+    {
         title: "Profile",
         ref: "/Pages/Authorization/Login"
     },

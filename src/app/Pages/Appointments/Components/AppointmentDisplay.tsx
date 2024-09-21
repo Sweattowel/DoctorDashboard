@@ -3,152 +3,124 @@
 import API from "@/app/Interceptor"
 import { useEffect, useState } from "react"
 
-interface wantAppointMents {
-  DoctorID: number,
-  DoctorName: string,
-}
-
-interface AppointMentStruc {
-  Doctor: string,
-  DoctorID: number,
-  Clients: Appointment[]
-}
-
+// Types for Appointments
 interface Appointment {
-  Title: string,
-  ClientName: string,
-  Occupation: string,
   Address: string,
-  Phone: string,
+  AppointmentDate: string,
+  ClientName: string,
+  ClientStatus: string,
+  DoctorID:  string,
   Email: string,
-  Appointment: {
-    Date: string,
-    Result: string,
-    FurtherAction: boolean,
-    LOA: number,
-    ClientStatus: string,
-    Issue: string,
-    Doctor: string
-  },
-  PriorAppointments: []
+  FurtherAction: string,
+  Issue: string,
+  LOA:  number,
+  Occupation: string,
+  Phone: string,
+  Result: string,
+  Title: string,
+  id: number,
 }
 
-const titles : string[] = [
-  "Date",
-  "Name",
-  "Purpose",
-  "Doctor",
-]
+const titles: string[] = ["Date", "Name", "Purpose" ];
 
-export default function AppointmentDisplay({ DoctorID, DoctorName }: any) {
-  const [appointments, setAppointments] = useState<Appointment[] | null>(null);
+interface AppointmentDisplayProps {
+  selectedDoctor: { DoctorName: string; DoctorID: number };
+  getAppointments: boolean;
+}
+
+export default function AppointmentDisplay({ selectedDoctor, getAppointments }: AppointmentDisplayProps) {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [searchParam, setSearchParam] = useState<string>("")
-
   const [glow, setGlow] = useState<boolean>(false);
 
+  // Fetch Appointments from API
   async function handleGetAppointments() {
-    if (DoctorID !== -1 && DoctorName != "") {
+    if (selectedDoctor.DoctorID !== -1) {
       try {
-        const response = await API.get((`/api/getAppointments/${DoctorID}`));
-
-        if (response.status == 200) {
-          console.log(response);
-          let newData = response.data.results.sort((a : any, b : any) => new Date(b.AppointmentDate).getTime() - new Date(a.AppointmentDate).getTime())
-          console.log(newData.data.results)
+        const response = await API.get(`/api/getAppointments/${selectedDoctor.DoctorID}`);
+        if (response.status === 200) {
           setAppointments(response.data.results);
         }
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
-        setAppointments(null);
+        setAppointments([]);
       }
     }
   }
 
   useEffect(() => {
-    handleGetAppointments();
-    setGlow(true);
-    setTimeout(() => setGlow(false), 500)
-  }, [DoctorID]);
+    if (getAppointments) {
+      handleGetAppointments();
+      setGlow(true);
+      setTimeout(() => setGlow(false), 500);
+    } 
+    if (!getAppointments){
+      setAppointments([])
+    }
+  }, [getAppointments]);
 
   return (
-    <main className={`${glow && "bg-blue-400 text-white"} rounded-2xl transition-all ease-in-out duration-500  bg-white w-[95%] h-[70vh] bg-white p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
-      {appointments && DoctorID !== -1 ? (
+    <main className={`${glow ? "bg-blue-400 text-white" : "bg-white"} transition-all ease-in-out duration-500 rounded-2xl w-[95%] h-[70vh] p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
+      {appointments!.length > 0 && selectedDoctor.DoctorID !== -1 ? (
         <section className="h-full w-full flex flex-col">
           <h2 className="h-[50px] w-full flex items-center text-xl p-5 font-bold font-serif">
-            Appointments for {DoctorName}
+            Appointments for {selectedDoctor.DoctorName}
           </h2>
           <ul className="h-full bg-white mt-5 p-5 rounded-2xl divide-y overflow-auto">
-            <ul className="flex justify-evenly items-center w-full h-[5vh] p-5 ">
+            <ul className="flex justify-evenly items-center w-full h-[5vh] p-5">
               {titles.map((title: string, index: number) => (
-                <li key={index} className="flex justify-center items-center w-full h-full">
+                <li key={index} className="flex justify-center items-center w-[25%] h-full">
                   {title}
                 </li>
               ))}
-              <input onChange={(e) => setSearchParam(e.target.value)} type="search" name="ClientFilter" className="border" placeholder="Search Client" />
+              <input
+                onChange={(e) => setSearchParam(e.target.value)}
+                type="search"
+                className="border"
+                placeholder="Search Client"
+              />
             </ul>
-            <ul className="h-full w-full flex flex-col bg-blue-600">
-              {appointments.map((appointment, index) => (
-                <li className="bg-blue-800 h-[50px] w-full"
-                  key={index}
-                >
-                  {appointment.ClientName}
-                </li>
-              ))}
-            </ul>
-
+            <AppointmentList appointmentParam={searchParam} data={appointments} />
           </ul>
         </section>
       ) : (
-        <section>
-          Please Select Doctor
-        </section>
+        <section>Please Select Doctor</section>
       )}
     </main>
-  )
+  );
 }
-/* <AppointmentList appointmentParam={searchParam} data={appointments}/>
+
+// Appointment List Component
 interface AppointmentListProps {
-  appointmentParam: AppointMentStruc
+  appointmentParam: string;
+  data: Appointment[];
 }
 
-const AppointmentList = ({ appointmentParam }: AppointmentListProps) => {
+const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
   const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
-  const [displayData, setDisplayData] = useState<Appointment[]>([]);
+  const [displayData, setDisplayData] = useState<Appointment[]>(data);
 
   useEffect(() => {
-    setDisplayData(appointmentParam.Clients)
-  },[appointmentParam])
-
-  useEffect(() => {
-    if (!displayData) return
-
-    const filteredAppointments = appointmentParam.Clients.filter((client) =>
-      client.ClientName.toLowerCase().includes(appointmentParam.Clients..toLowerCase())
+    const filteredAppointments = data.filter((client) =>
+      client.ClientName.toLowerCase().includes(appointmentParam.toLowerCase())
     );
-
-    setDisplayData(filteredAppointments)
-  },[appointmentParam])
+    setDisplayData(filteredAppointments);
+  }, [appointmentParam, data]);
 
   return (
-    <ul className="divide-y overflow-auto overflow-hidden">
-      {displayData && displayData.map((client: Appointment, index: number) => (
-        <li
-          key={index}
-          className="transition-all ease-in-out duration-500"
-        >
+    <ul className="divide-y overflow-auto">
+      {displayData.map((client: Appointment, index: number) => (
+        <li key={index} className="transition-all ease-in-out duration-500">
           <div className="flex flex-col md:flex-row justify-between items-center w-full h-[150px] p-5">
-            <p className="flex justify-center items-center w-full h-full text-center">{client.Appointment.Date.replace("T", " ")}</p>
-            <p className="flex justify-center items-center w-full h-full text-center">{client.ClientName}</p>
-            <p className="flex justify-center items-center w-full h-full text-center">{client.Appointment.Issue}</p>
-            <p className="flex justify-center items-center w-full h-full text-center">{client.Appointment.Doctor}</p>
+            <p className="text-center w-[25%]">{client.AppointmentDate}</p>
+            <p className="text-center w-[25%]">{client.ClientName}</p>
+            <p className="text-center w-[25%]">{client.Issue}</p>
             <button
-              className="flex justify-center items-center w-full h-full text-center border hover:opacity-60 hover:bg-blue-400 hover:text-white"
-              onClick={() =>
-                setExpandedAppointment(expandedAppointment === index ? null : index)
-              }
+              className="w-[25%] rounded hover:opacity-60 bg-blue-600 text-white hover:opacity-60 hover:shadow-md hover:shadow-black transition-all duration-500 ease-in-out"
+              onClick={() => setExpandedAppointment(expandedAppointment === index ? null : index)}
             >
               {expandedAppointment === index ? "COLLAPSE" : "EXPAND"}
-            </button>            
+            </button>
           </div>
           <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedAppointment === index ? 'h-[200px]' : 'h-0'}`}>
             {expandedAppointment === index && <Expansion data={client} />}
@@ -156,43 +128,24 @@ const AppointmentList = ({ appointmentParam }: AppointmentListProps) => {
         </li>
       ))}
     </ul>
-  )
+  );
+};
+
+// Expansion Component for appointment details
+interface ExpansionProps {
+  data: Appointment;
 }
 
-interface expansionProps {
-  data: Appointment
-}
-
-const Expansion = ({data} : expansionProps) => {
-  const [AppointmentData, setAppointmentData] = useState<Appointment>()
-
-  useEffect(() => {
-    setAppointmentData(data)
-  },[data])
+const Expansion = ({ data }: ExpansionProps) => {
   return (
     <section className="p-5 border rounded-2xl overflow-hidden transition-all duration-500 ease-in-out flex flex-col justify-evenly">
-      <h2 className="text-lg font-bold font-serif">{data.Title} {data.ClientName}</h2>
-      <input placeholder={`${data.Appointment.Issue} With ${data.Appointment.Doctor}`} />
-      <input placeholder={`LEVEL: ${data.Appointment.LOA} Access`} />
-      <input placeholder={`${data.Appointment.ClientStatus}`} />
-      
-      <p className={`${data.Appointment.Result === "Pending" ? "animate-pulse" : "line-through"} bg-blue-400 border rounded p-2 w-[100px] text-center m-auto`}>{data.Appointment.Result}</p>
+      <h2 className="text-lg font-bold">{data.Title} - {data.ClientName}</h2>
+      <input placeholder={`${data.Issue}`} />
+      <input placeholder={`LEVEL: ${data.LOA} Access`} />
+      <input placeholder={data.ClientStatus} />
+      <p className={`${data.Result === "Pending" ? "animate-pulse" : "line-through"} bg-blue-400 border rounded p-2 w-[100px] text-center`}>
+        {data.Result}
+      </p>
     </section>
-  )
-}
-interface dropDownProps{
-  options:string[]
-}
-const dropDown = ({options} : dropDownProps) => {
-
-  return (
-    <ul>
-      {options.map((option: string, index: number) => (
-        <button>
-          {option}
-        </button>
-      ))}
-    </ul>
-  )
-}
-*/
+  );
+};
