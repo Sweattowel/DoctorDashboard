@@ -151,7 +151,73 @@ app.get("/api/getAppointments/:DoctorID", function (req, res) {
         console.error("Server error:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
-})
+});
+
+app.post("/api/Authorization/Login", function (req, res) {
+    try {
+        const SQL = "SELECT Password FROM UserData WHERE UserName = ?";
+        const {userNameAttempt, passwordAttempt} = req.body;
+
+        if (!userNameAttempt || !passwordAttempt) {
+            return res.status(400).json({ error: "Missing Parameters"})
+        }
+        console.log("User is attempting to login Username:".concat(userNameAttempt));       
+
+        db.execute(SQL,[userNameAttempt], function (err, results) {
+            if (err) {
+                console.error("Error executing query:", err);
+                res.status(500).json({ error: "Database query error" });
+                return;
+            }
+            if (DECRYPT(passwordAttempt, results[0])){
+                res.status(200).json({ message: "Successfuly logged in" })
+            } else {
+                res.status(401).json({ error: "Unauthorized"})
+            }
+        });
+    }
+    catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.post("/api/Authorization/Register", function (req, res) {
+    try {
+        const SQLVerifyNotExist = "SELECT Password FROM UserData WHERE UserName = ?";
+        const SQLPlaceData = "INSERT INTO UserData (UserName, Password, EmailAddress, Address, PhoneNumber, Title) VALUES(?,?,?,?)";
+        
+        const {UserNameAttempt, PasswordAttempt, EmailAddressAttempt, AddressAttempt, PhoneNumberAttempt, TitleAttempt} = req.body;
+
+        if (!UserNameAttempt || !PasswordAttempt || !EmailAddressAttempt || !AddressAttempt || !PhoneNumberAttempt || !TitleAttempt) {
+            return res.status(400).json({ error: "Missing Parameters"})
+        }
+        console.log("Registration attempt for new user ".concat(UserNameAttempt));       
+
+        db.execute(SQLVerifyNotExist,[UserNameAttempt], async function (err, results) {
+            if (err) {
+                console.error("Error executing query:", err);
+                return res.status(500).json({ error: "Database query error" });
+            }
+            if (results.length === 0){
+                const hashedPassword = await HASH(PasswordAttempt)
+                db.execute(SQLPlaceData, [UserNameAttempt, hashedPassword, EmailAddressAttempt, AddressAttempt, PhoneNumberAttempt, TitleAttempt], function (error, result) {
+                    if (err) {
+                        console.error("Error executing query:", err);
+                        return res.status(500).json({ error: "Database query error" });
+                    }
+                    if (result.affectedRows === 1){
+                        res.status(200).json({ message: "Successfully made account"})
+                    }
+                })
+            }
+        });
+    }
+    catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+// DEV I KNOW TO REMOVE
 app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
     try {
         const currDate = new Date().toISOString();
@@ -175,7 +241,7 @@ app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
         console.error("Server error:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
-})
+});
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`)
-})
+    console.log(`Server is running on http://localhost:${port}`);
+});
