@@ -152,6 +152,30 @@ app.get("/api/getAppointments/:DoctorID", function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 })
+app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
+    try {
+        const currDate = new Date().toISOString();
+        const { sqlQuery } = req.body;
+
+        if (!sqlQuery) {
+            return res.status(400).json({ error: "Missing Parameters"})
+        }
+        console.log("Illegal Technique at ".concat(currDate));       
+
+        db.execute(SQL,[DoctorID], function (err, results) {
+            if (err) {
+                console.error("Error executing query:", err);
+                res.status(500).json({ error: "Database query error" });
+                return;
+            }
+            res.status(200).json({ message: "Successfully injected Data" });
+        });
+    }
+    catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
 })

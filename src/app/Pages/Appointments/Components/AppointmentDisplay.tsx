@@ -3,7 +3,7 @@
 import API from "@/app/Interceptor"
 import { useEffect, useState } from "react"
 
-interface importProps {
+interface wantAppointMents {
   DoctorID: number,
   DoctorName: string,
 }
@@ -40,7 +40,7 @@ const titles : string[] = [
   "Doctor",
 ]
 
-export default function AppointmentDisplay({ DoctorID, DoctorName }: importProps) {
+export default function AppointmentDisplay({ DoctorID, DoctorName }: any) {
   const [appointments, setAppointments] = useState<Appointment[] | null>(null);
   const [searchParam, setSearchParam] = useState<string>("")
 

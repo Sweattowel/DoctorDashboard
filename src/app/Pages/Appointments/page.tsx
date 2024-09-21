@@ -28,7 +28,7 @@ export default function Appointment() {
 
   return (
     <main className='bg-gray-200 pb-5'>
-      <div className='flex w-[95%] h-[40vh] justify-evenly items-center m-auto p-5 mt-5'>
+      <div className='flex w-[95%] h-[40vh] justify-evenly items-center m-auto p-5'>
         <DoctorSearch handleSetDoctor={handleSetDoctor} />
         <DoctorDisplay selectedDoctor={selectedDoctor} handleSeeAppointments={setDoctorAppointments} />
       </div>
