@@ -200,8 +200,8 @@ app.post("/api/Authorization/Register", async function (req, res) {
     console.log("Registration attempt for new user", `${Title} ${UserName}`);
 
     try {
-        const [user] = await db.execute(SQLVerifyNotExist, [UserName]);
-        if (user.length > 0) {
+        const users = await db.execute(SQLVerifyNotExist, [UserName]);
+        if (users.length > 0) {
             return res.status(400).json({ error: "User already exists" });
         }
 
