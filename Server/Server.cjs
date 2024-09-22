@@ -192,9 +192,9 @@ app.post("/api/Authorization/Register", async function (req, res) {
     const SQLVerifyNotExist = "SELECT UserName FROM UserData WHERE UserName = ?";
     const SQLPlaceData = "INSERT INTO UserData (UserName, Password, EmailAddress, Address, PhoneNumber, Title) VALUES (?, ?, ?, ?, ?, ?)";
     
-    const { UserNameAttempt, PasswordAttempt, EmailAddressAttempt, AddressAttempt, PhoneNumberAttempt, TitleAttempt } = req.body;
+    const { Title,UserName,Password,EmailAddress,Address, PhoneNumber } = req.body;
 
-    if (!UserNameAttempt || !PasswordAttempt || !EmailAddressAttempt || !AddressAttempt || !PhoneNumberAttempt || !TitleAttempt) {
+    if (!Title || !UserName || !Password || !EmailAddress || !Address || !PhoneNumber) {
         return res.status(400).json({ error: "Missing Parameters" });
     }
     console.log("Registration attempt for new user", UserNameAttempt);
