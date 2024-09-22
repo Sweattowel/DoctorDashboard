@@ -206,8 +206,8 @@ app.post("/api/Authorization/Login", function (req, res) {
                     sameSite: "strict"
                 });
 
-                res.setHeader('Access-Control-Allow-Credentials', 'true');
-                
+                res.header('Access-Control-Allow-Credentials', 'true');
+
                 return res.status(200).json({ message: "Successfully logged in", userData });
             } else {
                 res.status(401).json({ error: "Unauthorized"})
