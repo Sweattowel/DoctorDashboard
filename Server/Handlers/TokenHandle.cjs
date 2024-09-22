@@ -1,6 +1,6 @@
 const JWT = require("jsonwebtoken");
 
-const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+const privateKey = process.env.PRIVATE_KEY;
 
 function CreateToken(input) {
     console.log("Creating Token");   
