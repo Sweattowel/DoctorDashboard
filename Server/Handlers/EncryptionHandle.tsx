@@ -1,35 +1,28 @@
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 const saltRounds = 10;
 
-export function HASH(plainText : string){
-    console.log("hashing");
-    const userPassword = plainText;
-
-    const salt = bcrypt.genSalt(saltRounds, function (err, salt) {
-        if (err) {
-            return;
-        }
-        return salt
-    })
-    const hashedPassword = bcrypt.hash(userPassword, salt!, (err, hash) => {
-        if (err) {
-            return;
-        }
-        return hash
-    })
-
-    return hashedPassword;
+// Hash function using async/await
+export async function HASH(plainText: string) {
+    try {
+        console.log("Hashing password");
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hashedPassword = await bcrypt.hash(plainText, salt);
+        return hashedPassword;
+    } catch (error) {
+        console.error("Error hashing password:", error);
+        throw error;  // Let the calling function handle the error
+    }
 }
 
-export function DECRYPT(plainText : string, hashedPassword : string){
-    console.log("Decrypting");
-    const success = bcrypt.compare(plainText, hashedPassword, (err, result ) => {
-        if (err) {
-            return;
-        }
-        return result
-    })
-    return success;
+// Compare (not DECRYPT) function using async/await
+export async function COMPARE(plainText: string, hashedPassword: string) {
+    try {
+        console.log("Comparing password");
+        const isMatch = await bcrypt.compare(plainText, hashedPassword);
+        return isMatch;
+    } catch (error) {
+        console.error("Error comparing password:", error);
+        throw error;  // Let the calling function handle the error
+    }
 }
-
