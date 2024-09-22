@@ -7,10 +7,8 @@ const API = axios.create({
 API.interceptors.request.use((config) => {
     try {
         console.log("Intercepted");
-        //console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`)
-        config.headers['Authorization'] = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
         
-        //console.log(config.headers);
+        config.withCredentials = true;
 
         return config;
 

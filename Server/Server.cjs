@@ -5,9 +5,10 @@ const { CreateToken, VerifyToken } = require("./Handlers/TokenHandle.cjs");
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
-//const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+
 const app = express();
-const axios = require("axios");
+
 const { error } = require("console");
 //const fs = require("fs"); 
 require("dotenv").config();
@@ -38,7 +39,7 @@ const corsOptions = {
     credentials :true
   };
 app.use(cors(corsOptions));
-
+app.use(cookieParser());
 
 app.use(express.json());
 
