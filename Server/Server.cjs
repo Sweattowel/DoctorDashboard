@@ -206,7 +206,7 @@ app.post("/api/Authorization/Login", function (req, res) {
                     sameSite: "strict"
                 });
 
-                res.header('Access-Control-Allow-Credentials', 'true');
+                res.header("Access-Control-Allow-Origin", "*");
 
                 return res.status(200).json({ message: "Successfully logged in", userData });
             } else {
