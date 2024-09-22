@@ -162,20 +162,23 @@ app.get("/api/getAppointments/:DoctorID", function (req, res) {
 });
 app.get("/api/testCookie", function (req, res) {
     try {
+        console.log("Cookies: ", req.cookies);
         const cookie = req.cookies["Authorization"];
 
-        if (VerifyToken(cookie) == true){
-            res.status(200).json({ message: "Success"})
-        } else {
-            res.status(500).json({ message: "Fail"})
+        if (!cookie) {
+            return res.status(401).json({ message: "No Authorization cookie found" });
         }
-        
-    }
-    catch (error) {
+
+        if (VerifyToken(cookie)) {
+            res.status(200).json({ message: "Success" });
+        } else {
+            res.status(401).json({ message: "Invalid token" });
+        }
+    } catch (error) {
         console.error("Server error:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
-})
+});
 app.post("/api/Authorization/Login", function (req, res) {
     try {
         const SQL = "SELECT UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
@@ -207,6 +210,7 @@ app.post("/api/Authorization/Login", function (req, res) {
                 });
 
                 res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+                res.header("Access-Control-Allow-Credentials", "true");
 
                 return res.status(200).json({ message: "Successfully logged in", userData });
             } else {
