@@ -207,7 +207,7 @@ app.post("/api/Authorization/Login", function (req, res) {
                 res.cookie("Authorization", token, {
                     httpOnly: true,
                     secure: false,
-                    sameSite: "lax"
+                    sameSite: "none"
                 });
 
                 res.header("Access-Control-Allow-Origin", "http://localhost:3000");
