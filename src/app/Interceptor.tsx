@@ -19,26 +19,10 @@ API.interceptors.request.use((config) => {
         return Promise.reject(error);        
     }
 })
-/* HATED this from the get go, wasnt using it properly and it was unnecessarily centralised, found a better method using common sense...
-export const getDoctorNames = async () => {
-    return API.get('/api/getDoctorNames');
-}
 
-export const CreateAllData = async () => {
-    return API.get('/api/CREATEDATA');
-}
-export const GetDoctorData = async (DoctorID: number) => {
-    console.log(DoctorID)
-    return API.get(`/api/getDoctorData/${DoctorID}`);
-}
-export const GetDoctorAppointMents = async (DoctorID : number) => {
-    return API.get(`/api/getAppointments/${DoctorID}`)
-}
-*/
 export default API; 
 
-// HIRED HELP
-
+// Assistant cookie function
 function findCookie(cookieTitle: string){
     // Collect Cookies from browser
     let cookies = document.cookie.split(";");

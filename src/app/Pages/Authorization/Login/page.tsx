@@ -19,39 +19,53 @@ export default function Login(){
         Password: ""
     })
 
-    async function handleLogin(e: FormEvent<HTMLFormElement>){
+    async function handleLogin(e: FormEvent<HTMLFormElement>) {
         try {
             e.preventDefault();
             setLoading(true);
             setError("");
-
-            const missingFields = Object.entries(formData).filter(([key, value]) => value === '')
-
+    
+            const missingFields = Object.entries(formData).filter(([key, value]) => value === '');
+    
             if (missingFields.length > 0) {
                 const missingFieldNames = missingFields.map(([key, value]) => key).join(', ');
-                setError("Please fill in the following: ".concat(missingFieldNames));
+                setError("Please fill in the following: " + missingFieldNames);
                 setLoading(false);
+                return;
             }
-
-            const response = await API.post("/api/Authorization/Login", formData);
-
-            switch (response.status){
+    
+            const response = await API.post("/api/Authorization/Login", formData, {
+                withCredentials: true 
+            });
+    
+            switch (response.status) {
                 case 200:
                     setError("Logged in");
-                    setLoading(false);
+                    console.log(response.data);
                     break;
                 case 401:
                     setError("Missing Data please refresh and try again");
-                    setLoading(false);
                     break;
                 default:
-                    setError("System Failure")
-                    setLoading(false);
+                    setError("System Failure");
                     break;
             }
+
         } catch (error) {
-            console.error("Failed to Login", error)
+            console.error("Failed to Login", error);
             setError("Failed to Login, Please Refresh");
+        } finally {
+            setLoading(false); 
+        }
+    }
+    
+    async function testCookie() {
+        const response = await API.get("/api/testCookie", { withCredentials: true })
+    
+        if (response.status == 200) {
+            console.log("Successfully verified Token");
+        } else {
+            console.log("Failed to verify token")
         }
     }
 

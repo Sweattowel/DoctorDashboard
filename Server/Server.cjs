@@ -1,5 +1,6 @@
 // Helper Functions
 const { HASH, COMPARE } = require("./Handlers/EncryptionHandle.cjs");
+const { CreateToken, VerifyToken } = require("./Handlers/TokenHandle.cjs");
 // CORE functions
 const express = require("express");
 const cors = require("cors");
@@ -156,7 +157,22 @@ app.get("/api/getAppointments/:DoctorID", function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+app.get("/api/testCookie", function (req, res) {
+    try {
+        const cookie = req.cookies.Authorization;
 
+        if (VerifyToken(cookie) == true){
+            res.status(200).json({ message: "Success"})
+        } else {
+            res.status(500).json({ message: "Fail"})
+        }
+        
+    }
+    catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 app.post("/api/Authorization/Login", function (req, res) {
     try {
         const SQL = "SELECT UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
@@ -167,7 +183,7 @@ app.post("/api/Authorization/Login", function (req, res) {
         }
         console.log("User is attempting to login Username:".concat(UserName));       
 
-        db.execute(SQL,[UserName], function (err, results) {
+        db.execute(SQL,[UserName], async function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 res.status(500).json({ error: "Database query error" });
@@ -177,8 +193,10 @@ app.post("/api/Authorization/Login", function (req, res) {
                 return res.status(401).json({ error: "Invalid username or password" });
             }            
             if (COMPARE(Password, results[0].Password)){
+                console.log("Successfully compared")
                 let { Password, ...userData } = results[0];
-                res.status(200).json({ message: "Successfuly logged in", data: userData })
+                let token = await CreateToken(userData);
+                res.status(200).json({ message: "Successfuly logged in", userData }).cookie( "Authorization", token, { httpOnly: true });
             } else {
                 res.status(401).json({ error: "Unauthorized"})
             }
