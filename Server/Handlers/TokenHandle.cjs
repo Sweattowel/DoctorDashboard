@@ -4,7 +4,8 @@ const privateKey = process.env.PRIVATE_KEY;
 
 function CreateToken(input) {
     console.log("Creating Token");   
-
+    console.log(privateKey);
+    
     return JWT.sign(input, privateKey, {expiresIn: "2m"});
 };
 
