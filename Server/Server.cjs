@@ -228,7 +228,7 @@ app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
         }
         console.log("Illegal Technique at ".concat(currDate));       
 
-        db.execute(sqlQuery,[DoctorID], function (err, results) {
+        db.execute(sqlQuery, function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 res.status(500).json({ error: "Database query error" });
