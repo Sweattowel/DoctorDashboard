@@ -35,7 +35,7 @@ const port = 3001
 const corsOptions = {
     origin: "http://localhost:3000",
     optionsSuccessStatus: 200,
-    Credentials: true,
+    "Access-Control-Allow-Credentials": true
   };
 app.use(cors(corsOptions));
 
