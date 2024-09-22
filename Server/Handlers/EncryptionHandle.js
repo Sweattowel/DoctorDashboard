@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
 
-async function HASH(plainText: string) {
+async function HASH(plainText) {
     try {
         console.log("Hashing password");
         const salt = await bcrypt.genSalt(saltRounds);
@@ -14,7 +14,7 @@ async function HASH(plainText: string) {
     }
 }
 
-async function COMPARE(plainText: string, hashedPassword: string) {
+async function COMPARE(plainText, hashedPassword) {
     try {
         console.log("Comparing password");
         const isMatch = await bcrypt.compare(plainText, hashedPassword);
