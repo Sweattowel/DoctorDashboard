@@ -162,7 +162,7 @@ app.get("/api/getAppointments/:DoctorID", function (req, res) {
 });
 app.get("/api/testCookie", function (req, res) {
     try {
-        const cookie = req.cookies.Authorization;
+        const cookie = req.cookies["Authorization"];
 
         if (VerifyToken(cookie) == true){
             res.status(200).json({ message: "Success"})

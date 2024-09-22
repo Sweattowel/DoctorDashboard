@@ -59,7 +59,7 @@ export default function Login(){
         }
     }
     
-    async function testCookie() {
+    async function callTest() {
         const response = await API.get("/api/testCookie", { withCredentials: true })
     
         if (response.status == 200) {
@@ -109,7 +109,9 @@ export default function Login(){
                             </button>                              
                         )}                    
                     </form>
-
+                        <button onClick={() => callTest()} className="bg-blue-600 p-2 rounded-2xl text-white hover:opacity-60">
+                            Test
+                        </button>
                 </div>
                 <div className="w-[50%] h-full bg-blue-600 flex flex-col justify-center items-center">
                     <h1 className="text-white h-[20%] w-full flex justify-center items-center text-2xl font-bold font-serif m-auto">

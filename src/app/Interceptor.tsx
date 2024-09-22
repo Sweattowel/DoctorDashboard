@@ -8,8 +8,7 @@ API.interceptors.request.use((config) => {
     try {
         console.log("Intercepted");
         //console.log(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/api/getDoctorNames`)
-        config.headers['Authorization'] = process.env.NEXT_PUBLIC_REQUEST_TOKEN;
-        config.headers['testCookie'] = findCookie("Test");
+        config.headers['Authorization'] = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
         
         //console.log(config.headers);
 
@@ -21,19 +20,3 @@ API.interceptors.request.use((config) => {
 })
 
 export default API; 
-
-// Assistant cookie function
-function findCookie(cookieTitle: string){
-    // Collect Cookies from browser
-    let cookies = document.cookie.split(";");
-    // Filter Cookies and return match
-    for (const cookie of cookies){
-        let cookieMemory = cookie.split("=");
-        
-        if (cookieMemory[0] === cookieTitle){
-            return cookieMemory[1] || "1";
-        }
-    }
-    // On Failure gracefully return empty string 
-    return "";
-}
