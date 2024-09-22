@@ -33,7 +33,7 @@ db.connect((err) => {
 })
 const port = 3001
 const corsOptions = {
-    origin: "*",
+    origin: "http://localhost:3000",
     optionsSuccessStatus: 200,
   };
 app.use(cors(corsOptions));
