@@ -38,6 +38,9 @@ const corsOptions = {
     Credentials: true,
   };
 app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
+
 app.use(express.json());
 
 
@@ -197,7 +200,13 @@ app.post("/api/Authorization/Login", function (req, res) {
                 console.log("Successfully compared")
                 let { Password, ...userData } = results[0];
                 let token = await CreateToken(userData);
-                res.status(200).json({ message: "Successfuly logged in", userData }).cookie( "Authorization", token, { httpOnly: true });
+                res.status(200).json({ message: "Successfuly logged in", userData })
+                    .cookie( "Authorization", 
+                        token, { 
+                            httpOnly: true, 
+                            secure: false,
+                            sameSite: "strict"
+                        });
             } else {
                 res.status(401).json({ error: "Unauthorized"})
             }
