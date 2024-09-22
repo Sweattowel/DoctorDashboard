@@ -199,14 +199,16 @@ app.post("/api/Authorization/Login", function (req, res) {
                 console.log("Successfully compared")
                 let { Password, ...userData } = results[0];
                 let token = await CreateToken(userData);
-                res.status(200).json({ message: "Successfuly logged in", userData })
-                    .cookie( "Authorization", 
-                        token, { 
-                            httpOnly: true, 
-                            secure: false,
-                            sameSite: "strict"
-                        })
-                        .setHeader('Access-Control-Allow-Credentials', true);
+
+                res.cookie("Authorization", token, {
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: "strict"
+                });
+
+                res.setHeader('Access-Control-Allow-Credentials', 'true');
+                
+                return res.status(200).json({ message: "Successfully logged in", userData });
             } else {
                 res.status(401).json({ error: "Unauthorized"})
             }
