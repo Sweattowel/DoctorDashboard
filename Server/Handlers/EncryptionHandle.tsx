@@ -1,8 +1,8 @@
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
 
-export async function HASH(plainText: string) {
+async function HASH(plainText: string) {
     try {
         console.log("Hashing password");
         const salt = await bcrypt.genSalt(saltRounds);
@@ -14,7 +14,7 @@ export async function HASH(plainText: string) {
     }
 }
 
-export async function COMPARE(plainText: string, hashedPassword: string) {
+async function COMPARE(plainText: string, hashedPassword: string) {
     try {
         console.log("Comparing password");
         const isMatch = await bcrypt.compare(plainText, hashedPassword);
@@ -24,3 +24,6 @@ export async function COMPARE(plainText: string, hashedPassword: string) {
         throw error;  // Let the calling function handle the error
     }
 }
+
+// Export the functions
+module.exports = { HASH, COMPARE };
