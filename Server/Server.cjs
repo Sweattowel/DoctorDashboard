@@ -159,7 +159,7 @@ app.get("/api/getAppointments/:DoctorID", function (req, res) {
 
 app.post("/api/Authorization/Login", function (req, res) {
     try {
-        const SQL = "SELECT Password FROM UserData WHERE UserName = ?";
+        const SQL = "SELECT UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
         const {userNameAttempt, passwordAttempt} = req.body;
 
         if (!userNameAttempt || !passwordAttempt) {
@@ -176,8 +176,9 @@ app.post("/api/Authorization/Login", function (req, res) {
             if (results.length === 0) {
                 return res.status(401).json({ error: "Invalid username or password" });
             }            
-            if (DECRYPT(passwordAttempt, results[0])){
-                res.status(200).json({ message: "Successfuly logged in" })
+            if (DECRYPT(passwordAttempt, results[0].Password)){
+                let { Password, ...userData } = results[0];
+                res.status(200).json({ message: "Successfuly logged in", data: userData })
             } else {
                 res.status(401).json({ error: "Unauthorized"})
             }
@@ -189,7 +190,7 @@ app.post("/api/Authorization/Login", function (req, res) {
     }
 });
 app.post("/api/Authorization/Register", async function (req, res) {
-    const SQLVerifyNotExist = "SELECT Password FROM UserData WHERE UserName = ?";
+    const SQLVerifyNotExist = "SELECT UserName FROM UserData WHERE UserName = ?";
     const SQLPlaceData = "INSERT INTO UserData (UserName, Password, EmailAddress, Address, PhoneNumber, Title) VALUES (?, ?, ?, ?, ?, ?)";
     
     const { UserNameAttempt, PasswordAttempt, EmailAddressAttempt, AddressAttempt, PhoneNumberAttempt, TitleAttempt } = req.body;
