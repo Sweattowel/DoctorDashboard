@@ -6,7 +6,8 @@ const cors = require("cors");
 const mysql = require("mysql2");
 //const bodyParser = require("body-parser");
 const app = express();
-const axios = require("axios")
+const axios = require("axios");
+const { error } = require("console");
 //const fs = require("fs"); 
 require("dotenv").config();
 
@@ -159,14 +160,14 @@ app.get("/api/getAppointments/:DoctorID", function (req, res) {
 app.post("/api/Authorization/Login", function (req, res) {
     try {
         const SQL = "SELECT UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
-        const {userNameAttempt, passwordAttempt} = req.body;
+        const {UserName, Password} = req.body;
 
-        if (!userNameAttempt || !passwordAttempt) {
+        if (!UserName || !Password) {
             return res.status(400).json({ error: "Missing Parameters"})
         }
-        console.log("User is attempting to login Username:".concat(userNameAttempt));       
+        console.log("User is attempting to login Username:".concat(UserName));       
 
-        db.execute(SQL,[userNameAttempt], function (err, results) {
+        db.execute(SQL,[UserName], function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 res.status(500).json({ error: "Database query error" });
@@ -175,7 +176,7 @@ app.post("/api/Authorization/Login", function (req, res) {
             if (results.length === 0) {
                 return res.status(401).json({ error: "Invalid username or password" });
             }            
-            if (COMPARE(passwordAttempt, results[0].Password)){
+            if (COMPARE(Password, results[0].Password)){
                 let { Password, ...userData } = results[0];
                 res.status(200).json({ message: "Successfuly logged in", data: userData })
             } else {
@@ -206,11 +207,18 @@ app.post("/api/Authorization/Register", async function (req, res) {
         }
 
         const hashedPassword = await HASH(Password);
-        const result = await db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, Address, PhoneNumber, Title]);
+        db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, Address, PhoneNumber, Title], function (err, result) {
+            if (err) {
+                console.error("Server error:", error);
+                res.status(500).json({ error: "Internal Server Error" });
+            } else if (result.affectedRows === 1) {
+                res.status(200).json({ message: "Successfully made account" });
+            } else {
+                res.status(500).json({ message: "Unable to determine result"})
+            }           
+        });
 
-        if (result.affectedRows === 1) {
-            res.status(200).json({ message: "Successfully made account" });
-        }
+
     } catch (error) {
         console.error("Server error:", error);
         res.status(500).json({ error: "Internal Server Error" });
