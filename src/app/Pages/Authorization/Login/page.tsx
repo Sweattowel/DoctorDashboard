@@ -60,7 +60,7 @@ export default function Login(){
     }
     
     async function callTest() {
-        const response = await API.get("/api/testCookie", { withCredentials: true })
+        const response = await API.get("/api/testCookie")
     
         if (response.status == 200) {
             console.log("Successfully verified Token");
