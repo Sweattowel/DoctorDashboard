@@ -1,5 +1,5 @@
 // Helper Functions
-const { HASH, COMPARE} = require("./Handlers/EncryptionHandle.tsx");
+const { HASH, COMPARE} = require("./Handlers/EncryptionHandle.js");
 // CORE functions
 const express = require("express");
 const cors = require("cors");
