@@ -205,7 +205,7 @@ app.post("/api/Authorization/Register", async function (req, res) {
             return res.status(400).json({ error: "User already exists" });
         }
 
-        const hashedPassword = await HASH(PasswordAttempt);
+        const hashedPassword = await HASH(Password);
         const result = await db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, Address, PhoneNumber, Title]);
 
         if (result.affectedRows === 1) {
