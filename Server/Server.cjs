@@ -1,6 +1,5 @@
 // Helper Functions
-const HASH = require("./Handlers/EncryptionHandle");
-const DECRYPT = require("./Handlers/EncryptionHandle");
+const { HASH, COMPARE} = require("./Handlers/EncryptionHandle.tsx");
 // CORE functions
 const express = require("express");
 const cors = require("cors");
@@ -176,7 +175,7 @@ app.post("/api/Authorization/Login", function (req, res) {
             if (results.length === 0) {
                 return res.status(401).json({ error: "Invalid username or password" });
             }            
-            if (DECRYPT(passwordAttempt, results[0].Password)){
+            if (COMPARE(passwordAttempt, results[0].Password)){
                 let { Password, ...userData } = results[0];
                 res.status(200).json({ message: "Successfuly logged in", data: userData })
             } else {

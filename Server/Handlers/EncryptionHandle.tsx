@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 
 const saltRounds = 10;
 
-// Hash function using async/await
 export async function HASH(plainText: string) {
     try {
         console.log("Hashing password");
@@ -15,7 +14,6 @@ export async function HASH(plainText: string) {
     }
 }
 
-// Compare (not DECRYPT) function using async/await
 export async function COMPARE(plainText: string, hashedPassword: string) {
     try {
         console.log("Comparing password");
