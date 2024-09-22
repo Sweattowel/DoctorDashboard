@@ -1,6 +1,5 @@
 // Helper Functions
-const HASH = import("./Handlers/EncryptionHandle.cjs");
-const COMPARE = import("./Handlers/EncryptionHandle.cjs");
+const { HASH, COMPARE } = require("./Handlers/EncryptionHandle.cjs");
 // CORE functions
 const express = require("express");
 const cors = require("cors");
