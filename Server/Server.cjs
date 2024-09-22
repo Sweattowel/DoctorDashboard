@@ -197,16 +197,16 @@ app.post("/api/Authorization/Register", async function (req, res) {
     if (!Title || !UserName || !Password || !EmailAddress || !Address || !PhoneNumber) {
         return res.status(400).json({ error: "Missing Parameters" });
     }
-    console.log("Registration attempt for new user", UserNameAttempt);
+    console.log("Registration attempt for new user", `${Title} ${UserName}`);
 
     try {
-        const [user] = await db.execute(SQLVerifyNotExist, [UserNameAttempt]);
+        const [user] = await db.execute(SQLVerifyNotExist, [UserName]);
         if (user.length > 0) {
             return res.status(400).json({ error: "User already exists" });
         }
 
         const hashedPassword = await HASH(PasswordAttempt);
-        const result = await db.execute(SQLPlaceData, [UserNameAttempt, hashedPassword, EmailAddressAttempt, AddressAttempt, PhoneNumberAttempt, TitleAttempt]);
+        const result = await db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, Address, PhoneNumber, Title]);
 
         if (result.affectedRows === 1) {
             res.status(200).json({ message: "Successfully made account" });

@@ -64,7 +64,7 @@ export default function Register(){
             }
         } catch (error) {
             console.error("Failed to register", error)
-            setError("Failed to register");
+            setError("Failed to register, Please Refresh");
         }
     }
 
