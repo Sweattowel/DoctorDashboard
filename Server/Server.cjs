@@ -5,12 +5,19 @@ const { CreateToken, VerifyToken } = require("./Handlers/TokenHandle.cjs");
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
+const https = require("https");
+const fs = require("fs"); 
 const cookieParser = require("cookie-parser");
 
 const app = express();
 
+const privateKey = fs.readFileSync('./Server/Certificates/', 'utf8');
+const certificate = fs.readFileSync('./Server/Certificates/', 'utf8');
+
+const credentials = { key: privateKey, cert: certificate };
+
 const { error } = require("console");
-//const fs = require("fs"); 
+
 require("dotenv").config();
 
 const db = mysql.createConnection({
@@ -19,12 +26,14 @@ const db = mysql.createConnection({
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_DATABASE,
 })
+
 console.log(    
     process.env.DATABASE_HOST,
     process.env.DATABASE_USER,
     process.env.DATABASE_PASSWORD,
     process.env.DATABASE_DATABASE
 )
+
 db.connect((err) => {
     if (err){
         console.error(`Database failed to connect: ${err}`)
@@ -32,6 +41,7 @@ db.connect((err) => {
     }
     console.log("Connected to database")
 })
+
 const port = 3001
 const corsOptions = {
     origin: "http://localhost:3000",
@@ -43,6 +53,11 @@ app.use(cookieParser());
 
 app.use(express.json());
 
+const httpServer = https.createServer(credentials, app);
+
+httpServer.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
 
 app.get('/api/CREATEDATA', function (req, res) {
     try {
@@ -284,7 +299,4 @@ app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
         console.error("Server error:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
-});
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
 });
