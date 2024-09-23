@@ -8,17 +8,17 @@ const mysql = require("mysql2");
 const https = require("https");
 const fs = require("fs"); 
 const cookieParser = require("cookie-parser");
-
+require("dotenv").config();
 const app = express();
 
-const privateKey = fs.readFileSync('Certificates/localhost-key.pem', 'utf8');
-const certificate = fs.readFileSync('Certificates/localhost.pem', 'utf8');
+const privateKey = fs.readFileSync(`Certificates/${process.env.SERVER_ADDRESS}-key.pem`, 'utf8');
+const certificate = fs.readFileSync(`Certificates/${process.env.SERVER_ADDRESS}.pem`, 'utf8');
 
 const credentials = { key: privateKey, cert: certificate };
 
 const { error } = require("console");
  
-require("dotenv").config();
+
 
 const db = mysql.createConnection({
     host: process.env.DATABASE_HOST,
