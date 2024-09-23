@@ -55,7 +55,7 @@ app.use(express.json());
 
 const httpServer = https.createServer(credentials, app);
 
-httpServer.listen(port, () => {
+httpServer.listen(port, process.env.SERVER_ADDRESS, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
 
