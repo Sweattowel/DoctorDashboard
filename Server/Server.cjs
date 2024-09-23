@@ -220,8 +220,8 @@ app.post("/api/Authorization/Login", function (req, res) {
                 let token = await CreateToken(userData);
 
                 res.cookie("Authorization", token, {
-                    httpOnly: true,
-                    secure: false,
+                    httpOnly: false,
+                    secure: true,
                     sameSite: "none"
                 });
 
