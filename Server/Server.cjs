@@ -11,8 +11,8 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-const privateKey = fs.readFileSync('./Server/Certificates/', 'utf8');
-const certificate = fs.readFileSync('./Server/Certificates/', 'utf8');
+const privateKey = fs.readFileSync('./Server/Certificates/localhost-key.pem', 'utf8');
+const certificate = fs.readFileSync('./Server/Certificates/localhost.pem', 'utf8');
 
 const credentials = { key: privateKey, cert: certificate };
 
