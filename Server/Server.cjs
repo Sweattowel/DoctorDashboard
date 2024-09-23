@@ -11,13 +11,13 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-const privateKey = fs.readFileSync('Server/Certificates/localhost-key.pem', 'utf8');
-const certificate = fs.readFileSync('Server/Certificates/localhost.pem', 'utf8');
+const privateKey = fs.readFileSync('Certificates/localhost-key.pem', 'utf8');
+const certificate = fs.readFileSync('Certificates/localhost.pem', 'utf8');
 
 const credentials = { key: privateKey, cert: certificate };
 
 const { error } = require("console");
-
+ 
 require("dotenv").config();
 
 const db = mysql.createConnection({
