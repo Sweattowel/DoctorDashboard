@@ -8,7 +8,17 @@ import { FormEvent, useState } from "react";
 interface formDataStruc {
     UserName : string
     Password: string
-}
+};
+
+interface userDataStruc {
+    UserName: string
+    Password: string
+    EmailAddress: string
+    Address: string
+    PhoneNumber: string
+    Title: string
+};
+
 
 export default function Login(){
     const [loading, setLoading] = useState<boolean>(false);
@@ -18,6 +28,15 @@ export default function Login(){
         UserName: "",
         Password: ""
     })
+
+    const [userData, setUserData] = useState<userDataStruc>({
+        UserName: "string",
+        Password: "string",
+        EmailAddress: "string",
+        Address: "string",
+        PhoneNumber: "string",
+        Title: "string"
+    });
 
     async function handleLogin(e: FormEvent<HTMLFormElement>) {
         try {
@@ -41,6 +60,12 @@ export default function Login(){
             switch (response.status) {
                 case 200:
                     setError("Logged in");
+
+                    const newUserData : userDataStruc = response.data.userData;
+                    newUserData.Password = formData.Password;
+
+                    setUserData(newUserData);
+
                     console.log(response.data);
                     break;
                 case 401:
@@ -59,16 +84,27 @@ export default function Login(){
         }
     }
     
-    async function callTest() {
+    async function callVerifyCookieTest() {
         const response = await API.get("/api/testCookie")
-    
+        
         if (response.status == 200) {
             console.log("Successfully verified Token");
         } else {
             console.log("Failed to verify token")
         }
     }
-
+    async function callRefreshCookieTest() {
+        if (!userData) return;
+        
+        const response = await API.post("/api/Authorization/RefreshToken", userData)
+        
+        if (response.status == 200) {
+            console.log("Successfully Refreshed Token");
+        } else {
+            console.log("Failed to verify token")
+        }
+    }
+    
     return (
         <main className="bg-gray-200 min-h-[100vh]">
             <NavBar />
@@ -109,8 +145,11 @@ export default function Login(){
                             </button>                              
                         )}                    
                     </form>
-                        <button onClick={() => callTest()} className="bg-blue-600 p-2 rounded-2xl text-white hover:opacity-60">
-                            Test
+                        <button onClick={() => callVerifyCookieTest()} className="bg-blue-600 p-2 rounded-2xl text-white hover:opacity-60">
+                            Test Verify
+                        </button>
+                        <button onClick={() => callRefreshCookieTest()} className="bg-blue-600 p-2 rounded-2xl text-white hover:opacity-60">
+                            Test Refresh
                         </button>
                 </div>
                 <div className="w-[50%] h-full bg-blue-600 flex flex-col justify-center items-center">

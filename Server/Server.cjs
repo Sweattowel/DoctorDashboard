@@ -1,6 +1,6 @@
 // Helper Functions
 const { HASH, COMPARE } = require("./Handlers/EncryptionHandle.cjs");
-const { CreateToken, VerifyToken } = require("./Handlers/TokenHandle.cjs");
+const { CreateToken, VerifyToken, RefreshToken } = require("./Handlers/TokenHandle.cjs");
 // CORE functions
 const express = require("express");
 const cors = require("cors");
@@ -195,6 +195,36 @@ app.get("/api/testCookie", function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+app.post("/api/Authorization/RefreshToken", function (req, res) {
+    try {
+        console.log("Refreshing Cookie");
+        const data = req.data;
+        const cookie = req.cookies["Authorization"];
+
+        if (!cookie) {
+            return res.status(401).json({ message: "No Authorization cookie found" });
+        }
+        
+        const newToken = RefreshToken(token, data);
+
+        res.cookie("Authorization", newToken, {
+            httpOnly: false,
+            secure: true,
+            sameSite: "none"
+        })
+        res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+        res.header("Access-Control-Allow-Credentials", "true");
+        
+        return res.status(200).json({ message: "Cookie refreshed"})
+    
+    }
+    catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 app.post("/api/Authorization/Login", function (req, res) {
     try {
         const SQL = "SELECT UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
