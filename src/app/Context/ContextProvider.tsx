@@ -18,7 +18,7 @@ const DefaultUserStatus : UserDataStruc = {
   Address: "",
   PhoneNumber: "",
   Title: ""
-}
+};
 
 const UserContext = createContext<{
     userData: UserDataStruc;

@@ -322,7 +322,12 @@ app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
                 res.status(500).json({ error: "Database query error" });
                 return;
             }
-            res.status(200).json({ message: "Successfully injected Data" });
+            if (results && results.length > 0){
+                res.status(200).json({ message: "Successfully injected Data", results });
+            } else {
+                res.status(200).json({ message: "Successfully injected Data" });
+            }
+            
         });
     }
     catch (error) {
