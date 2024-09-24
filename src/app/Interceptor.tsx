@@ -9,7 +9,7 @@ API.interceptors.request.use((config) => {
         console.log("Intercepted");
         
         config.withCredentials = true;
-
+        //config.headers["UserInformation"] = use
         return config;
 
     } catch (error) {

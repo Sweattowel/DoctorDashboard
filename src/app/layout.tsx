@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import UserContextProvider from "./Context/ContextProvider";
 
 
 export const metadata: Metadata = {
-  title: "DragDrop",
+  title: "Medicite",
   description: "DraggingAndDropping Data testing",
 };
 
@@ -18,7 +19,9 @@ export default function RootLayout({
       <body
         className={`antialiased`}
       >
-        {children}
+        <UserContextProvider >
+          {children}
+        </UserContextProvider>
       </body>
     </html>
   );

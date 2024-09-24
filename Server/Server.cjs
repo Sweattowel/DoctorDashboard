@@ -227,7 +227,7 @@ app.post("/api/Authorization/RefreshToken", function (req, res) {
 
 app.post("/api/Authorization/Login", function (req, res) {
     try {
-        const SQL = "SELECT UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
+        const SQL = "SELECT UserID, UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
         const {UserName, Password} = req.body;
 
         if (!UserName || !Password) {
