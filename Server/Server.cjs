@@ -206,7 +206,7 @@ app.post("/api/Authorization/RefreshToken", function (req, res) {
             return res.status(401).json({ message: "No Authorization cookie found" });
         }
         
-        const newToken = RefreshToken(token, data);
+        const newToken = RefreshToken(cookie, data);
 
         res.cookie("Authorization", newToken, {
             httpOnly: false,
