@@ -21,14 +21,14 @@ const links = [
 export default function NavBar(){
 
     return (
-        <main className="h-[5vh] flex shadow justify-evenly items-center p-2 bg-white">
-            <h1 className="w-[20%] h-full text-2xl font-serif font-bold">
+        <main className="flex shadow justify-evenly items-center p-2 bg-white">
+            <h1 className="p-2 pl-5 h-full text-2xl font-serif font-bold">
                 Medicite
             </h1>
             
-            <ul className="h-[5vh] w-full flex justify-evenly items-center">
+            <ul className="w-full flex justify-evenly items-center ">
                 {links.map((link, index) => (
-                        <Link className="bg-blue-600 text-white p-2 rounded hover:opacity-60"
+                        <Link className="bg-blue-600 text-white p-2 pl-5 pr-5 rounded hover:pl-10 hover:pr-10 hover:opacity-60 transition-all ease-in-out duration-500"
                             key={index}
                             href={link.ref}
                         >
