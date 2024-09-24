@@ -199,7 +199,7 @@ app.get("/api/testCookie", function (req, res) {
 app.post("/api/Authorization/RefreshToken", function (req, res) {
     try {
         console.log("Refreshing Cookie");
-        const data = req.data;
+        const data = req.userData;
         const cookie = req.cookies["Authorization"];
 
         if (!cookie) {

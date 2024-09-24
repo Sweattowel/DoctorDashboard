@@ -65,7 +65,7 @@ export default function Login(){
                     newUserData.Password = formData.Password;
 
                     setUserData(newUserData);
-
+                    console.log(userData);
                     console.log(response.data);
                     break;
                 case 401:
@@ -95,7 +95,7 @@ export default function Login(){
     }
     async function callRefreshCookieTest() {
         if (!userData) return;
-        
+
         const response = await API.post("/api/Authorization/RefreshToken", userData)
         
         if (response.status == 200) {
