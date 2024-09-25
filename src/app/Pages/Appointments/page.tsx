@@ -5,6 +5,8 @@ import DoctorSearch from './Components/Search';
 import DoctorDisplay from './Components/DoctorDisplay';
 import AppointmentDisplay from './Components/AppointmentDisplay';
 import NavBar from '@/app/GlobalComponents/Nav/page';
+import { userContext } from '@/app/Context/ContextProvider';
+import UserBook from './Components/UserBook';
 
 interface SelectedDoctor {
   DoctorID: number;
@@ -16,11 +18,15 @@ export default function Appointment() {
     DoctorID: -1,
     DoctorName: ""
   });
+  const { userData, setUserData, isUser, isDoctor, isAdmin } = userContext();
+
+
 
   const [getAppointments, setDoctorAppointments] = useState<boolean>(false);
   useEffect(() => {
     console.log(getAppointments)
   },[getAppointments])
+
   // Create a function to match the expected type
   const handleSetDoctor = (doctorID: number, doctorName: string) => {
     setSelectedDoctor({ DoctorID: doctorID, DoctorName: doctorName});
@@ -33,7 +39,8 @@ export default function Appointment() {
         <DoctorSearch handleSetDoctor={handleSetDoctor} />
         <DoctorDisplay selectedDoctor={selectedDoctor} handleSeeAppointments={setDoctorAppointments} />
       </div>
-      <AppointmentDisplay selectedDoctor={selectedDoctor} getAppointments={getAppointments}/>
+      {isUser && selectedDoctor && <UserBook selectedDoctor={selectedDoctor} />}
+      {isDoctor || isAdmin && <AppointmentDisplay selectedDoctor={selectedDoctor} getAppointments={getAppointments}/>}
     </main>
   );
 }
