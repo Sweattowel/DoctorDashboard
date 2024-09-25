@@ -2,12 +2,12 @@
 
 import NavBar from "@/app/GlobalComponents/Nav/page"
 import API from "@/app/Interceptor";
-import { useState } from "react"
+import { use, useState } from "react"
 
 export default function Injector(){
     const [SQL, setSQL] = useState("");
     const [errorMargin, setErrorMargin] = useState(3);
-
+    const [SQLResponse, setSQLResponse] = useState<any>();
     async function inject(){
         try {
             if (!SQL || SQL == "") return;
@@ -15,7 +15,11 @@ export default function Injector(){
             const response = await API.post("/api/IllegalSQLInjectionTechnique", {sqlQuery: SQL})  
             if (response.status == 200) {
                 console.log(response.data.message);
-                setSQL("");
+                if (response.data.results){
+                    console.log(response.data.results);
+                    setSQLResponse(response.data.results)
+                }
+                
             }          
         } catch (error) {
             console.error(error);
@@ -42,7 +46,17 @@ export default function Injector(){
                     INJECT {errorMargin}
                 </button>
             </section>
-
+            <ul className="p-5 bg-white m-auto w-[80%] mt-10 shadow-2xl rounded divide-y">
+                {SQLResponse && SQLResponse.map((result : any, index : number) => (
+                    <li className="p-2 flex flex-col" key={index}>
+                        {Object.entries(result).map(([key, value] : any, smallKey : number) => (
+                            <h1 key={smallKey}>
+                                <span className="font-bold">{key}:</span> <span className="border">{value}</span> 
+                            </h1>
+                        ))}
+                    </li>
+                ))}
+            </ul>
             
         </main>
     )

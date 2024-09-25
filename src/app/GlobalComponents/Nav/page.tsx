@@ -1,3 +1,6 @@
+'use client'
+
+import { userContext } from "@/app/Context/ContextProvider";
 import Link from "next/link"
 
 const links = [
@@ -19,6 +22,7 @@ const links = [
     },
 ]
 export default function NavBar(){
+    const { userData, setUserData, isUser, setIsUser } = userContext();
 
     return (
         <main className="flex shadow justify-evenly items-center p-2 bg-white">
@@ -27,14 +31,35 @@ export default function NavBar(){
             </h1>
             
             <ul className="w-full flex justify-evenly items-center ">
-                {links.map((link, index) => (
-                        <Link className="bg-blue-600 text-white p-2 pl-5 pr-5 rounded hover:pl-10 hover:pr-10 hover:opacity-60 transition-all ease-in-out duration-500"
-                            key={index}
-                            href={link.ref}
-                        >
-                            {link.title}
-                        </Link>
-                ))}
+                <Link className="bg-blue-600 text-white p-2 pl-5 pr-5 rounded hover:pl-10 hover:pr-10 hover:opacity-60 transition-all ease-in-out duration-500"
+                    href={"/"}
+                >
+                    Home
+                </Link>
+                <Link className="bg-blue-600 text-white p-2 pl-5 pr-5 rounded hover:pl-10 hover:pr-10 hover:opacity-60 transition-all ease-in-out duration-500"
+                    href={"/Pages/Appointments"}
+                >
+                    Book
+                </Link>
+                {isUser ? (
+                    <Link className="bg-blue-600 text-white p-2 pl-5 pr-5 rounded hover:pl-10 hover:pr-10 hover:opacity-60 transition-all ease-in-out duration-500"
+                    href={"/Pages/Profile"}
+                    >
+                        Profile
+                    </Link>   
+                ) : (
+                    <Link className="bg-blue-600 text-white p-2 pl-5 pr-5 rounded hover:pl-10 hover:pr-10 hover:opacity-60 transition-all ease-in-out duration-500"
+                        href={"/Pages/Authorization/Login"}
+                    >
+                        Login
+                    </Link>                    
+                )}
+
+                <Link className="bg-blue-600 text-white p-2 pl-5 pr-5 rounded hover:pl-10 hover:pr-10 hover:opacity-60 transition-all ease-in-out duration-500"
+                    href={"/Pages/Injection"}
+                >
+                    Inject
+                </Link>
             </ul>
         </main>
     )

@@ -22,7 +22,7 @@ interface userDataStruc {
 }
 
 export default function Login() {
-    const { userData, setUserData } = userContext(); // Use custom hook for context
+    const { userData, setUserData, isUser, setIsUser } = userContext(); // Use custom hook for context
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
@@ -60,6 +60,7 @@ export default function Login() {
 
                 // Update context with new user data
                 setUserData(newUserData);
+                setIsUser(true);
                 console.log("User data after login:", newUserData); // Log the new user data directly
             } else {
                 setError("Login failed: " + response.data.message || "Unknown error");

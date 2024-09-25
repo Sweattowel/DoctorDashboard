@@ -27,7 +27,7 @@ export default function Appointment() {
   };
 
   return (
-    <main className='bg-gray-200 pb-5'>
+    <main className='bg-gray-200 pb-5 min-h-[100vh]'>
       <NavBar />
       <div className='flex w-[95%] h-[40vh] justify-evenly items-center m-auto p-5'>
         <DoctorSearch handleSetDoctor={handleSetDoctor} />

@@ -268,6 +268,40 @@ app.post("/api/Authorization/Register", async function (req, res) {
     }
 });
 
+app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
+    const cookie = req.cookies["Authorization"];
+
+    if (!cookie) {
+        return res.status(401).json({ message: "No Authorization cookie found" });
+    }
+
+    if (!VerifyToken(cookie)) {
+        res.status(401).json({ message: "Invalid token" });
+    }
+
+    const SQL = "SELECT * FROM Appointments WHERE UserID = ?";
+    const { UserID } = req.params;
+
+    if (!UserID) {
+        return res.status(400).json({ error: "Missing Parameters" });
+    }
+    console.log("Registration attempt for new user".concat(UserID));
+
+    try {
+        const Appointments = await db.execute(SQL, [UserID]);
+        if (Appointments.length > 0) {
+            res.status(200).json({ Appointments });
+        } else {
+            res.status(404).json({ message: "No appointments"});
+        }
+
+
+    } catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+
 // DEV I KNOW TO REMOVE
 app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
     try {
