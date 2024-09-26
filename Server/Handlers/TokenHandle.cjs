@@ -61,4 +61,4 @@ function RefreshAdminToken(token, data) {
         return token;
     }
 };
-module.exports = { CreateToken, VerifyToken, RefreshToken };
+module.exports = { CreateToken, VerifyToken ,RefreshToken ,CreateAdminToken ,VerifyAdminToken, RefreshAdminToken };

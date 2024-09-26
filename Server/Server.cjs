@@ -1,6 +1,6 @@
 // Helper Functions
 const { HASH, COMPARE } = require("./Handlers/EncryptionHandle.cjs");
-const { CreateToken, VerifyToken, RefreshToken } = require("./Handlers/TokenHandle.cjs");
+const { CreateToken, VerifyToken ,RefreshToken ,CreateAdminToken ,VerifyAdminToken, RefreshAdminToken } = require("./Handlers/TokenHandle.cjs");
 // CORE functions
 const express = require("express");
 const cors = require("cors");
@@ -296,6 +296,120 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
         }
 
 
+    } catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+app.get("/api/Authorization/DoctorLogin", function (req, res) {
+    try {
+        const SQL = "SELECT * FROM DoctorData WHERE UserName = ?";
+        const { UserName, PassWord } = req.body;
+
+        db.execute(SQL, [UserName], async (err, result) => {
+            if (err) {
+                console.error("Server error:", error);
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+            if (result.length === 1) {
+                const check = await COMPARE(PassWord, result[0].PassWord);
+
+                if (check) {
+                    const newToken = await CreateAdminToken([UserName]);
+
+                    res.cookie("Authorization", newToken, {
+                        httpOnly: false,
+                        secure: true,
+                        sameSite: "none"
+                    });
+                    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+                    res.header("Access-Control-Allow-Credentials", "true");  
+
+                    const { Password, ...UserData } = result[0];
+
+                    res.status(200).json({ message: "Successfully logged in", UserData });         
+                } else {
+                    res.status(401).json({ message: "Incorrect Parameters"});
+                }
+
+            } else {
+                res.status(401).json({ message: "No user exists" });
+            }
+        })
+    } catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+app.post("/api/Authorization/DoctorRegister", async function (req, res) {
+    const SQLVerifyNotExist = "SELECT UserName FROM DoctorData WHERE UserName = ?";
+    const SQLPlaceData = "INSERT INTO DoctorData (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
+    
+    const { UserName, Password, EmailAddress, PhoneNumber } = req.body;
+
+    if (!UserName || !Password || !EmailAddress || !PhoneNumber) {
+        return res.status(400).json({ error: "Missing Parameters" });
+    }
+    console.log("Registration attempt for new Doctor", `Dr ${UserName}`);
+
+    try {
+        const users = await db.execute(SQLVerifyNotExist, [UserName]);
+        if (users.length > 0) {
+            return res.status(400).json({ error: "Doctor already exists" });
+        }
+
+        const hashedPassword = await HASH(Password);
+        db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, PhoneNumber], function (err, result) {
+            if (err) {
+                console.error("Server error:", error);
+                res.status(500).json({ error: "Internal Server Error" });
+            } else if (result.affectedRows === 1) {
+                res.status(200).json({ message: "Successfully made account" });
+            } else {
+                res.status(500).json({ message: "Unable to determine result"})
+            }           
+        });
+
+
+    } catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.get("/api/Authorization/AdminLogin", function (req, res) {
+    try {
+        const SQL = "SELECT * FROM AdminData WHERE UserName = ?";
+        const { UserName, PassWord } = req.body;
+        db.execute(SQL, [UserName], async (err, result) => {
+            if (err) {
+                console.error("Server error:", error);
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+            if (result.length === 1) {
+                const check = await COMPARE(PassWord, result[0].PassWord);
+
+                if (check) {
+                    const newToken = await CreateAdminToken([UserName]);
+
+                    res.cookie("Authorization", newToken, {
+                        httpOnly: false,
+                        secure: true,
+                        sameSite: "none"
+                    });
+                    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+                    res.header("Access-Control-Allow-Credentials", "true");  
+
+                    const { Password, ...UserData } = result[0];
+
+                    res.status(200).json({ message: "Successfully logged in", UserData });         
+                } else {
+                    res.status(401).json({ message: "Incorrect Parameters"});
+                }
+
+            } else {
+                res.status(401).json({ message: "No user exists" });
+            }
+        })
     } catch (error) {
         console.error("Server error:", error);
         res.status(500).json({ error: "Internal Server Error" });

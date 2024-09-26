@@ -11,6 +11,11 @@ export default function Tail(){
             >
                 Admin Login
             </Link>        
+            <Link className="font-bold"
+                href={"/Pages/Authorization/Doctor"}
+            >
+                Doctor Login
+            </Link>  
         </main>
     )
 
