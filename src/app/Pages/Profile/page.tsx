@@ -2,6 +2,7 @@
 
 import { userContext } from "@/app/Context/ContextProvider";
 import NavBar from "@/app/GlobalComponents/Nav/Navigation";
+import Tail from "@/app/GlobalComponents/Tail/Tail";
 import axios from "axios";
 
 export default function Profile(){
@@ -31,6 +32,7 @@ export default function Profile(){
                     </div>
                 ))}
             </div>
+            <Tail />
         </main>
     )
 }

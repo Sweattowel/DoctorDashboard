@@ -1,6 +1,7 @@
 'use client'
 
 import NavBar from "@/app/GlobalComponents/Nav/Navigation"
+import Tail from "@/app/GlobalComponents/Tail/Tail";
 import API from "@/app/Interceptor";
 import { use, useState } from "react"
 
@@ -57,7 +58,7 @@ export default function Injector(){
                     </li>
                 ))}
             </ul>
-            
+            <Tail />
         </main>
     )
 }

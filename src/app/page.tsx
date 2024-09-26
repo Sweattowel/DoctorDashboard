@@ -1,4 +1,5 @@
 import NavBar from "./GlobalComponents/Nav/Navigation";
+import Tail from "./GlobalComponents/Tail/Tail";
 import "./Interceptor";
 import Link from "next/link";
 
@@ -56,7 +57,7 @@ export default function Home() {
 
       </section>
 
-
+      <Tail />
     </main>
   );
 }

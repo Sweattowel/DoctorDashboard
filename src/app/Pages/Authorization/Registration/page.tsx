@@ -1,6 +1,7 @@
 'use client'
 
 import NavBar from "@/app/GlobalComponents/Nav/Navigation";
+import Tail from "@/app/GlobalComponents/Tail/Tail";
 import API from "@/app/Interceptor";
 import e from "express";
 import Link from "next/link";
@@ -78,8 +79,8 @@ export default function Register(){
                     </h1>
                     <form onSubmit={(e) => handleRegistration(e)} className="h-[60%] flex flex-col justify-center items-center" action="">
                         <h2>Select Title</h2>
-                        <div className="flex flex-col">
-                            <label>
+                        <div className="flex flex-row justify-between items-center w-[40%]">
+                            <label className="flex justify-evenly w-full">
                                 <input
                                     type="radio"
                                     name="title"
@@ -93,7 +94,7 @@ export default function Register(){
                                 />
                                 Mr
                             </label>
-                            <label>
+                            <label className="flex justify-evenly w-full">
                                 <input
                                     type="radio"
                                     name="title"
@@ -107,7 +108,7 @@ export default function Register(){
                                 />
                                 Mrs
                             </label>
-                            <label>
+                            <label className="flex justify-evenly w-full">
                                 <input
                                     type="radio"
                                     name="title"
@@ -203,6 +204,7 @@ export default function Register(){
                     </div>
                 </div>
             </section>
+            <Tail />
         </main>
     )
 }

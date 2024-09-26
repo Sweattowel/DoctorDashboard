@@ -7,6 +7,7 @@ import AppointmentDisplay from './Components/AppointmentDisplay';
 import NavBar from '@/app/GlobalComponents/Nav/Navigation';
 import { userContext } from '@/app/Context/ContextProvider';
 import UserBook from './Components/UserBook';
+import Tail from '@/app/GlobalComponents/Tail/Tail';
 
 export default function Appointment() {
   const [selectedDoctor, setSelectedDoctor] = useState<any>({
@@ -40,6 +41,7 @@ export default function Appointment() {
         <p className='w-[80%] bg-white mt-10 m-auto p-5 rounded-2xl shadow-2xl text-center animate-pulse'> Please Log in</p>
       )}
       {isDoctor || isAdmin && <AppointmentDisplay selectedDoctor={selectedDoctor} getAppointments={getAppointments}/>}
+      <Tail />
     </main>
   );
 }
