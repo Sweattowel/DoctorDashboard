@@ -1,5 +1,4 @@
-import Appointment from "./Pages/Appointments/page";
-import NavBar from "./GlobalComponents/Nav/page";
+import NavBar from "./GlobalComponents/Nav/Navigation";
 import "./Interceptor";
 import Link from "next/link";
 

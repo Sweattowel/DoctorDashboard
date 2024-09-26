@@ -3,24 +3,6 @@
 import { userContext } from "@/app/Context/ContextProvider";
 import Link from "next/link"
 
-const links = [
-    {
-        title: "Home",
-        ref: "/"
-    },    
-    {
-        title: "Book",
-        ref: "/Pages/Appointments"
-    },    
-    {
-        title: "Profile",
-        ref: "/Pages/Authorization/Login"
-    },
-    {
-        title: "Inject",
-        ref: "/Pages/Injection"
-    },
-]
 export default function NavBar(){
     const { userData, setUserData, isUser, setIsUser } = userContext();
 

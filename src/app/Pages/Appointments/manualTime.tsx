@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import GetAppointmentData from "../../../../Server/Old/OldServer";
+//import GetAppointmentData from "../../../../Server/Old/OldServer";
 
 interface DoctorScheduleStruc {
   title: string,

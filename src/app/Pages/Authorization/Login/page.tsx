@@ -1,7 +1,7 @@
 'use client'
 // Import useContext from React
 import { userContext } from "@/app/Context/ContextProvider"; // Adjusted import for clarity
-import NavBar from "@/app/GlobalComponents/Nav/page";
+import NavBar from "@/app/GlobalComponents/Nav/Navigation";
 import API from "@/app/Interceptor";
 import Link from "next/link";
 import { FormEvent, useState } from "react";

@@ -1,6 +1,6 @@
 'use client'
 
-import NavBar from "@/app/GlobalComponents/Nav/page"
+import NavBar from "@/app/GlobalComponents/Nav/Navigation"
 import API from "@/app/Interceptor";
 import { use, useState } from "react"
 

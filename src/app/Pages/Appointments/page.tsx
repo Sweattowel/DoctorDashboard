@@ -4,14 +4,9 @@ import { useEffect, useState } from 'react';
 import DoctorSearch from './Components/Search';
 import DoctorDisplay from './Components/DoctorDisplay';
 import AppointmentDisplay from './Components/AppointmentDisplay';
-import NavBar from '@/app/GlobalComponents/Nav/page';
+import NavBar from '@/app/GlobalComponents/Nav/Navigation';
 import { userContext } from '@/app/Context/ContextProvider';
 import UserBook from './Components/UserBook';
-
-interface SelectedDoctor {
-  DoctorID: number;
-  DoctorName: string;
-}
 
 export default function Appointment() {
   const [selectedDoctor, setSelectedDoctor] = useState<any>({
@@ -39,7 +34,11 @@ export default function Appointment() {
         <DoctorSearch handleSetDoctor={handleSetDoctor} />
         <DoctorDisplay selectedDoctor={selectedDoctor} handleSeeAppointments={setDoctorAppointments} />
       </div>
-      {isUser && selectedDoctor && <UserBook selectedDoctor={selectedDoctor} />}
+      {isUser && selectedDoctor && !isAdmin ? (
+        <UserBook selectedDoctor={selectedDoctor}/>
+      ) : (
+        <p className='w-[80%] bg-white mt-10 m-auto p-5 rounded-2xl shadow-2xl text-center animate-pulse'> Please Log in</p>
+      )}
       {isDoctor || isAdmin && <AppointmentDisplay selectedDoctor={selectedDoctor} getAppointments={getAppointments}/>}
     </main>
   );

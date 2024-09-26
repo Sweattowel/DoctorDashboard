@@ -1,7 +1,7 @@
 'use client'
 
 import { userContext } from "@/app/Context/ContextProvider";
-import NavBar from "@/app/GlobalComponents/Nav/page";
+import NavBar from "@/app/GlobalComponents/Nav/Navigation";
 import axios from "axios";
 
 export default function Profile(){

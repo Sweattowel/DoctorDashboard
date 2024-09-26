@@ -20,13 +20,12 @@ interface DoctorImportProps {
   }
   
   interface importProps {
-    handleSeeAppointments: (getAppointments : boolean) => void;
     selectedDoctor: DoctorImportProps;
   }
 
 export default function UserBook({selectedDoctor}: importProps) {
     const [doctor, setDoctor] = useState<Doctor | null>(null); // Set doctor as null initially
-    const [loading, setLoading] = useState<boolean>(true); // Add loading state
+    const [loading, setLoading] = useState<boolean>(false); // Add loading state
     const [error, setError] = useState<string | null>(null); // Error state for better handling
 
     const [formData, setFormData] = useState({
@@ -87,25 +86,25 @@ export default function UserBook({selectedDoctor}: importProps) {
                     Create Appointment with {doctor.name}
                 </h2>
                         
-                <form onSubmit={() => console.log(formData)}>
-                    <label>Date</label>
-                    <input 
-                        type="date" 
+                <form className="flex flex-col" onSubmit={() => console.log(formData)}>
+                    <label className="font-bold">Date:</label>
+                    <input className="border"
+                        type="datetime-local" 
                         value={formData.Date} 
                         onChange={(e) => setFormData({ ...formData, Date: e.target.value })} 
                         required
                     />
                     
-                    <label>Issue</label>
-                    <input 
+                    <label className="font-bold">Session purpose:</label>
+                    <input className="border"
                         type="text" 
                         value={formData.Issue} 
                         onChange={(e) => setFormData({ ...formData, Issue: e.target.value })} 
                         required
                     />
                     
-                    <button type="submit">
-                        Submit
+                    <button className="border bg-blue-600 text-white p-2 rounded w-[50%] m-auto mt-2 hover:opacity-60" type="submit">
+                        Submit Request
                     </button>
                 </form>
             </>

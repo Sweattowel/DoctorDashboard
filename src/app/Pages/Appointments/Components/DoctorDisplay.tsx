@@ -1,3 +1,4 @@
+import { userContext } from "@/app/Context/ContextProvider";
 import API from "@/app/Interceptor";
 import { useState, useEffect } from "react";
 
@@ -25,7 +26,8 @@ interface Doctor {
 
 
 export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }: importProps) {
-    const [glow, setGlow] = useState<boolean>(false);
+  const {isDoctor} = userContext();
+  const [glow, setGlow] = useState<boolean>(false);
     const [doctor, setDoctor] = useState<Doctor>({
       id: -1,
       name: "",
@@ -75,11 +77,11 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
               <p>Email: {doctor.email}</p>
               <p>PH: {doctor.phone}</p>
             </div>
-            <button className="border p-2 rounded-2xl bg-blue-600 text-white hover:opacity-60"
+            {isDoctor && <button className="border p-2 rounded-2xl bg-blue-600 text-white hover:opacity-60"
               onClick={() => {handleSeeAppointments(true); console.log("clicked")}}
             >
               See Appointments
-            </button>
+            </button>}
           </div>
         ) : (
           <p>No Data</p>
