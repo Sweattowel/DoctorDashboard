@@ -263,19 +263,15 @@ app.post("/api/Authorization/Register", async function (req, res) {
 
     } catch (error) {
         console.error("Server error:", error);
-       return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
 app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     const cookie = req.cookies["Authorization"];
 
-    if (!cookie) {
-       return res.status(401).json({ message: "No Authorization cookie found" });
-    }
-
-    if (!VerifyToken(cookie)) {
-       return res.status(401).json({ message: "Invalid token" });
+    if (!cookie || !VerifyToken(cookie)) {
+       return res.status(401).json({ message: "Token Verification Failed" });
     }
 
     const SQL = "SELECT * FROM Appointments WHERE UserID = ?";
@@ -287,7 +283,12 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     console.log("Collecting appointments for ".concat(UserID));
 
     try {
-        const Appointments = await db.execute(SQL, [UserID]);
+        const Appointments = await db.execute(SQL, [UserID], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            res.status(200).json({ results })
+        });
         if (Appointments.length > 0) {
            return res.status(200).json({ Appointments });
         } else {
@@ -297,7 +298,7 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
 
     } catch (error) {
         console.error("Server error:", error);
-       return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 })
 app.get("/api/Authorization/DoctorLogin", function (req, res) {
@@ -455,6 +456,7 @@ app.post("/api/Authorization/AdminCreate", async function (req, res) {
 // GET PREVIOUS SESSION 
 app.get("/api/Authorize/PreviousSession", async function (req, res) {
     try {
+
         const SQL = "SELECT UserID, UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
         const cookie = req.cookies["Authorization"];
         console.log("Finding previous session");       
