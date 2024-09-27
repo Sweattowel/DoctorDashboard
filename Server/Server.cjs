@@ -376,7 +376,7 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-app.get("/api/Authorization/AdminLogin", function (req, res) {
+app.post("/api/Authorization/AdminLogin", function (req, res) {
     try {
         const SQL = "SELECT * FROM AdminData WHERE UserName = ?";
         const { UserName, PassWord } = req.body;
@@ -417,6 +417,41 @@ app.get("/api/Authorization/AdminLogin", function (req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 })
+app.post("/api/Authorization/AdminCreate", async function (req, res) {
+    const SQLVerifyNotExist = "SELECT UserName FROM AdminData WHERE UserName = ?";
+    const SQLPlaceData = "INSERT INTO AdminData (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
+    
+    const { UserName, Password, EmailAddress, PhoneNumber } = req.body;
+
+    if (!UserName || !Password || !EmailAddress || !PhoneNumber) {
+        return res.status(400).json({ error: "Missing Parameters" });
+    }
+    console.log("Registration attempt for new Admin", `Dr ${UserName}`);
+
+    try {
+        const users = await db.execute(SQLVerifyNotExist, [UserName]);
+        if (users.length > 0) {
+            return res.status(400).json({ error: "Doctor already exists" });
+        }
+
+        const hashedPassword = await HASH(Password);
+
+        db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, PhoneNumber], function (err, result) {
+            if (err) {
+                console.error("Server error:", error);
+                res.status(500).json({ error: "Internal Server Error" });
+            } else if (result.affectedRows === 1) {
+                res.status(200).json({ message: "Successfully made Admin" });
+            } else {
+                res.status(500).json({ message: "Unable to determine result"})
+            }           
+        });
+
+    } catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 // DEV I KNOW TO REMOVE
 app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {

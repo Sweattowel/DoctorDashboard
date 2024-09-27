@@ -1,7 +1,6 @@
 'use client'
 
 import { userContext } from "@/app/Context/ContextProvider";
-import NavBar from "@/app/GlobalComponents/Nav/Navigation";
 import Tail from "@/app/GlobalComponents/Tail/Tail";
 import API from "@/app/Interceptor";
 import { useState } from "react";
@@ -29,7 +28,7 @@ export default function ADMINLogin(){
             if (missingFields.length > 0){
                 setError(`Missing fields: ${missingFields.map(([key, value]) => `${key} `)}`)
             }            
-            const response = await API.post("/api/Authorization/AdminLogin", {formData})
+            const response = await API.post("/api/Authorization/AdminLogin", formData)
             
             switch(response.status){
                 case 200:
@@ -50,10 +49,9 @@ export default function ADMINLogin(){
     }
 
     return (
-        <main className="bg-gray-200 h-full w-full">
-            <NavBar />
+        <main className="h-full w-full">
             {isAdmin ? (
-                <section>
+                <section >
 
                 </section>
             ) : (

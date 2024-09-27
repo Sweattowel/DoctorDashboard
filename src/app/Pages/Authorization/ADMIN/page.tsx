@@ -5,7 +5,7 @@ import Tail from "@/app/GlobalComponents/Tail/Tail";
 
 export default function ADMIN(){
     return (
-        <main>
+        <main className="bg-gray-200">
             <NavBar />
                 <ADMINLogin />         
             <Tail />
