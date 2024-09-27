@@ -28,7 +28,7 @@ function DecodeToken(token) {
     try {
         console.log("Decoding Token");
         
-        const decodedToken = JWT.verify(userPrivateKey, token);
+        const decodedToken = JWT.verify(token, userPrivateKey);
 
         return decodedToken;
     } catch(error) {
