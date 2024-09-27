@@ -171,7 +171,7 @@ app.post("/api/Authorization/RefreshToken", function (req, res) {
         const newToken = RefreshToken(cookie, data);
 
        res.cookie("Authorization", newToken, {
-            httpOnly: false,
+            httpOnly: true,
             secure: true,
             sameSite: "none"
         })
@@ -212,7 +212,7 @@ app.post("/api/Authorization/Login", function (req, res) {
                 let token = await CreateToken(userData);
 
                res.cookie("Authorization", token, {
-                    httpOnly: false,
+                    httpOnly: true,
                     secure: true,
                     sameSite: "none"
                 });
@@ -317,7 +317,7 @@ app.get("/api/Authorization/DoctorLogin", function (req, res) {
                     const newToken = await CreateAdminToken([UserName]);
 
                    res.cookie("Authorization", newToken, {
-                        httpOnly: false,
+                        httpOnly: true,
                         secure: true,
                         sameSite: "none"
                     });
@@ -394,7 +394,7 @@ app.post("/api/Authorization/AdminLogin", function (req, res) {
                     const newToken = await CreateAdminToken({UserName});
 
                    res.cookie("Authorization", newToken, {
-                        httpOnly: false,
+                        httpOnly: true,
                         secure: true,
                         sameSite: "none"
                     });
@@ -480,7 +480,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
             let token = await CreateToken(userData);
 
             res.cookie("Authorization", token, {
-                httpOnly: false,
+                httpOnly: true,
                 secure: true,
                 sameSite: "none"
             });
