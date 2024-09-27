@@ -16,7 +16,8 @@ export default function NavBar(){
 
             if (response.status == 200) {
                 setIsUser(true);
-                setUserData(response.data.UserData);
+                console.log(response.data.userData)
+                setUserData(response.data.userData);
             } else {
                 console.log("no previous session");
             }

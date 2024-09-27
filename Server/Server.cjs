@@ -460,6 +460,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
         console.log("Finding previous session");       
 
         if (!VerifyToken(cookie)) {
+            res.header("Removal-Request", "True");
             return res.status(401).json({ message: "Invalid token" });
         }
         
@@ -493,7 +494,8 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
     }
     catch (error) {
         console.error("Server error:", error);
-       return res.status(500).json({ error: "Internal Server Error" });
+        res.header("Removal-Request", "True");
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
