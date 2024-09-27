@@ -391,7 +391,7 @@ app.post("/api/Authorization/AdminLogin", function (req, res) {
                 const check = await COMPARE(PassWord, result[0].PassWord);
 
                 if (check) {
-                    const newToken = await CreateAdminToken([UserName]);
+                    const newToken = await CreateAdminToken({UserName});
 
                     res.cookie("Authorization", newToken, {
                         httpOnly: false,
