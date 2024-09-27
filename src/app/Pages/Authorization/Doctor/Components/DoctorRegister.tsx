@@ -1,76 +1,92 @@
 'use client'
 
+import { userContext } from "@/app/Context/ContextProvider";
+import API from "@/app/Interceptor";
 import { FormEvent, useState } from "react";
 
-interface formDataStruc {
-    UserName : String
-    PassWord : string
-    Discipline : string
-    Experience : number
-};
+interface formData {
+    UserName:string 
+    Password:string 
+    EmailAddress:string 
+    PhoneNumber:string
+    
+}
 
-export default function DoctorRegister(){
+export default function DoctorRegister() {
     const [ loading, setLoading ] = useState<boolean>(false);
-    const [ error, setError ] = useState<string>("Please enter details");
-
-    const [ formData, setFormData ] = useState<formDataStruc>({
-        UserName : "",
-        PassWord : "",
-        Discipline : "",
-        Experience : 0,
+    const [ error, setError ] = useState<string>("Please Enter Details") 
+    const { isAdmin, setIsAdmin } = userContext();
+    const [ formData, setFormData ] = useState<formData>({
+        UserName: "",
+        Password: "",
+        EmailAddress: "",
+        PhoneNumber: ""
     });
 
-    async function RegisterDoctorHandle(e: FormEvent<HTMLFormElement>) {
+    async function DoctorRegister(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         try {
             setLoading(true);
+
+            const response = await API.post("/api/Authorization/DoctorCreate", formData);
+
+            switch(response.status){
+                case 200:
+                    setError("Success!");
+                    break;
+                case 404:
+                    setError("No User found");
+                    break;
+                case 401: 
+                    setError("Unauthorized");
+                    break;
+                default:
+                    setError("Failed to Authorize");
+                    break;
+            }
+
         } catch (error) {
-            console.error(error);
+            console.error(error)
         } finally {
+            setFormData({
+                UserName: "",
+                Password: "",
+                EmailAddress: "",
+                PhoneNumber: ""
+            })
             setLoading(false);
         }
-    };
-
+    }
     return (
-        <main className="w-[50%] p-1">
-            <h2 className="font-serif font-bold">
-                Register
-            </h2>
-            <form onSubmit={(e) => RegisterDoctorHandle(e)} className="flex flex-col">
-                <label>
-                    Enter Username: 
-                </label>
-                <input onChange={(e) => setFormData((prevData) => ({ ...prevData, UserName : e.target.value }))} className="border" type="text" name="UserName" id="DoctorRegisterUserName" required/>
-                <label>
-                    Enter PassWord: 
-                </label>
-                <input onChange={(e) => setFormData((prevData) => ({ ...prevData, PassWord : e.target.value }))} className="border" type="password" name="PassWord" id="DoctorRegisterPassWord" required/>
-                <label>
-                    ReEnter PassWord: 
-                </label>
-                <input onChange={(e) => {
-                    if (e.target.value !== formData.PassWord) {
-                        setError((prevError) => prevError + ", Password does not match");
-                    }
-                }} className="border" type="password" name="ReEnter" id="DoctorRegisterReEnter" required/>
-                <label>
-                    Enter Discipline: 
-                </label>
-                <input onChange={(e) => setFormData((prevData) => ({ ...prevData, Discipline : e.target.value }))} className="border" type="text" name="Discipline" id="DoctorRegisterDiscipline" required/>
-                <label>
-                    Enter Experience: 
-                </label>
-                <input onChange={(e) => setFormData((prevData) => ({ ...prevData, Experience : Math.max(0, (parseInt(e.target.value) ? parseInt(e.target.value) : 0))}))} value={formData.Experience} className="border" type="number" name="Experience" id="Experience" required/>
-                <p className="text-red-600 animate-pulse">{error}</p>
-                {!loading ? (
-                    <button className="bg-blue-600 hover:opacity-60 w-[50%] m-auto mt-2 p-2 text-white rounded" type="submit">
-                        Register
-                    </button>                    
-                ) : (
-                    <p className="bg-blue-600 w-[50%] m-auto mt-2 p-2 text-white rounded animate-pulse text-center">Loading...</p>
-                )}
-
-            </form>
+        <main className="h-full w-full">
+            {isAdmin &&
+                <section className="bg-white w-[80%] mt-10 m-auto p-5 shadow-2xl rounded-2xl">
+                    <h1 className="text-xl font-bold border-b">
+                        Create Doctor
+                    </h1>
+                    <form onSubmit={(e) => DoctorRegister(e)} className="flex flex-col">
+                        <label>Enter Name: </label>
+                        <input onChange={(e) => setFormData((prevData) => ({...prevData, UserName: e.target.value}))} className="border" type="text" id="Name" required />
+                        <label>Enter Password: </label>
+                        <input onChange={(e) => setFormData((prevData) => ({...prevData, Password: e.target.value}))} className="border" type="Password" id="PassWord" required/>
+                        <label>Enter EmailAddress: </label>
+                        <input onChange={(e) => setFormData((prevData) => ({...prevData, EmailAddress: e.target.value}))} className="border" type="text" id="EmailAddress" required/>
+                        <label>Enter PhoneNumber: </label>
+                        <input onChange={(e) => setFormData((prevData) => ({...prevData, PhoneNumber: e.target.value}))} className="border" type="password" id="PhoneNumber" required/>
+                               
+                        <p className="animate-pulse text-red-600">{error}</p>
+                        {!loading ? (
+                            <button className="bg-blue-600 text-white w-[50%] p-2 mt-2 m-auto rounded hover:opacity-60">
+                                Submit
+                            </button>
+                        ) : (
+                            <p className="bg-blue-600 text-white w-[50%] p-2 mt-2 m-auto rounded animate-pulse">
+                                Loading...
+                            </p>
+                        )}
+                    </form>
+                </section>
+            }
         </main>
     )
 }

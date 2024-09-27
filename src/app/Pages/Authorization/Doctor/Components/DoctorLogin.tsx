@@ -1,55 +1,81 @@
 'use client'
 
-import { FormEvent, useState } from "react";
+import { userContext } from "@/app/Context/ContextProvider";
+import Tail from "@/app/GlobalComponents/Tail/Tail";
+import API from "@/app/Interceptor";
+import { useState } from "react";
 
-interface formDataStruc {
+interface formData {
     UserName: string
     PassWord: string
 }
 
 export default function DoctorLogin(){
     const [ loading, setLoading ] = useState<boolean>(false);
-    const [ error, setError ] = useState<string>("Please enter details");
-    
-    const [ formData, setFormData ] = useState<formDataStruc>({
-        UserName : "",
+    const [ error, setError ] = useState<string>("Please Enter Details") 
+    const { isDoctor, setIsDoctor } = userContext();
+    const [ formData, setFormData ] = useState<formData>({
+        UserName: "",
         PassWord: ""
-    })
+    });
 
-    async function RegisterDoctorHandle(e: FormEvent<HTMLFormElement>) {
+    async function DoctorLogin(e: { preventDefault: () => void; }){
         e.preventDefault();
+
         try {
             setLoading(true);
+            const missingFields = Object.entries(formData).filter(([key, value]) => value === "");
+            if (missingFields.length > 0){
+                setError(`Missing fields: ${missingFields.map(([key, value]) => `${key} `)}`)
+            }            
+            const response = await API.post("/api/Authorization/DoctorLogin", formData)
+            
+            switch(response.status){
+                case 200:
+                    setIsDoctor(true);
+                    break;
+                case 404:
+                    setError("No User found");
+                    break;
+                case 401: 
+                    setError("Unauthorized");
+                    break;
+                default:
+                    setError("Failed to Authorize");
+                    break;
+            }
         } catch (error) {
-            console.error(error);
+            console.log(error);
         } finally {
             setLoading(false);
         }
-    };
+    }
 
     return (
-        <main className="w-[50%] p-1">
-            <h2 className="font-serif font-bold">
-                Login
-            </h2>
-            <form className="flex flex-col" onSubmit={(e) => RegisterDoctorHandle(e)}>
-                <label>
-                    Enter Username: 
-                </label>
-                <input onChange={(e) => setFormData((prevData) => ({...prevData, UserName: e.target.value}))} className="border" type="text" name="UserName" id="DoctorLoginUserName" required/>
-                <label>
-                    Enter PassWord: 
-                </label>
-                <input onChange={(e) => setFormData((prevData) => ({...prevData, PassWord: e.target.value}))} className="border" type="password" name="PassWord" id="LoginPassWord" required/>
-                <p className="text-red-600 animate-pulse">{error}</p>
-                {!loading ? (
-                    <button className="bg-blue-600 hover:opacity-60 w-[50%] m-auto mt-2 p-2 text-white rounded" type="submit">
+        <main className="h-full w-full">
+            {!isDoctor &&
+                <section className="bg-white w-[80%] mt-10 m-auto p-5 shadow-2xl rounded-2xl">
+                    <h1 className="text-xl font-bold border-b">
                         Login
-                    </button>                    
-                ) : (
-                    <p className="bg-blue-600 w-[50%] m-auto mt-2 p-2 text-white rounded animate-pulse text-center">Loading...</p>
-                )}
-            </form>
+                    </h1>
+                    <form onSubmit={(e) => DoctorLogin(e)} className="flex flex-col">
+                        <label>Enter Name: </label>
+                        <input onChange={(e) => setFormData((prevData) => ({...prevData, UserName: e.target.value}))} className="border" type="text" id="Name" required/>
+                        <label>Enter PassWord: </label>
+                        <input onChange={(e) => setFormData((prevData) => ({...prevData, PassWord: e.target.value}))} className="border" type="password" id="PassWord" required/>
+                        <p className="animate-pulse text-red-600">{error}</p>
+                        {!loading ? (
+                            <button className="bg-blue-600 text-white w-[50%] p-2 mt-2 m-auto rounded hover:opacity-60">
+                                Submit
+                            </button>
+                        ) : (
+                            <p className="bg-blue-600 text-white w-[50%] p-2 mt-2 m-auto rounded animate-pulse">
+                                Loading...
+                            </p>
+                        )}
+                    </form>
+                </section>
+            }
         </main>
     )
 }

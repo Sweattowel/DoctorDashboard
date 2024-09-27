@@ -272,7 +272,7 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     const cookie = req.cookies["Authorization"];
 
     if (!cookie) {
-        return res.status(401).json({ message: "No Authorization cookie found" });
+        res.status(401).json({ message: "No Authorization cookie found" });
     }
 
     if (!VerifyToken(cookie)) {

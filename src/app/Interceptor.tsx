@@ -6,7 +6,7 @@ const API = axios.create({
 
 API.interceptors.request.use((config) => {
     try {
-        console.log("Intercepted");
+        console.log("Request Intercepted");
         
         config.withCredentials = true;
         //config.headers["UserInformation"] = use
@@ -16,5 +16,16 @@ API.interceptors.request.use((config) => {
         return Promise.reject(error);        
     }
 })
+API.interceptors.response.use((config) => {
+    try {
+        console.log("Response Intercepted");
+        
+        console.log(config.statusText);
 
+        return config;
+
+    } catch (error) {
+        return Promise.reject(error);        
+    }
+})
 export default API; 

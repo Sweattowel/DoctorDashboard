@@ -59,14 +59,10 @@ export default function ADMINRegister() {
     }
     return (
         <main className="h-full w-full">
-            {isAdmin ? (
-                <section >
-
-                </section>
-            ) : (
+            {isAdmin &&
                 <section className="bg-white w-[80%] mt-10 m-auto p-5 shadow-2xl rounded-2xl">
                     <h1 className="text-xl font-bold border-b">
-                        Register
+                        Create Admin
                     </h1>
                     <form onSubmit={(e) => AdminRegister(e)} className="flex flex-col">
                         <label>Enter Name: </label>
@@ -90,7 +86,7 @@ export default function ADMINRegister() {
                         )}
                     </form>
                 </section>
-            )}
+            }
         </main>
     )
 }

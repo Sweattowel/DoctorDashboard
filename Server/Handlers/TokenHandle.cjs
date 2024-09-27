@@ -15,8 +15,15 @@ function CreateToken(input) {
 function VerifyToken(token) {
     console.log("Verifying Token");
 
-    return JWT.verify(token, userPrivateKey, { maxAge: "5m" });
-};
+    try {
+        JWT.verify(token, userPrivateKey, { maxAge: "5m" });
+        return true;
+    } catch (error) {
+        console.error("Token verification failed:", error.message);
+        return false;
+    }
+}
+
 
 function RefreshToken(token, data) {
     console.log("Refreshing Token");

@@ -53,11 +53,7 @@ export default function ADMINLogin(){
 
     return (
         <main className="h-full w-full">
-            {isAdmin ? (
-                <section >
-
-                </section>
-            ) : (
+            {!isAdmin &&
                 <section className="bg-white w-[80%] mt-10 m-auto p-5 shadow-2xl rounded-2xl">
                     <h1 className="text-xl font-bold border-b">
                         Login
@@ -79,7 +75,7 @@ export default function ADMINLogin(){
                         )}
                     </form>
                 </section>
-            )}
+            }
         </main>
     )
 }
