@@ -22,12 +22,16 @@ export default function NavBar(){
             }
         } catch (error) {
             console.error(error);
+        } finally {
+            sessionStorage.setItem("PreviousSessionChecked", "True")
         }
     }
 
 
     useEffect(() => {
-        existingSessionCheck();
+        if (sessionStorage.getItem("PreviousSessionChecked") !== "True"){
+            existingSessionCheck();
+        }
     },[])
 
 

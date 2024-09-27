@@ -26,6 +26,8 @@ function VerifyToken(token) {
 
 function DecodeToken(token) {
     try {
+        console.log("Decoding Token");
+        
         const decodedToken = JWT.verify(userPrivateKey, token);
 
         return decodedToken;
@@ -57,7 +59,7 @@ function CreateAdminToken(input) {
 };
 
 function VerifyAdminToken(token) {
-    console.log("Verifying Token");
+    console.log("Verifying Admin Token");
 
     return JWT.verify(token, adminPrivateKey, { maxAge: "5m" });
 };

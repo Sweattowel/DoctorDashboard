@@ -467,7 +467,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
 
         const { UserName } = decodedToken;
 
-        db.execute(SQL,[UserName], async function (err, results) {
+        db.execute(SQL, [UserName], async function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 return res.status(500).json({ error: "Database query error" });
