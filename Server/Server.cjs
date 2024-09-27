@@ -211,7 +211,7 @@ app.post("/api/Authorization/Login", function (req, res) {
                 let { Password, ...userData } = results[0];
                 let token = await CreateToken(userData);
 
-               res.cookie("Authorization", token, {
+                res.cookie("Authorization", token, {
                     httpOnly: true,
                     secure: true,
                     sameSite: "none"
@@ -222,7 +222,7 @@ app.post("/api/Authorization/Login", function (req, res) {
 
                 return res.status(200).json({ message: "Successfully logged in", userData });
             } else {
-               return res.status(401).json({ error: "Unauthorized"})
+                return res.status(401).json({ error: "Unauthorized"})
             }
         });
     }
@@ -271,6 +271,7 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     const cookie = req.cookies["Authorization"];
 
     if (!cookie || !VerifyToken(cookie)) {
+        console.log("FAILED TO VERIFY")
         res.header("Removal-Request", "True");
         return res.status(401).json({ message: "Token Verification Failed" });
     }
