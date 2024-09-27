@@ -252,11 +252,11 @@ app.post("/api/Authorization/Register", async function (req, res) {
         db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, Address, PhoneNumber, Title], function (err, result) {
             if (err) {
                 console.error("Server error:", error);
-               return res.status(500).json({ error: "Internal Server Error" });
+                return res.status(500).json({ error: "Internal Server Error" });
             } else if (result.affectedRows === 1) {
-               return res.status(200).json({ message: "Successfully made account" });
+                return res.status(200).json({ message: "Successfully made account" });
             } else {
-               return res.status(500).json({ message: "Unable to determine result"})
+                return res.status(500).json({ message: "Unable to determine result"})
             }           
         });
 
@@ -271,7 +271,8 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     const cookie = req.cookies["Authorization"];
 
     if (!cookie || !VerifyToken(cookie)) {
-       return res.status(401).json({ message: "Token Verification Failed" });
+        res.header("Removal-Request", "True");
+        return res.status(401).json({ message: "Token Verification Failed" });
     }
 
     const SQL = "SELECT * FROM Appointments WHERE UserID = ?";
@@ -283,7 +284,7 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     console.log("Collecting appointments for ".concat(UserID));
 
     try {
-        const Appointments = await db.execute(SQL, [UserID], (err, results) => {
+        db.execute(SQL, [UserID], (err, results) => {
             if (err) {
                 return res.status(500).json({ error: "Internal Server Error" });
             }
