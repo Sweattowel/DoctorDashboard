@@ -287,15 +287,8 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
             if (err) {
                 return res.status(500).json({ error: "Internal Server Error" });
             }
-            res.status(200).json({ results })
+            return res.status(200).json({ results })
         });
-        if (Appointments.length > 0) {
-           return res.status(200).json({ Appointments });
-        } else {
-           return res.status(404).json({ message: "No appointments"});
-        }
-
-
     } catch (error) {
         console.error("Server error:", error);
         return res.status(500).json({ error: "Internal Server Error" });
