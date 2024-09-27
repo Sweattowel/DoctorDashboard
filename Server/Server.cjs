@@ -64,18 +64,18 @@ app.get('/api/getDoctorData/:DoctorID' , function (req, res) {
         const SQL = "SELECT * FROM Doctors WHERE id = ?"
         const { DoctorID } = req.params;
         console.log("Getting Data for ".concat(DoctorID))
-        if (!DoctorID) { res.status(400).json({ error: "Bad Request"})};
+        if (!DoctorID) {return res.status(400).json({ error: "Bad Request"})};
 
         db.execute(SQL, [DoctorID], function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
                 return res.status(500).json({ error: "Database query error" });
             }
-            res.status(200).json({ results })
+           return res.status(200).json({ results })
         } )
     } catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 })
 app.get('/api/getDoctors', function (req, res) {
@@ -88,12 +88,12 @@ app.get('/api/getDoctors', function (req, res) {
                 console.error("Error executing query:", err);
                 return res.status(500).json({ error: "Database query error" });
             }
-            res.status(200).json({ data: results });
+           return res.status(200).json({ data: results });
         });
     }
     catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -106,15 +106,15 @@ app.get('/api/getDoctorNames', async (req, res) => {
         db.execute(SQL, function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
-                res.status(500).json({ error: "Database query error" });
-                return;
+                return res.status(500).json({ error: "Database query error" });
+
             }
-            res.status(200).json({ results });
+           return res.status(200).json({ results });
         });
     }
     catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -128,15 +128,14 @@ app.get("/api/getAppointments/:DoctorID", function (req, res) {
         db.execute(SQL,[DoctorID], function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
-                res.status(500).json({ error: "Database query error" });
-                return;
+                return res.status(500).json({ error: "Database query error" });
             }
-            res.status(200).json({ results });
+           return res.status(200).json({ results });
         });
     }
     catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 app.get("/api/testCookie", function (req, res) {
@@ -149,13 +148,13 @@ app.get("/api/testCookie", function (req, res) {
         }
 
         if (VerifyToken(cookie)) {
-            res.status(200).json({ message: "Success" });
+           return res.status(200).json({ message: "Success" });
         } else {
-            res.status(401).json({ message: "Invalid token" });
+           return res.status(401).json({ message: "Invalid token" });
         }
     } catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -171,20 +170,20 @@ app.post("/api/Authorization/RefreshToken", function (req, res) {
         
         const newToken = RefreshToken(cookie, data);
 
-        res.cookie("Authorization", newToken, {
+       res.cookie("Authorization", newToken, {
             httpOnly: false,
             secure: true,
             sameSite: "none"
         })
-        res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-        res.header("Access-Control-Allow-Credentials", "true");
+       res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+       res.header("Access-Control-Allow-Credentials", "true");
         
         return res.status(200).json({ message: "Cookie refreshed"})
     
     }
     catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -201,8 +200,8 @@ app.post("/api/Authorization/Login", function (req, res) {
         db.execute(SQL,[UserName], async function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
-                res.status(500).json({ error: "Database query error" });
-                return;
+                return res.status(500).json({ error: "Database query error" });
+                
             }
             if (results.length === 0) {
                 return res.status(401).json({ error: "Invalid username or password" });
@@ -212,24 +211,24 @@ app.post("/api/Authorization/Login", function (req, res) {
                 let { Password, ...userData } = results[0];
                 let token = await CreateToken(userData);
 
-                res.cookie("Authorization", token, {
+               res.cookie("Authorization", token, {
                     httpOnly: false,
                     secure: true,
                     sameSite: "none"
                 });
 
-                res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-                res.header("Access-Control-Allow-Credentials", "true");
+               res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+               res.header("Access-Control-Allow-Credentials", "true");
 
                 return res.status(200).json({ message: "Successfully logged in", userData });
             } else {
-                res.status(401).json({ error: "Unauthorized"})
+               return res.status(401).json({ error: "Unauthorized"})
             }
         });
     }
     catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 app.post("/api/Authorization/Register", async function (req, res) {
@@ -253,18 +252,18 @@ app.post("/api/Authorization/Register", async function (req, res) {
         db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, Address, PhoneNumber, Title], function (err, result) {
             if (err) {
                 console.error("Server error:", error);
-                res.status(500).json({ error: "Internal Server Error" });
+               return res.status(500).json({ error: "Internal Server Error" });
             } else if (result.affectedRows === 1) {
-                res.status(200).json({ message: "Successfully made account" });
+               return res.status(200).json({ message: "Successfully made account" });
             } else {
-                res.status(500).json({ message: "Unable to determine result"})
+               return res.status(500).json({ message: "Unable to determine result"})
             }           
         });
 
 
     } catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -272,11 +271,11 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     const cookie = req.cookies["Authorization"];
 
     if (!cookie) {
-        res.status(401).json({ message: "No Authorization cookie found" });
+       return res.status(401).json({ message: "No Authorization cookie found" });
     }
 
     if (!VerifyToken(cookie)) {
-        res.status(401).json({ message: "Invalid token" });
+       return res.status(401).json({ message: "Invalid token" });
     }
 
     const SQL = "SELECT * FROM Appointments WHERE UserID = ?";
@@ -290,15 +289,15 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     try {
         const Appointments = await db.execute(SQL, [UserID]);
         if (Appointments.length > 0) {
-            res.status(200).json({ Appointments });
+           return res.status(200).json({ Appointments });
         } else {
-            res.status(404).json({ message: "No appointments"});
+           return res.status(404).json({ message: "No appointments"});
         }
 
 
     } catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 })
 app.get("/api/Authorization/DoctorLogin", function (req, res) {
@@ -309,7 +308,7 @@ app.get("/api/Authorization/DoctorLogin", function (req, res) {
         db.execute(SQL, [UserName], async (err, result) => {
             if (err) {
                 console.error("Server error:", error);
-                res.status(500).json({ error: "Internal Server Error" });
+               return res.status(500).json({ error: "Internal Server Error" });
             }
             if (result.length === 1) {
                 const check = await COMPARE(PassWord, result[0].PassWord);
@@ -317,28 +316,28 @@ app.get("/api/Authorization/DoctorLogin", function (req, res) {
                 if (check) {
                     const newToken = await CreateAdminToken([UserName]);
 
-                    res.cookie("Authorization", newToken, {
+                   res.cookie("Authorization", newToken, {
                         httpOnly: false,
                         secure: true,
                         sameSite: "none"
                     });
-                    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-                    res.header("Access-Control-Allow-Credentials", "true");  
+                   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+                   res.header("Access-Control-Allow-Credentials", "true");  
 
                     const { Password, ...UserData } = result[0];
 
-                    res.status(200).json({ message: "Successfully logged in", UserData });         
+                   return res.status(200).json({ message: "Successfully logged in", UserData });         
                 } else {
-                    res.status(401).json({ message: "Incorrect Parameters"});
+                   return res.status(401).json({ message: "Incorrect Parameters"});
                 }
 
             } else {
-                res.status(401).json({ message: "No user exists" });
+               return res.status(401).json({ message: "No user exists" });
             }
         })
     } catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 })
 app.post("/api/Authorization/DoctorRegister", async function (req, res) {
@@ -361,19 +360,20 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
         const hashedPassword = await HASH(Password);
         db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, PhoneNumber], function (err, result) {
             if (err) {
-                console.error("Server error:", error);
-                res.status(500).json({ error: "Internal Server Error" });
+               console.error("Server error:", error);
+               
+               return res.status(500).json({ error: "Internal Server Error" });
             } else if (result.affectedRows === 1) {
-                res.status(200).json({ message: "Successfully made account" });
+               return res.status(200).json({ message: "Successfully made account" });
             } else {
-                res.status(500).json({ message: "Unable to determine result"})
+               return res.status(500).json({ message: "Unable to determine result"})
             }           
         });
 
 
     } catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 app.post("/api/Authorization/AdminLogin", function (req, res) {
@@ -385,7 +385,7 @@ app.post("/api/Authorization/AdminLogin", function (req, res) {
         db.execute(SQL, [UserName], async (err, result) => {
             if (err) {
                 console.error("Server error:", error);
-                res.status(500).json({ error: "Internal Server Error" });
+               return res.status(500).json({ error: "Internal Server Error" });
             }
             if (result.length === 1) {
                 const check = await COMPARE(PassWord, result[0].PassWord);
@@ -393,28 +393,28 @@ app.post("/api/Authorization/AdminLogin", function (req, res) {
                 if (check) {
                     const newToken = await CreateAdminToken({UserName});
 
-                    res.cookie("Authorization", newToken, {
+                   res.cookie("Authorization", newToken, {
                         httpOnly: false,
                         secure: true,
                         sameSite: "none"
                     });
-                    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-                    res.header("Access-Control-Allow-Credentials", "true");  
+                   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+                   res.header("Access-Control-Allow-Credentials", "true");  
 
                     const { Password, ...UserData } = result[0];
 
-                    res.status(200).json({ message: "Successfully logged in", UserData });         
+                   return res.status(200).json({ message: "Successfully logged in", UserData });         
                 } else {
-                    res.status(401).json({ message: "Incorrect Parameters"});
+                   return res.status(401).json({ message: "Incorrect Parameters"});
                 }
 
             } else {
-                res.status(401).json({ message: "No user exists" });
+               return res.status(401).json({ message: "No user exists" });
             }
         })
     } catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 })
 app.post("/api/Authorization/AdminCreate", async function (req, res) {
@@ -439,17 +439,17 @@ app.post("/api/Authorization/AdminCreate", async function (req, res) {
         db.execute(SQLPlaceData, [UserName, hashedPassword, EmailAddress, PhoneNumber], function (err, result) {
             if (err) {
                 console.error("Server error:", error);
-                res.status(500).json({ error: "Internal Server Error" });
+               return res.status(500).json({ error: "Internal Server Error" });
             } else if (result.affectedRows === 1) {
-                res.status(200).json({ message: "Successfully made Admin" });
+               return res.status(200).json({ message: "Successfully made Admin" });
             } else {
-                res.status(500).json({ message: "Unable to determine result"})
+               return res.status(500).json({ message: "Unable to determine result"})
             }           
         });
 
     } catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -467,19 +467,19 @@ app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
         db.execute(sqlQuery, function (err, results) {
             if (err) {
                 console.error("Error executing query:", err);
-                res.status(500).json({ error: "Database query error" });
+               return res.status(500).json({ error: "Database query error" });
                 return;
             }
             if (results && results.length > 0){
-                res.status(200).json({ message: "Successfully injected Data", results });
+               return res.status(200).json({ message: "Successfully injected Data", results });
             } else {
-                res.status(200).json({ message: "Successfully injected Data" });
+               return res.status(200).json({ message: "Successfully injected Data" });
             }
             
         });
     }
     catch (error) {
         console.error("Server error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+       return res.status(500).json({ error: "Internal Server Error" });
     }
 });
