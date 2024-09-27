@@ -1,10 +1,35 @@
 'use client'
 
 import { userContext } from "@/app/Context/ContextProvider";
+import API from "@/app/Interceptor";
 import Link from "next/link"
+import { useEffect } from "react";
 
 export default function NavBar(){
     const { userData, setUserData, isUser, setIsUser } = userContext();
+
+    async function existingSessionCheck() {
+        try {
+            console.log("Checking for previous Session");
+
+            const response = await API.get("/api/Authorize/PreviousSession");
+
+            if (response.status == 200) {
+                setIsUser(true);
+                setUserData(response.data.UserData);
+            } else {
+                console.log("no previous session");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+    useEffect(() => {
+        existingSessionCheck();
+    },[])
+
 
     return (
         <main className="flex shadow justify-evenly items-center p-2 bg-white">

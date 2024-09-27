@@ -19,7 +19,7 @@ export default function Profile(){
                 console.log("Failed to collect appointments")
             }
         } catch (error) {
-            console.log(error); 
+            console.log('FAIL'); 
         }
     }
 

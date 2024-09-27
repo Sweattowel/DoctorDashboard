@@ -1,6 +1,6 @@
 // Helper Functions
 const { HASH, COMPARE } = require("./Handlers/EncryptionHandle.cjs");
-const { CreateToken, VerifyToken ,RefreshToken ,CreateAdminToken ,VerifyAdminToken, RefreshAdminToken } = require("./Handlers/TokenHandle.cjs");
+const { CreateToken, VerifyToken, DecodeToken, RefreshToken, CreateAdminToken, VerifyAdminToken, RefreshAdminToken } = require("./Handlers/TokenHandle.cjs");
 // CORE functions
 const express = require("express");
 const cors = require("cors");
@@ -284,7 +284,7 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     if (!UserID) {
         return res.status(400).json({ error: "Missing Parameters" });
     }
-    console.log("Registration attempt for new user".concat(UserID));
+    console.log("Collecting appointments for ".concat(UserID));
 
     try {
         const Appointments = await db.execute(SQL, [UserID]);
@@ -448,6 +448,50 @@ app.post("/api/Authorization/AdminCreate", async function (req, res) {
         });
 
     } catch (error) {
+        console.error("Server error:", error);
+       return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+// GET PREVIOUS SESSION 
+app.get("/api/Authorize/PreviousSession", async function (req, res) {
+    try {
+        const SQL = "SELECT UserID, UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
+        const cookie = req.cookies["Authorization"];
+        console.log("Finding previous session");       
+
+        if (!VerifyToken(cookie)) {
+            return res.status(401).json({ message: "Invalid token" });
+        }
+        
+        const decodedToken = await DecodeToken(cookie);
+
+        const { UserName } = decodedToken;
+
+        db.execute(SQL,[UserName], async function (err, results) {
+            if (err) {
+                console.error("Error executing query:", err);
+                return res.status(500).json({ error: "Database query error" });
+                
+            }
+            if (results.length === 0) {
+                return res.status(401).json({ error: "Failed to verify" });
+            }            
+            let { Password, ...userData } = results[0];
+            let token = await CreateToken(userData);
+
+            res.cookie("Authorization", token, {
+                httpOnly: false,
+                secure: true,
+                sameSite: "none"
+            });
+
+            res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.header("Access-Control-Allow-Credentials", "true");
+
+            return res.status(200).json({ message: "Successfully logged in", userData });
+        });
+    }
+    catch (error) {
         console.error("Server error:", error);
        return res.status(500).json({ error: "Internal Server Error" });
     }

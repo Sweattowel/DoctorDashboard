@@ -24,6 +24,15 @@ function VerifyToken(token) {
     }
 }
 
+function DecodeToken(token) {
+    try {
+        const decodedToken = JWT.verify(userPrivateKey, token);
+
+        return decodedToken;
+    } catch(error) {
+        return "FAIL"
+    }
+}
 
 function RefreshToken(token, data) {
     console.log("Refreshing Token");
@@ -68,4 +77,4 @@ function RefreshAdminToken(token, data) {
         return token;
     }
 };
-module.exports = { CreateToken, VerifyToken ,RefreshToken ,CreateAdminToken ,VerifyAdminToken, RefreshAdminToken };
+module.exports = { CreateToken, VerifyToken, DecodeToken, RefreshToken, CreateAdminToken, VerifyAdminToken, RefreshAdminToken };
