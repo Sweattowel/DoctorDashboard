@@ -3,19 +3,30 @@ import Tail from "./GlobalComponents/Tail/Tail";
 import "./Interceptor";
 import Link from "next/link";
 
+const DoctorPictures : string[] = [
+  "https://img.freepik.com/free-photo/beautiful-young-female-doctor-looking-camera-office_1301-7807.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1726790400&semt=ais_hybrid",
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2Dn0oLz6MDWnNS6Tkf6AT-zQNdMQ9YF-Iqw&s",
+  "https://www.shutterstock.com/image-photo/healthcare-medical-staff-concept-portrait-600nw-2281024823.jpg",
+  "https://advancemed.com.au/wp-content/uploads/2019/02/Depositphotos_51131777_xl-2015-1.jpg"
+]
+
 export default function Home() {
 
   return (
     <main className="bg-gray-200 min-h-[100vh] h-full pb-10">
       <NavBar />
-      <section className=" w-[90%] h-full shadow-lg m-auto mt-10 rounded-xl flex md:flex-col justify-center items-center">
-        <div className="h-[50%] w-full flex flex-row p-5">
-          <h2 className="flex justify-center items-center text-center text-3xl text-white font-bold font-serif w-full md:w-[50%] bg-gradient-to-br from-blue-600 via-blue-600 to-white md:rounded-tl-xl md:rounded-bl rounded-tr-xl rounded-tl-xl p-2">
+      <section className=" w-[90%] h-full shadow-lg m-auto mt-10 rounded-xl flex flex-col justify-center items-center">
+        <div className="h-[70vh] w-full flex flex-col p-5">
+          <h2 className="w-full h-full flex justify-center items-center text-center text-3xl text-white font-bold font-serif bg-gradient-to-br from-blue-600 via-blue-600 to-white rounded-tl-xl rounded-bl rounded-tr-xl rounded-tl-xl p-2">
             Medicite, trust you can afford
-          </h2>
-          <img className="h-full w-full md:w-[50%] flex justify-center items-center md:rounded-tr-xl md:rounded-br-xl rounded-bl-xl rounded-br-xl" 
-            src={"https://img.freepik.com/free-photo/beautiful-young-female-doctor-looking-camera-office_1301-7807.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1726790400&semt=ais_hybrid"}
-          />
+          </h2>    
+          <div className="h-[40vh] max-w-[100%] flex flex-row overflow-auto">
+            {DoctorPictures.map((doctor: string, index: number) => (
+              <img className="h-full w-[25%]" src={doctor} key={index} alt="DoctorImage" />
+            ))}
+          </div>         
+
+
         </div>
         <div className=" w-full flex p-5 h-[50vh]">
           <section className="h-full w-[50%]"

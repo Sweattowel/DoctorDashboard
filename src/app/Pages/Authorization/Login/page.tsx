@@ -103,7 +103,7 @@ export default function Login() {
                                 Password: e.target.value,
                             }))}
                         />
-                        <p className="text-red-800 text-center max-w-[60%]">{error}</p>
+                        <p className="text-red-800 text-center max-w-[60%] min-h-[80px]">{error}</p>
                         {loading ? (
                             <p className="text-center bg-blue-600 text-white w-[40%] m-auto shadow p-1 rounded-xl animate-pulse transition-all duration-500 ease-in-out">
                                 Loading...

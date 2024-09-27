@@ -380,6 +380,8 @@ app.get("/api/Authorization/AdminLogin", function (req, res) {
     try {
         const SQL = "SELECT * FROM AdminData WHERE UserName = ?";
         const { UserName, PassWord } = req.body;
+        console.log("Admin login attempt by ".concat(UserName));
+
         db.execute(SQL, [UserName], async (err, result) => {
             if (err) {
                 console.error("Server error:", error);
