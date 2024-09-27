@@ -22,7 +22,7 @@ API.interceptors.response.use((config) => {
     try {
         
         console.log("Response Intercepted");
-        
+        console.log(config.headers)
         if (config.headers["Removal-Request"] == "true"){
             DeAuthorize();
         }

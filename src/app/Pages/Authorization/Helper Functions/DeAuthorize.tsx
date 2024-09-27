@@ -11,8 +11,9 @@ export default function DeAuthorize(){
         PhoneNumber: "",
         Title: ""
     });
+    
     setIsUser(false);
     setIsDoctor(false);
     setIsAdmin(false);
-    
+
 }

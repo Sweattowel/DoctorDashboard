@@ -28,11 +28,23 @@ export default function NavBar(){
         }
     }
 
+    async function refreshToken() {
+        try {
+            const response = await API.post("/api/Authorization/RefreshToken")
 
+            if (response.status == 200){
+                setTimeout(() => refreshToken(), 240000);
+                console.log("Token Refreshed");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
     useEffect(() => {
         if (sessionStorage.getItem("PreviousSessionChecked") !== "True"){
             existingSessionCheck();
         }
+        setTimeout(() => refreshToken(), 240000)
     },[])
 
 

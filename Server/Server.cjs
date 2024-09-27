@@ -271,7 +271,6 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
     const cookie = req.cookies["Authorization"];
 
     if (!cookie || !VerifyToken(cookie)) {
-        console.log("FAILED TO VERIFY")
         res.header("Removal-Request", "True");
         return res.status(401).json({ message: "Token Verification Failed" });
     }
