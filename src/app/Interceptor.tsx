@@ -1,5 +1,5 @@
 import axios from "axios"
-import DeAuthorize from "./Pages/Authorization/Helper Functions/DeAuthorize";
+import useDeAuthorize from "./Pages/Authorization/DeAuthorize/DeAuthorize";
 
 
 const API = axios.create({
@@ -20,11 +20,13 @@ API.interceptors.request.use((config) => {
 })
 API.interceptors.response.use((config) => {
     try {
-        
+        const { deAuthorize } = useDeAuthorize();
+
         console.log("Response Intercepted");
         console.log(config.headers)
         if (config.headers["Removal-Request"] == "true"){
-            DeAuthorize();
+            console.log("Removing access");
+            deAuthorize();
         }
 
         return config;

@@ -77,55 +77,69 @@ export default function Login() {
     return (
         <main className="bg-gray-200 min-h-[100vh]">
             <NavBar />
-            <section className="flex flex-col md:flex-row md:h-[60vh] h-[90vh] w-[80vw] m-auto bg-white mt-10 rounded-xl">
-                <div className="w-full h-full flex flex-col">
-                    <h1 className="h-[20%] w-full flex justify-center items-center text-2xl font-bold font-serif m-auto">
-                        Sign in
-                    </h1>
-                    <form onSubmit={handleLogin} className="h-[60%] flex flex-col justify-center items-center">
-                        <h2>Enter Username</h2>
-                        <input
-                            className="w-[40%] border rounded shadow"
-                            placeholder="Username"
-                            type="text"
-                            onChange={(e) => setFormData((prevData) => ({
-                                ...prevData,
-                                UserName: e.target.value,
-                            }))}
-                        />
-                        <h2>Enter Password</h2>
-                        <input
-                            className="w-[40%] border rounded shadow"
-                            placeholder="Password"
-                            type="password" // Changed to 'password' for security
-                            onChange={(e) => setFormData((prevData) => ({
-                                ...prevData,
-                                Password: e.target.value,
-                            }))}
-                        />
-                        <p className="text-red-800 text-center max-w-[60%] min-h-[80px]">{error}</p>
-                        {loading ? (
-                            <p className="text-center bg-blue-600 text-white w-[40%] m-auto shadow p-1 rounded-xl animate-pulse transition-all duration-500 ease-in-out">
-                                Loading...
-                            </p>
-                        ) : (
-                            <button type="submit" className="bg-blue-600 text-white w-[40%] m-auto shadow p-1 rounded-xl hover:opacity-60 hover:shadow-lg transition-all duration-500 ease-in-out">
-                                Submit
-                            </button>
-                        )}
-                    </form>
-                </div>
-                <div className="w-full h-full bg-blue-600 flex flex-col justify-center items-center">
-                    <h1 className="text-white h-[20%] w-full flex justify-center items-center text-2xl font-bold font-serif m-auto">
-                        Want to sign up?
-                    </h1>
-                    <div className="h-[60%] w-full flex justify-center items-center">
-                        <Link href="/Pages/Authorization/Registration" className="border text-center border-white text-white w-[40%] m-auto shadow p-1 rounded-xl hover:opacity-80 transition-all duration-500 ease-in-out">
-                            Register
-                        </Link>
+            {isUser ? 
+                <section className="flex flex-col md:flex-row md:h-[60vh] h-[90vh] w-[80vw] m-auto bg-white mt-10 rounded-xl">
+                    <div className="w-full h-full flex flex-col">
+                        <h1 className="h-[20%] w-full flex justify-center items-center text-2xl font-bold font-serif m-auto">
+                            Sign in
+                        </h1>
+                        <form onSubmit={handleLogin} className="h-[60%] flex flex-col justify-center items-center">
+                            <h2>Enter Username</h2>
+                            <input
+                                className="w-[40%] border rounded shadow"
+                                placeholder="Username"
+                                type="text"
+                                onChange={(e) => setFormData((prevData) => ({
+                                    ...prevData,
+                                    UserName: e.target.value,
+                                }))}
+                            />
+                            <h2>Enter Password</h2>
+                            <input
+                                className="w-[40%] border rounded shadow"
+                                placeholder="Password"
+                                type="password" // Changed to 'password' for security
+                                onChange={(e) => setFormData((prevData) => ({
+                                    ...prevData,
+                                    Password: e.target.value,
+                                }))}
+                            />
+                            <p className="text-red-800 text-center max-w-[60%] min-h-[80px]">{error}</p>
+                            {loading ? (
+                                <p className="text-center bg-blue-600 text-white w-[40%] m-auto shadow p-1 rounded-xl animate-pulse transition-all duration-500 ease-in-out">
+                                    Loading...
+                                </p>
+                            ) : (
+                                <button type="submit" className="bg-blue-600 text-white w-[40%] m-auto shadow p-1 rounded-xl hover:opacity-60 hover:shadow-lg transition-all duration-500 ease-in-out">
+                                    Submit
+                                </button>
+                            )}
+                        </form>
                     </div>
-                </div>
-            </section>
+                    <div className="w-full h-full bg-blue-600 flex flex-col justify-center items-center">
+                        <h1 className="text-white h-[20%] w-full flex justify-center items-center text-2xl font-bold font-serif m-auto">
+                            Want to sign up?
+                        </h1>
+                        <div className="h-[60%] w-full flex justify-center items-center">
+                            <Link href="/Pages/Authorization/Registration" className="border text-center border-white text-white w-[40%] m-auto shadow p-1 rounded-xl hover:opacity-80 transition-all duration-500 ease-in-out">
+                                Register
+                            </Link>
+                        </div>
+                    </div>
+                </section> 
+                :
+                <section className="bg-white w-[90%] h-[20vh] p-5 rounded shadow m-auto mt-10 flex flex-col justify-evenly items-center">
+                    <Link className="bg-blue-600 p-2 rounded text-white hover:opacity-60" href={"/Pages/Profile"}>
+                        Check out your Profile
+                    </Link>
+                    <Link className="bg-blue-600 p-2 rounded text-white hover:opacity-60" href={"/Pages/Appointments"}>
+                        Book your next visit!
+                    </Link>
+                    <button>
+                        Log Out
+                    </button>
+                </section>
+                }
             <Tail />
         </main>
     );
