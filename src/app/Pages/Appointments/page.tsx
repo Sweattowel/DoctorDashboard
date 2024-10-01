@@ -21,6 +21,7 @@ export default function Appointment() {
   const [getAppointments, setDoctorAppointments] = useState<boolean>(false);
   useEffect(() => {
     console.log(getAppointments)
+    setDoctorAppointments(true);
   },[getAppointments])
 
   // Create a function to match the expected type
@@ -49,7 +50,7 @@ export default function Appointment() {
   return (
     <main className='bg-gray-200 pb-5 min-h-[100vh]'>
       <NavBar />
-      <div className='flex w-[95%] h-[40vh] justify-evenly items-center m-auto p-5'>
+      <div className='flex flex-col md:flex-row w-[95%] md:h-[40vh] h-[70vh] justify-evenly items-center m-auto p-5'>
         <DoctorSearch handleSetDoctor={handleSetDoctor} />
         <DoctorDisplay selectedDoctor={selectedDoctor} handleSeeAppointments={setDoctorAppointments} />
       </div>

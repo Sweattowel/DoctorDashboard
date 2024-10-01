@@ -60,10 +60,10 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
     }, [selectedDoctor]);
   
     return (
-      <section className={`${glow ? "bg-blue-600 text-white" : "bg-white"} shadow-2xl h-full w-[45%] flex justify-center items-center rounded-2xl duration-500 transition-all ease-in-out`}>
+      <section className={`${glow ? "bg-blue-600 text-white" : "bg-white"} shadow-2xl h-full w-full md:w-[45%] flex justify-center items-center rounded-2xl duration-500 transition-all ease-in-out`}>
         {doctor.id !== -1 ? (
-          <div className="border rounded-2xl h-full w-full flex flex-col items-center justify-evenly">
-            <h2 className="text-2xl font-bold font-serif">
+          <div className="border rounded-2xl h-full w-full flex flex-col items-center justify-evenly text-center text-[0.6rem] md:text-[1rem]">
+            <h2 className="text-[1.5rem] font-bold font-serif">
               {doctor.name}
             </h2>
             <p>

@@ -89,14 +89,14 @@ const MobileNavBar = ({ isUser }: { isUser: boolean }) => {
         <main className="w-full flex justify-between pr-5 pl-5 p-2 border-b border-black relative">
             <h1 className="p-2 pl-5 h-full text-2xl font-serif font-bold">Medicite</h1>
             <button
-                className={`bg-blue-600 w-[25%] text-white rounded`}
+                className={`${visible && "animate-pulse"} bg-blue-600 w-[25%] text-white rounded`}
                 onClick={() => setVisible(!visible)}
             >
-                /// 
+                &#9776;
             </button>
             <div
-                className={`absolute top-[8vh] right-0 w-[50vw] bg-white border border-black transform transition-transform duration-700 ease-in-out ${
-                    visible ? "translate-x-0" : "translate-x-full"
+                className={`absolute top-[8vh] right-0 bg-white transition-all duration-700 ease-in-out ${
+                    visible ? "max-w-[50vw]" : "w-[0]"
                 }`}
             >
                 <ul className="flex flex-col h-auto">

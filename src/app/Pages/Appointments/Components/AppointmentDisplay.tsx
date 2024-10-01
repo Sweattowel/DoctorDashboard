@@ -67,7 +67,7 @@ export default function AppointmentDisplay({ selectedDoctor, getAppointments }: 
             Appointments for {selectedDoctor.DoctorName}
           </h2>
           <ul className="h-full bg-white mt-5 p-5 rounded-2xl divide-y overflow-auto">
-            <ul className="flex justify-evenly items-center w-full h-[5vh] p-5">
+            <ul className="hidden md:flex justify-evenly items-center w-full h-[5vh] p-5">
               {titles.map((title: string, index: number) => (
                 <li key={index} className="flex justify-center items-center w-[25%] h-full">
                   {title}
@@ -111,12 +111,12 @@ const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
     <ul className="divide-y overflow-auto">
       {displayData.map((client: Appointment, index: number) => (
         <li key={index} className="transition-all ease-in-out duration-500">
-          <div className="flex flex-col md:flex-row justify-between items-center w-full h-[150px] p-5">
-            <p className="text-center w-[25%]">{client.AppointmentDate}</p>
-            <p className="text-center w-[25%]">{client.ClientName}</p>
-            <p className="text-center w-[25%]">{client.Issue}</p>
+          <div className="flex flex-col items-center md:flex-row w-full h-full p-5">
+            <p className="w-full md:w-[25%]">{client.AppointmentDate}</p>
+            <p className="w-full md:w-[25%]">{client.ClientName}</p>
+            <p className="w-full md:w-[25%]">{client.Issue}</p>
             <button
-              className="w-[25%] rounded hover:opacity-60 bg-blue-600 text-white hover:opacity-60 hover:shadow-md hover:shadow-black transition-all duration-500 ease-in-out"
+              className="w-full md:w-[25%] p-2 rounded hover:opacity-60 bg-blue-600 text-white hover:opacity-60 hover:shadow-md hover:shadow-black transition-all duration-500 ease-in-out"
               onClick={() => setExpandedAppointment(expandedAppointment === index ? null : index)}
             >
               {expandedAppointment === index ? "COLLAPSE" : "EXPAND"}
