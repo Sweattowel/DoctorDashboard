@@ -6,8 +6,30 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function NavBar() {
-    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor } = userContext();
+    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
     const [wantedScreen, setWantedScreen] = useState<string>("Wide");
+
+
+    useEffect(() => {
+        if (wantLogOut == true) {
+            setIsUser(false);
+            setIsAdmin(false);
+            setIsDoctor(false);
+
+            setUserData({
+                UserID: -1,
+                UserName: "",
+                EmailAddress: "",
+                Address: "",
+                PhoneNumber: "",
+                Title: ""
+            });
+
+            setWantLogOut(false);
+
+            console.log("Logged Out")
+        }
+    },[wantLogOut])
 
     async function existingSessionCheck() {
         try {

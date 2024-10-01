@@ -20,14 +20,9 @@ API.interceptors.request.use((config) => {
 })
 API.interceptors.response.use((config) => {
     try {
-        const { deAuthorize } = useDeAuthorize();
 
-        console.log("Response Intercepted");
+        console.log("Useless");
         console.log(config.headers)
-        if (config.headers["Removal-Request"] == "true"){
-            console.log("Removing access");
-            deAuthorize();
-        }
 
         return config;
 

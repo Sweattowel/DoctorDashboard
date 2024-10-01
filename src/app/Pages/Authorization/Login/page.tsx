@@ -23,7 +23,7 @@ interface userDataStruc {
 }
 
 export default function Login() {
-    const { userData, setUserData, isUser, setIsUser } = userContext(); // Use custom hook for context
+    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext(); // Use custom hook for context
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
@@ -74,10 +74,18 @@ export default function Login() {
         }
     }
 
+    async function HandleLogout() {
+        try {
+            setWantLogOut(true);
+        } catch (error) {
+            console.log("Failed to log out");
+        }
+    }
+
     return (
         <main className="bg-gray-200 min-h-[100vh]">
             <NavBar />
-            {isUser ? 
+            {!isUser ? 
                 <section className="flex flex-col md:flex-row md:h-[60vh] h-[90vh] w-[80vw] m-auto bg-white mt-10 rounded-xl">
                     <div className="w-full h-full flex flex-col">
                         <h1 className="h-[20%] w-full flex justify-center items-center text-2xl font-bold font-serif m-auto">
@@ -129,13 +137,15 @@ export default function Login() {
                 </section> 
                 :
                 <section className="bg-white w-[90%] h-[20vh] p-5 rounded shadow m-auto mt-10 flex flex-col justify-evenly items-center">
-                    <Link className="bg-blue-600 p-2 rounded text-white hover:opacity-60" href={"/Pages/Profile"}>
+                    <Link className="bg-blue-600 p-2 rounded text-white hover:opacity-60  w-[80%] text-center shadow shadow-black" href={"/Pages/Profile"}>
                         Check out your Profile
                     </Link>
-                    <Link className="bg-blue-600 p-2 rounded text-white hover:opacity-60" href={"/Pages/Appointments"}>
+                    <Link className="bg-blue-600 p-2 rounded text-white hover:opacity-60  w-[80%] text-center shadow shadow-black" href={"/Pages/Appointments"}>
                         Book your next visit!
                     </Link>
-                    <button>
+                    <button className="bg-blue-600 p-2 rounded text-white hover:opacity-60  w-[80%] text-center shadow shadow-black"
+                        onClick={() => HandleLogout()}
+                    >
                         Log Out
                     </button>
                 </section>

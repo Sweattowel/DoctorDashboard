@@ -32,6 +32,9 @@ const UserContext = createContext<{
 
     isAdmin: boolean;
     setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>;
+    
+    wantLogOut: boolean;
+    setWantLogOut: React.Dispatch<React.SetStateAction<boolean>>;
   }>({
     userData: DefaultUserStatus,
     setUserData: () => {},
@@ -44,6 +47,9 @@ const UserContext = createContext<{
 
     isAdmin: false,
     setIsAdmin: () => {},
+
+    wantLogOut: false,
+    setWantLogOut: () => {},
   });
 
 export default function UserContextProvider({children,}: Readonly<{ children: React.ReactNode; }>) {
@@ -52,6 +58,7 @@ export default function UserContextProvider({children,}: Readonly<{ children: Re
     const [isUser, setIsUser] = useState<boolean>(false);
     const [isDoctor, setIsDoctor] = useState<boolean>(false);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [wantLogOut, setWantLogOut] = useState<boolean>(false);
     
   return (
     <UserContext.Provider 
@@ -61,6 +68,7 @@ export default function UserContextProvider({children,}: Readonly<{ children: Re
           isUser, setIsUser,
           isDoctor, setIsDoctor,
           isAdmin, setIsAdmin,
+          wantLogOut,setWantLogOut
         }
       }
     >
