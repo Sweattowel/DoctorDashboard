@@ -77,8 +77,8 @@ export default function Login() {
     return (
         <main className="bg-gray-200 min-h-[100vh]">
             <NavBar />
-            <section className="flex h-[60vh] w-[80vw] m-auto bg-white mt-10 rounded-xl">
-                <div className="w-[50%] h-full flex flex-col">
+            <section className="flex flex-col md:flex-row md:h-[60vh] h-[90vh] w-[80vw] m-auto bg-white mt-10 rounded-xl">
+                <div className="w-full h-full flex flex-col">
                     <h1 className="h-[20%] w-full flex justify-center items-center text-2xl font-bold font-serif m-auto">
                         Sign in
                     </h1>
@@ -115,7 +115,7 @@ export default function Login() {
                         )}
                     </form>
                 </div>
-                <div className="w-[50%] h-full bg-blue-600 flex flex-col justify-center items-center">
+                <div className="w-full h-full bg-blue-600 flex flex-col justify-center items-center">
                     <h1 className="text-white h-[20%] w-full flex justify-center items-center text-2xl font-bold font-serif m-auto">
                         Want to sign up?
                     </h1>

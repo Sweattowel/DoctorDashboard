@@ -72,20 +72,20 @@ export default function DoctorSearch({ handleSetDoctor }: DoctorSearchProps) {
   return (
     <section className='flex flex-col justify-evenly w-[45%] h-full border rounded-2xl shadow-2xl p-5 bg-white'>
       <input
-        className='border text-center rounded w-full'
+        className='border border-blue-600 text-center rounded w-full rounded-2xl '
         type="text"
         onChange={handleSearch}
         value={searchParam}
         placeholder='Search Doctors'
       />
-      <ul className='flex flex-col h-[80%] text-center divide-y overflow-auto border-l'>
+      <ul className='flex flex-col h-[80%] text-center divide-y overflow-auto'>
         {displayData.map((doctor: DoctorDisplayStruc, index: number) => (
           <button
-            className={`${recentDoctor === doctor.DoctorName ? "bg-blue-600 text-white" : ""} hover:opacity-60`}
+            className={`${recentDoctor === doctor.DoctorName ? "bg-blue-600 text-white" : ""} hover:opacity-60 rounded-2xl border shadow-md shadow mt-1 mb-1`}
             onClick={() => { handleSetDoctor( doctor.DoctorID, doctor.DoctorName ); setRecentDoctor(doctor.DoctorName); }}
             key={index}
           >
-            {doctor.DoctorID}: {doctor.DoctorName}
+            {doctor.DoctorName}
           </button>
         ))}
       </ul>

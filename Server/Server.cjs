@@ -158,18 +158,32 @@ app.get("/api/testCookie", function (req, res) {
     }
 });
 
-app.post("/api/Authorization/RefreshToken", function (req, res) {
+app.post("/api/Authorization/RefreshToken", async function (req, res) {
     try {
         console.log("Refreshing Cookie");
         const data = req.body;
         const cookie = req.cookies["Authorization"];
-
+        
         if (!cookie) {
             return res.status(401).json({ message: "No Authorization cookie found" });
         }
-        
-        const newToken = RefreshToken(cookie, data);
+        let newToken = "";
 
+        switch (true) {
+            case data.isAdmin:
+                newToken = await RefreshAdminToken(cookie, data); 
+                break;
+            case data.isDoctor:
+                newToken = await RefreshToken(cookie, data); 
+                break;
+            case data.isUser:
+                newToken = await RefreshToken(cookie, data);    
+                break;
+            default:
+                console.log("Token failed to refresh");
+                return res.status(500).json({ message: "Fail"})
+        }
+        
        res.cookie("Authorization", newToken, {
             httpOnly: true,
             secure: true,

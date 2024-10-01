@@ -5,31 +5,20 @@ import Link from "next/link";
 
 const DoctorPictures : string[] = [
   "https://img.freepik.com/free-photo/beautiful-young-female-doctor-looking-camera-office_1301-7807.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1726790400&semt=ais_hybrid",
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2Dn0oLz6MDWnNS6Tkf6AT-zQNdMQ9YF-Iqw&s",
   "https://www.shutterstock.com/image-photo/healthcare-medical-staff-concept-portrait-600nw-2281024823.jpg",
-  "https://advancemed.com.au/wp-content/uploads/2019/02/Depositphotos_51131777_xl-2015-1.jpg"
 ]
 
 export default function Home() {
 
   return (
-    <main className="bg-gray-200 min-h-[100vh] h-full pb-10">
+    <main className="bg-gray-200 min-h-[100vh] h-full w-[100vw] border pb-10">
       <NavBar />
       <section className=" w-[90%] h-full shadow-lg m-auto mt-10 rounded-xl flex flex-col justify-center items-center">
-        <div className="h-[70vh] w-full flex flex-col p-5">
-          <h2 className="w-full h-full flex justify-center items-center text-center text-3xl text-white font-bold font-serif bg-gradient-to-br from-blue-600 via-blue-600 to-white rounded-tl-xl rounded-bl rounded-tr-xl rounded-tl-xl p-2">
-            Medicite, trust you can afford
-          </h2>    
-          <div className="h-[40vh] max-w-[100%] flex flex-row overflow-auto">
-            {DoctorPictures.map((doctor: string, index: number) => (
-              <img className="h-full w-[25%]" src={doctor} key={index} alt="DoctorImage" />
-            ))}
-          </div>         
-
-
-        </div>
-        <div className=" w-full flex p-5 h-[50vh]">
-          <section className="h-full w-[50%]"
+        <h2 className="w-full flex justify-center items-center text-center text-3xl bg-blue-600 font-bold font-serif p-5 rounded text-white">
+          Medicite, trust you can afford
+        </h2>    
+        <div className=" w-full flex md:flew-row flex-col p-5 min-h-[80vh]">
+          <section className="h-[40vh] md:h-[60vh] w-full min-w-[50%]"
             style={{
               backgroundImage: `url("https://media.licdn.com/dms/image/v2/C4D12AQGdZAIAcFNlzw/article-inline_image-shrink_1000_1488/article-inline_image-shrink_1000_1488/0/1627922583458?e=1731542400&v=beta&t=GrCI8TRHQl6pu8SmHDk8X4QfUMmiv97fK2uPFPoUs8w")`,
               backgroundSize: 'cover',
@@ -46,7 +35,7 @@ export default function Home() {
                 </Link>
               </div>
           </section>
-          <section className="h-full w-[50%]"
+          <section className="h-[40vh] md:h-[60vh] w-full min-w-[50%]"
             style={{
               backgroundImage: `url("https://www.datocms-assets.com/71768/1671497622-medical-receptionist.jpg")`,
               backgroundSize: 'cover',

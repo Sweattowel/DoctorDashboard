@@ -53,7 +53,7 @@ export default function Profile(){
                     Profile for {userData.Title} {userData.UserName}
                 </h2>
                 <p>
-                    Current Data:
+                    Current Data: 
                 </p>
                 <ul>
                     <li>
@@ -78,9 +78,15 @@ export default function Profile(){
                                 {appointment.Issue}                                
                             </div>
                         </div>
-                        <p>
-                           <span className="font-bold">Status:</span>  {appointment.ClientStatus}
-                        </p>
+                        <div className="flex w-full justify-between items-center">
+                            <p>
+                            <span className="font-bold">Status:</span>  {appointment.ClientStatus}
+                            </p>     
+                            <button className="bg-blue-600 text-white pl-2 pr-2 rounded hover:opacity-60">
+                                Adjust
+                            </button>                       
+                        </div>
+
                     </li>
                 ))}
             </ul>

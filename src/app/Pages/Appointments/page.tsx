@@ -15,7 +15,7 @@ export default function Appointment() {
     DoctorName: ""
   });
   const { userData, setUserData, isUser, isDoctor, isAdmin } = userContext();
-
+  const [ message, setMessage ] = useState("Please Log in");
 
 
   const [getAppointments, setDoctorAppointments] = useState<boolean>(false);
@@ -28,6 +28,24 @@ export default function Appointment() {
     setSelectedDoctor({ DoctorID: doctorID, DoctorName: doctorName});
   };
 
+  useEffect(() => {
+    // Determine Error messaging based on userStatus and Doctor selection
+    switch (true) {
+      case isUser && selectedDoctor.DoctorID == -1:
+        setMessage("Please Select Doctor");
+        break;
+      case !isUser && !isAdmin && !isDoctor:
+        setMessage("Please Log in");
+        break;
+      case isAdmin:
+        setMessage("ADMIN");
+        break;
+      default:
+        setMessage("Error: please refresh");
+        break;
+    }
+  },[ selectedDoctor, isUser, isDoctor, isAdmin ])
+
   return (
     <main className='bg-gray-200 pb-5 min-h-[100vh]'>
       <NavBar />
@@ -35,10 +53,12 @@ export default function Appointment() {
         <DoctorSearch handleSetDoctor={handleSetDoctor} />
         <DoctorDisplay selectedDoctor={selectedDoctor} handleSeeAppointments={setDoctorAppointments} />
       </div>
-      {isUser && selectedDoctor && !isAdmin ? (
+      {(isUser && selectedDoctor.DoctorID != -1 && !isAdmin) ? (
         <UserBook selectedDoctor={selectedDoctor}/>
       ) : (
-        <p className='w-[80%] bg-white mt-10 m-auto p-5 rounded-2xl shadow-2xl text-center animate-pulse'> Please Log in</p>
+        <p className='w-[80%] bg-white mt-10 m-auto p-5 rounded-2xl shadow-2xl text-center animate-pulse'>
+          {message}
+        </p>
       )}
       {isDoctor || isAdmin && <AppointmentDisplay selectedDoctor={selectedDoctor} getAppointments={getAppointments}/>}
       <Tail />

@@ -61,7 +61,7 @@ export default function AppointmentDisplay({ selectedDoctor, getAppointments }: 
 
   return (
     <main className={`${glow ? "bg-blue-400 text-white" : "bg-white"} transition-all ease-in-out duration-500 rounded-2xl w-[85%] h-full p-5 mt-5 m-auto flex flex-col items-center justify-center shadow-2xl`}>
-      {appointments!.length > 0 && selectedDoctor.DoctorID !== -1 ? (
+      {selectedDoctor.DoctorID !== -1 ? (
         <section className="h-full w-full flex flex-col">
           <h2 className="h-[50px] w-full flex items-center text-xl p-5 font-bold font-serif">
             Appointments for {selectedDoctor.DoctorName}
