@@ -23,7 +23,7 @@ interface userDataStruc {
 }
 
 export default function Login() {
-    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext(); // Use custom hook for context
+    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");

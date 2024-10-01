@@ -1,6 +1,4 @@
 import axios from "axios"
-import useDeAuthorize from "./Pages/Authorization/DeAuthorize/DeAuthorize";
-
 
 const API = axios.create({
     baseURL: process.env.NEXT_PUBLIC_SERVER_ADDRESS
@@ -21,8 +19,13 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use((config) => {
     try {
 
-        console.log("Useless");
+        console.log("Response Intercepted");
         console.log(config.headers)
+        if (config.headers["Removal-Request"] == "True"){
+            config.data = [];
+            config.status = 401;
+            config.statusText = "Please log in";
+        }
 
         return config;
 

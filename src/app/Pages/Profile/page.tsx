@@ -24,8 +24,9 @@ interface appointmentStruc {
   }
 
 export default function Profile(){
-    const { userData, setUserData, isUser, setIsUser } = userContext();
+    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext()
     const [ appointments, setAppointments ] = useState<appointmentStruc[]>([])
+
     async function getAppointments(){
         try {
             const response = await API.get(`/api/Profile/getUserAppointments/${userData.UserID}`);
@@ -37,6 +38,14 @@ export default function Profile(){
             }
         } catch (error) {
             console.log('FAIL'); 
+        }
+    }
+
+    async function HandleLogout() {
+        try {
+            setWantLogOut(true);
+        } catch (error) {
+            console.log("Failed to log out");
         }
     }
 
@@ -63,6 +72,10 @@ export default function Profile(){
                         PH: {userData.PhoneNumber}
                     </li>
                 </ul>
+                <button className="bg-blue-600 rounded p-2 text-white hover:opacity-60"  
+                    onClick={() => HandleLogout()}>
+                    Log Out
+                </button>
             </div>
             <ul>
                 {appointments.map((appointment: appointmentStruc, index: number) => (
