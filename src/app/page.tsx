@@ -25,8 +25,8 @@ export default function Home() {
               backgroundPosition: 'center',
             }}>
               <div className="w-full h-full bg-blue-800 text-white bg-opacity-60 flex flex-col justify-center items-center">
-                <h2 className="text-2xl font-bold font-serif w-full bg-blue-600 text-center p-2">
-                  Book a meeting with our personable staff
+                <h2 className="text-[2rem] font-bold font-serif w-full bg-blue-600 text-center p-2">
+                  Book a visit!
                 </h2>
                 <Link className="bg-white text-blue-600 p-2 pl-5 pr-5 shadow-lg rounded hover:opacity-60 transition-all duration-500 ease-in-out ml-[15%]"
                   href={"/Pages/Appointments"}

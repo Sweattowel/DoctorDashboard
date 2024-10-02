@@ -17,10 +17,9 @@ export default function Appointment() {
   const { userData, setUserData, isUser, isDoctor, isAdmin } = userContext();
   const [ message, setMessage ] = useState("Please Log in");
 
-
   const [getAppointments, setDoctorAppointments] = useState<boolean>(false);
+
   useEffect(() => {
-    console.log(getAppointments)
     setDoctorAppointments(true);
   },[getAppointments])
 
