@@ -329,11 +329,16 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
 app.post("/api/Authorization/DoctorLogin", function (req, res) {
 	try {
 		const SQL = "SELECT * FROM DoctorData WHERE UserName = ?";
+
 		const { UserName, PassWord } = req.body;
 
+        if (!UserName || !PassWord){
+            return res.status(401).json({ error: "Bad request"});
+        }
+        
 		db.execute(SQL, [UserName], async (err, result) => {
 			if (err) {
-				console.error("Server error:", error);
+				console.error("Server error:", err);
 				return res.status(500).json({ error: "Internal Server Error" });
 			}
 			if (result.length === 1) {
@@ -350,7 +355,7 @@ app.post("/api/Authorization/DoctorLogin", function (req, res) {
 					res.header("Access-Control-Allow-Origin", "http://localhost:3000");
 					res.header("Access-Control-Allow-Credentials", "true");
 
-					const { Password, ...UserData } = result[0];
+					const { PassWord, ...UserData } = result[0];
 
 					return res
 						.status(200)
