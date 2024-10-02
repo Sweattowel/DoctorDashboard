@@ -7,10 +7,10 @@ import { FormEvent, useEffect, useState } from "react"
 interface Doctor
 {
     id: number;
-    name: string;
+    UserName: string;
     Speciality: string;
-    phone: string;
-    email: string;
+    PhoneNumber: string;
+    EmailAddress: string;
     address: string;
     yearsOfExperience: number;
     hospitalAffiliation: string;
@@ -130,10 +130,10 @@ export default function UserBook({ selectedDoctor }: importProps)
 
     return (
         <main className="bg-white p-5 m-auto w-[85%] mt-10 rounded shadow-2xl">
-            {doctor && doctor.id !== -1 && doctor.name &&
+            {doctor && doctor.id !== -1 && doctor.UserName &&
                 <>
                     <h2 className="font-serif font-bold border-b">
-                        Request Appointment with {doctor.name}
+                        Request Appointment with {doctor.UserName}
                     </h2>
 
                     <form className="flex flex-col" onSubmit={(e) => RequestAppointment(e)}>

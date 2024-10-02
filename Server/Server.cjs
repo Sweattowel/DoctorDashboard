@@ -326,7 +326,7 @@ app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
 		return res.status(500).json({ error: "Internal Server Error" });
 	}
 });
-app.get("/api/Authorization/DoctorLogin", function (req, res) {
+app.post("/api/Authorization/DoctorLogin", function (req, res) {
 	try {
 		const SQL = "SELECT * FROM DoctorData WHERE UserName = ?";
 		const { UserName, PassWord } = req.body;

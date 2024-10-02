@@ -46,8 +46,8 @@ export default function DoctorSearch({ handleSetDoctor }: DoctorSearchProps) {
       // Check if response data exists and handle it
       if (response.status === 200) {
         const newData: DoctorDisplayStruc[] = response.data.results.map(
-          (doctor: { name: string; id: number }) => ({
-            DoctorName: doctor.name,
+          (doctor: { UserName: string; id: number }) => ({
+            DoctorName: doctor.UserName,
             DoctorID: doctor.id,
           })
         );

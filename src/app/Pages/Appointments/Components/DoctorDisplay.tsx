@@ -5,10 +5,10 @@ import { useState, useEffect } from "react";
 
 interface Doctor {
     id: number;
-    name: string;
+    UserName: string;
     Speciality: string;
-    phone: string;
-    email: string;
+    PhoneNumber: string;
+    EmailAddress: string;
     address: string;
     yearsOfExperience: number;
     hospitalAffiliation: string;
@@ -30,10 +30,10 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
   const [glow, setGlow] = useState<boolean>(false);
     const [doctor, setDoctor] = useState<Doctor>({
       id: -1,
-      name: "",
+      UserName: "",
       Speciality: "",
-      phone: "",
-      email: "",
+      PhoneNumber: "",
+      EmailAddress: "",
       address: "",
       yearsOfExperience: -1,
       hospitalAffiliation: ""
@@ -64,7 +64,7 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
         {doctor.id !== -1 ? (
           <div className="border rounded-2xl h-full w-full flex flex-col items-center justify-evenly text-center text-[0.6rem] md:text-[1rem]">
             <h2 className="text-[1.5rem] font-bold font-serif">
-              {doctor.name}
+              {doctor.UserName}
             </h2>
             <p>
               Speciality: {doctor.Speciality} {doctor.yearsOfExperience} YRS
@@ -74,8 +74,8 @@ export default function DoctorDisplay({ selectedDoctor, handleSeeAppointments }:
             </p>
             <div>
               CONTACT DETAILS:
-              <p>Email: {doctor.email}</p>
-              <p>PH: {doctor.phone}</p>
+              <p>Email: {doctor.EmailAddress}</p>
+              <p>PH: {doctor.PhoneNumber}</p>
             </div>
             {isDoctor && <button className="border p-2 rounded-2xl bg-blue-600 text-white hover:opacity-60"
               onClick={() => {handleSeeAppointments(true); console.log("clicked")}}
