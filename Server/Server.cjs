@@ -558,7 +558,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
             
             const SQL = "INSERT INTO DoctorNotifications (RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, Date, CompletedStatus) values (?, ?, ?, ?, ?, ?, ?, ?, false)"
             
-            const DATE = new Date().toString();
+            const DATE = new Date().toISOString().split('T')[0]; 
 
             db.execute(SQL, [RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, DATE], (err, result) => {
                 if (err) {
@@ -622,7 +622,7 @@ app.post("/api/Notifications/CreateUserNotification", function (req, res) {
         
         const SQL = "INSERT INTO UserNotifications (RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, Date, CompletedStatus) values (?, ?, ?, ?, ?, ?, ?, ?, false)"
         
-        const DATE = new Date().toString();
+        const DATE = new Date().toISOString().split('T')[0]; 
 
         db.execute(SQL, [RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, DATE], (err, result) => {
             if (err) {
