@@ -75,13 +75,18 @@ export default function UserBook({ selectedDoctor }: importProps)
         try {
             e.preventDefault();
             
-            const AppointmentRequest = {
+            const notificationRequest = {
                 RequestType: "Appointment",
-                Requester: userData,
-                RequestData: formData
+                Urgency: formData.Urgency,
+                RequesterID: userData.UserID,
+                RequesterName: userData.UserName,
+                RequesteeID: selectedDoctor.DoctorID,
+                RequesteeName: selectedDoctor.DoctorName,
+                NotificationText: formData.Issue
+                
             };
 
-            const response = await API.post("/api/Requests/Appointment", AppointmentRequest);
+            const response = await API.post("/api/Notifications/CreateDoctorNotification", notificationRequest);
 
             switch (response.status) {
                 case 200:
@@ -102,7 +107,6 @@ export default function UserBook({ selectedDoctor }: importProps)
 
     useEffect(() =>
     {
-        console.log(selectedDoctor.DoctorID, " HERE")
         if (selectedDoctor.DoctorID !== -1) {
             collectDoctorData();
         }
@@ -140,7 +144,9 @@ export default function UserBook({ selectedDoctor }: importProps)
                             onChange={(e) => setFormData({ ...formData, Issue: e.target.value })}
                             required
                         />
-                        <label className={`${formData.Urgency == 0 ? "bg-white" : formData.Urgency == 1 ? "bg-blue-400" : formData.Urgency == 2 ? "bg-blue-600" : formData.Urgency == 3 ? "bg-red-400" : "" } font-bold p-2 mt-2 mb-2 rounded transition-all duration-500 ease-in-out`}> Urgency:</label>
+                        <label className={`${formData.Urgency == 0 ? "bg-white" : formData.Urgency == 1 ? "bg-blue-400" : formData.Urgency == 2 ? "bg-blue-600" : formData.Urgency == 3 ? "bg-red-400" : "" } font-bold p-2 mt-2 mb-2 rounded transition-all duration-500 ease-in-out`}> 
+                            Urgency: {formData.Urgency == 3 && "If issue is life threatening please contact emergency services"}
+                        </label>
                         <input 
                             type="range"
                             min={0}

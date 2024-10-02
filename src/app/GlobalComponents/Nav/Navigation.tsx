@@ -3,12 +3,13 @@
 import { userContext } from "@/app/Context/ContextProvider";
 import API from "@/app/Interceptor";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function NavBar() {
     const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
     const [wantedScreen, setWantedScreen] = useState<string>("Wide");
 
+    const called = useRef(false);
 
     useEffect(() => {
         if (wantLogOut == true) {
@@ -69,14 +70,22 @@ export default function NavBar() {
         if (sessionStorage.getItem("PreviousSessionChecked") !== "True") {
             existingSessionCheck();
         }
-        setTimeout(() => refreshToken(), 240000);
-        
+    
+        const tokenRefreshInterval = setTimeout(() => {
+            refreshToken();
+        }, 240000); // Call refreshToken after 240 seconds
+    
         // Set Nav for screen size
         if (window.innerWidth < 750) {
             setWantedScreen("Mobile");
         } else {
             setWantedScreen("Wide");
         }
+    
+        // Cleanup on unmount
+        return () => {
+            clearTimeout(tokenRefreshInterval);
+        };
     }, []);
 
     return (

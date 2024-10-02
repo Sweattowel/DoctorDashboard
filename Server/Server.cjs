@@ -547,24 +547,130 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
 });
 // Requests and notifications
 
-app.post("/api/Requests/Appointment", function (req, res) {
+app.post("/api/Notifications/CreateDoctorNotification", function (req, res) {
     try {
+        const { RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText} = req.body
+
+        if (!RequestType){
+            return res.status(400).json({ message: "Failed parameters" });
+        }
         const cookie = req.cookies["Authorization"];
 
         if (!VerifyToken(cookie)) {
 			res.header("Removal-Request", "True");
 			return res.status(401).json({ message: "Invalid token" });
 		}
-
-        const AppointmentRequest = req.body
-
+        console.log(`Received Request to create notification of type: ${RequestType} From ${RequesterName}`)
         
+        const SQL = "INSERT INTO DoctorNotifications (RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, Date, CompletedStatus) values (?, ?, ?, ?, ?, ?, ?, ?, false)"
+        
+        const DATE = new Date().toString();
+
+        db.execute(SQL, [RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, DATE], (err, result) => {
+            if (err) {
+                console.error("Failed to make notification")
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            if (result.affectedRows == 1){
+                res.status(200).json({ message: "Successfully made request"});
+            }
+        });
+
     } catch (error) {
         console.error("Server error:", error);
         res.header("Removal-Request", "True");
         return res.status(500).json({ error: "Internal Server Error" });
-    }
+    };
 });
+app.post("/api/Notifications/CreateUserNotification", function (req, res) {
+    try {
+        const { RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText} = req.body
+
+        if (!RequestType){
+            return res.status(400).json({ message: "Failed parameters" });
+        }
+        const cookie = req.cookies["Authorization"];
+
+        if (!VerifyToken(cookie)) {
+			res.header("Removal-Request", "True");
+			return res.status(401).json({ message: "Invalid token" });
+		}
+        console.log(`Received Request to create notification of type: ${RequestType} From ${RequesterName}`)
+        
+        const SQL = "INSERT INTO UserNotifications (RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, Date, CompletedStatus) values (?, ?, ?, ?, ?, ?, ?, ?, false)"
+        
+        const DATE = new Date().toString();
+
+        db.execute(SQL, [RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, DATE], (err, result) => {
+            if (err) {
+                console.error("Failed to make notification")
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            if (result.affectedRows == 1){
+                res.status(200).json({ message: "Successfully made request"});
+            }
+        });
+
+    } catch (error) {
+        console.error("Server error:", error);
+        res.header("Removal-Request", "True");
+        return res.status(500).json({ error: "Internal Server Error" });
+    };
+});
+// Collect Notifications
+app.get("/api/Notifications/CollectDoctorNotifications/:DoctorID" , function (req, res) {
+    try {        
+        const cookie = req.cookies["Authorization"];
+        if (!VerifyAdminToken(cookie)) {
+			res.header("Removal-Request", "True");
+			return res.status(401).json({ message: "Invalid token" });
+		}
+        console.log("Received Notification for Doctor Request");
+
+        const DoctorID = req.params;
+        const SQL = "SELECT * FROM DoctorNotifications WHERE RequesteeID = ?";
+
+        db.execute(SQL, [DoctorID], (err, results) => {
+            if (err) {
+                console.error("Failed to make notification")
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            return res.status(200).json({ results });
+        });
+
+    } catch (error) {
+        console.error("Server error:", error);
+        res.header("Removal-Request", "True");
+        return res.status(500).json({ error: "Internal Server Error" });
+    };
+});
+
+app.get("/api/Notifications/CollectUserNotifications/:UserID" , function (req, res) {
+    try {        
+        const cookie = req.cookies["Authorization"];
+        if (!Verify(cookie)) {
+			res.header("Removal-Request", "True");
+			return res.status(401).json({ message: "Invalid token" });
+		}
+        console.log("Received Notification Request");
+
+        const UserID = req.params;
+        const SQL = "SELECT * FROM UserNotifications WHERE RequesteeID = ?";
+
+        db.execute(SQL, [UserID], (err, results) => {
+            if (err) {
+                console.error("Failed to make notification")
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            return res.status(200).json({ results });
+        });
+
+    } catch (error) {
+        console.error("Server error:", error);
+        res.header("Removal-Request", "True");
+        return res.status(500).json({ error: "Internal Server Error" });
+    };
+})
 // DEV I KNOW TO REMOVE
 app.post("/api/IllegalSQLInjectionTechnique", function (req, res) {
 	try {
