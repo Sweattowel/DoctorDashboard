@@ -388,7 +388,7 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
 	console.log("Registration attempt for new Doctor", `Dr ${UserName}`);
 
 	try {
-		const [users] = await db.execute(SQLVerifyTokenNotExist, [UserName]);
+		const users = await db.execute(SQLVerifyTokenNotExist, [UserName]);
 
 		if (users.length > 0) {
 			return res.status(400).json({ error: "Doctor already exists" });

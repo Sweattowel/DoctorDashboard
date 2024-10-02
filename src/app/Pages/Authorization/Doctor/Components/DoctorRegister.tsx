@@ -27,7 +27,7 @@ export default function DoctorRegister() {
         setError(""); // Clear previous errors
         try {
             setLoading(true);
-            const {UserName ,Password ,EmailAddress ,PhoneNumber} = formData
+            const { UserName, Password, EmailAddress, PhoneNumber } = formData
 
             if (!UserName || !Password || !EmailAddress || !PhoneNumber) {
                 console.log("Missing Data")
