@@ -5,10 +5,19 @@ import API from "@/app/Interceptor";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+interface NotificationStructure {
+    Urgency: number
+    RequesterID: number
+    RequesterName: string
+    RequesteeID: string
+    RequesteeName: string
+    NotificationText: string
+    Date: string
+}
 export default function NavBar() {
     const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
     const [wantedScreen, setWantedScreen] = useState<string>("Wide");
-
+    const [ notifications, setNotifications ] = useState<NotificationStructure[]>([]);
     const called = useRef(false);
 
     useEffect(() => {
@@ -58,22 +67,40 @@ export default function NavBar() {
             const response = await API.post("/api/Authorization/RefreshToken",{ isUser,isDoctor,isAdmin });
 
             if (response.status === 200) {
-                setTimeout(() => refreshToken(), 240000);
+                setTimeout(() => refreshToken(), 10000);
                 console.log("Token Refreshed");
             }
         } catch (error) {
             console.error(error);
         }
     }
+    async function collectNotifications(){
+        if (!isUser && !isAdmin && !isDoctor) {return};
+        if (isDoctor) {
+            console.log("Collecting Doctor Notifications");
+            const response = await API.get(`/api/Notifications/CollectDoctorNotifications/${userData.UserID}`);
 
+            if (response.status == 200){
+                console.log(response.data.results)
+            }
+        } else if (isUser) {
+            console.log("Collecting User Notifications");
+            const response = await API.get(`/api/Notifications/CollectUserNotifications/${userData.UserID}`);
+            
+            if (response.status == 200){
+                console.log(response.data.results)
+            }
+        }
+    }
     useEffect(() => {
         if (sessionStorage.getItem("PreviousSessionChecked") !== "True") {
             existingSessionCheck();
         }
     
-        const tokenRefreshInterval = setTimeout(() => {
+        const RefreshInterval = setTimeout(() => {
             refreshToken();
-        }, 240000); // Call refreshToken after 240 seconds
+            collectNotifications();
+        }, 240000); // Call refresh after 240 seconds
     
         // Set Nav for screen size
         if (window.innerWidth < 750) {
@@ -84,18 +111,22 @@ export default function NavBar() {
     
         // Cleanup on unmount
         return () => {
-            clearTimeout(tokenRefreshInterval);
+            clearTimeout(RefreshInterval);
         };
     }, []);
-
+    useEffect(() => {
+        collectNotifications();
+    },[userData.UserID])
     return (
         <>
-            {wantedScreen === "Mobile" ? <MobileNavBar isUser={isUser} /> : <WideScreenNavBar isUser={isUser} />}
+            {wantedScreen === "Mobile" ? <MobileNavBar isUser={isUser} /> : <WideScreenNavBar notifications={notifications} isUser={isUser} />}
         </>
     );
 }
 
-const WideScreenNavBar = ({ isUser }: { isUser: boolean }) => {
+const WideScreenNavBar = ({ isUser, notifications }: { isUser: boolean, notifications: any }) => {
+    const [ showNotifications, setShowNotifications ] = useState<boolean>(false);
+
     return (
         <main className="flex shadow justify-evenly items-center p-2 bg-white max-w-[100vw]">
             <h1 className="p-2 pl-5 h-full text-2xl font-serif font-bold">Medicite</h1>
@@ -108,6 +139,21 @@ const WideScreenNavBar = ({ isUser }: { isUser: boolean }) => {
                     <NavBarLink href="/Pages/Authorization/Login" text="Login" />
                 )}
                 <NavBarLink href="/Pages/Injection" text="Inject" />
+                <button className={`${showNotifications && "bg-blue-600 animate-pulse scale-110"} rounded transition-all ease-in-out duration-500 p-1`} onClick={() => setShowNotifications(!showNotifications)}>
+                    &#128276;
+                </button>
+                {showNotifications &&
+                    <ul className="bg-white border absolute right-0">
+                        {notifications.map((notification: NotificationStructure, index: number) => {
+                                <li key={index}>
+                                    {notification.NotificationText}
+                                </li>
+                            })
+                        }
+                    </ul>                
+                }
+
+
             </ul>
         </main>
     );
