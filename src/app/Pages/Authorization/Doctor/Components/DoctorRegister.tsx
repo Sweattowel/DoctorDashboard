@@ -2,7 +2,7 @@
 
 import { userContext } from "@/app/Context/ContextProvider";
 import API from "@/app/Interceptor";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 interface FormData {
     UserName: string;
@@ -27,8 +27,12 @@ export default function DoctorRegister() {
         setError(""); // Clear previous errors
         try {
             setLoading(true);
+            const {UserName ,Password ,EmailAddress ,PhoneNumber} = formData
 
-            // Send formData directly, not as an object containing formData
+            if (!UserName || !Password || !EmailAddress || !PhoneNumber) {
+                console.log("Missing Data")
+                return
+            }
             const response = await API.post("/api/Authorization/DoctorRegister", formData);
 
             switch(response.status) {
@@ -59,7 +63,9 @@ export default function DoctorRegister() {
             setLoading(false);
         }
     }
-
+    useEffect(() => {
+        console.log(formData)
+    },[formData])
     return (
         <main className="h-full w-full">
             {isAdmin && (
@@ -74,14 +80,16 @@ export default function DoctorRegister() {
                             className="border"
                             type="text"
                             id="Name"
+                            value={formData.UserName}
                             required
                         />
                         <label>Enter Password: </label>
                         <input
                             onChange={(e) => setFormData((prevData) => ({ ...prevData, Password: e.target.value }))}
                             className="border"
-                            type="password" // Change type to "password" for better security
+                            type="password"
                             id="PassWord"
+                            value={formData.Password}
                             required
                         />
                         <label>Enter Email Address: </label>
@@ -90,6 +98,7 @@ export default function DoctorRegister() {
                             className="border"
                             type="text"
                             id="EmailAddress"
+                            value={formData.EmailAddress}
                             required
                         />
                         <label>Enter Phone Number: </label>
@@ -98,6 +107,7 @@ export default function DoctorRegister() {
                             className="border"
                             type="text"
                             id="PhoneNumber"
+                            value={formData.PhoneNumber}
                             required
                         />
                                

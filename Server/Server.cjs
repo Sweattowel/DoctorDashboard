@@ -388,18 +388,20 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
 	console.log("Registration attempt for new Doctor", `Dr ${UserName}`);
 
 	try {
-		const users = await db.execute(SQLVerifyTokenNotExist, [UserName]);
+		const [users] = await db.execute(SQLVerifyTokenNotExist, [UserName]);
+
 		if (users.length > 0) {
 			return res.status(400).json({ error: "Doctor already exists" });
 		}
 
 		const hashedPassword = await HASH(Password);
+
 		db.execute(
 			SQLPlaceData,
 			[UserName, hashedPassword, EmailAddress, PhoneNumber],
 			function (err, result) {
 				if (err) {
-					console.error("Server error:", error);
+					console.error("Server error:", err);
 
 					return res.status(500).json({ error: "Internal Server Error" });
 				} else if (result.affectedRows === 1) {
