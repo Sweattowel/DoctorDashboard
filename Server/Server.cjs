@@ -368,10 +368,17 @@ app.get("/api/Authorization/DoctorLogin", function (req, res) {
 	}
 });
 app.post("/api/Authorization/DoctorRegister", async function (req, res) {
+    const cookie = req.cookies["Authorization"];
+
+	if (!cookie || !VerifyAdminToken(cookie)) {
+		res.header("Removal-Request", "True");
+		return res.status(401).json({ message: "Token Verification Failed" });
+	}
+
 	const SQLVerifyTokenNotExist =
-		"SELECT UserName FROM DoctorData WHERE UserName = ?";
+		"SELECT UserName FROM Doctors WHERE UserName = ?";
 	const SQLPlaceData =
-		"INSERT INTO DoctorData (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
+		"INSERT INTO Doctors (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
 
 	const { UserName, Password, EmailAddress, PhoneNumber } = req.body;
 

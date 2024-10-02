@@ -4,33 +4,34 @@ import { userContext } from "@/app/Context/ContextProvider";
 import API from "@/app/Interceptor";
 import { FormEvent, useState } from "react";
 
-interface formData {
-    UserName:string 
-    Password:string 
-    EmailAddress:string 
-    PhoneNumber:string
-    
+interface FormData {
+    UserName: string;
+    Password: string;
+    EmailAddress: string;
+    PhoneNumber: string;
 }
 
 export default function DoctorRegister() {
-    const [ loading, setLoading ] = useState<boolean>(false);
-    const [ error, setError ] = useState<string>("Please Enter Details") 
-    const { isAdmin, setIsAdmin } = userContext();
-    const [ formData, setFormData ] = useState<formData>({
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("Please Enter Details");
+    const { isAdmin } = userContext();
+    const [formData, setFormData] = useState<FormData>({
         UserName: "",
         Password: "",
         EmailAddress: "",
         PhoneNumber: ""
     });
 
-    async function DoctorRegister(e: FormEvent<HTMLFormElement>) {
+    async function handleDoctorRegister(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setError(""); // Clear previous errors
         try {
             setLoading(true);
 
-            const response = await API.post("/api/Authorization/DoctorCreate", formData);
+            // Send formData directly, not as an object containing formData
+            const response = await API.post("/api/Authorization/DoctorRegister", formData);
 
-            switch(response.status){
+            switch(response.status) {
                 case 200:
                     setError("Success!");
                     break;
@@ -41,38 +42,64 @@ export default function DoctorRegister() {
                     setError("Unauthorized");
                     break;
                 default:
-                    setError("Failed to Authorize");
+                    setError("Registration failed: " + (response.data.error || "Unknown error"));
                     break;
             }
 
-        } catch (error) {
-            console.error(error)
+        } catch (error: any) { // Use `any` for a more flexible error type
+            console.error(error);
+            setError("Registration failed: " + (error.response?.data?.error || "Unknown error"));
         } finally {
             setFormData({
                 UserName: "",
                 Password: "",
                 EmailAddress: "",
                 PhoneNumber: ""
-            })
+            });
             setLoading(false);
         }
     }
+
     return (
         <main className="h-full w-full">
-            {isAdmin &&
+            {isAdmin && (
                 <section className="bg-white w-[80%] mt-10 m-auto p-5 shadow-2xl rounded-2xl">
                     <h1 className="text-xl font-bold border-b">
                         Create Doctor
                     </h1>
-                    <form onSubmit={(e) => DoctorRegister(e)} className="flex flex-col">
+                    <form onSubmit={handleDoctorRegister} className="flex flex-col">
                         <label>Enter Name: </label>
-                        <input onChange={(e) => setFormData((prevData) => ({...prevData, UserName: e.target.value}))} className="border" type="text" id="Name" required />
+                        <input
+                            onChange={(e) => setFormData((prevData) => ({ ...prevData, UserName: e.target.value }))}
+                            className="border"
+                            type="text"
+                            id="Name"
+                            required
+                        />
                         <label>Enter Password: </label>
-                        <input onChange={(e) => setFormData((prevData) => ({...prevData, Password: e.target.value}))} className="border" type="Password" id="PassWord" required/>
-                        <label>Enter EmailAddress: </label>
-                        <input onChange={(e) => setFormData((prevData) => ({...prevData, EmailAddress: e.target.value}))} className="border" type="text" id="EmailAddress" required/>
-                        <label>Enter PhoneNumber: </label>
-                        <input onChange={(e) => setFormData((prevData) => ({...prevData, PhoneNumber: e.target.value}))} className="border" type="password" id="PhoneNumber" required/>
+                        <input
+                            onChange={(e) => setFormData((prevData) => ({ ...prevData, Password: e.target.value }))}
+                            className="border"
+                            type="password" // Change type to "password" for better security
+                            id="PassWord"
+                            required
+                        />
+                        <label>Enter Email Address: </label>
+                        <input
+                            onChange={(e) => setFormData((prevData) => ({ ...prevData, EmailAddress: e.target.value }))}
+                            className="border"
+                            type="text"
+                            id="EmailAddress"
+                            required
+                        />
+                        <label>Enter Phone Number: </label>
+                        <input
+                            onChange={(e) => setFormData((prevData) => ({ ...prevData, PhoneNumber: e.target.value }))}
+                            className="border"
+                            type="text"
+                            id="PhoneNumber"
+                            required
+                        />
                                
                         <p className="animate-pulse text-red-600">{error}</p>
                         {!loading ? (
@@ -86,7 +113,7 @@ export default function DoctorRegister() {
                         )}
                     </form>
                 </section>
-            }
+            )}
         </main>
-    )
+    );
 }

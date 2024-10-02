@@ -13,6 +13,8 @@ interface NotificationStructure {
     RequesteeName: string
     NotificationText: string
     Date: string
+    RequestType: string
+    CompletedStatus: boolean
 }
 export default function NavBar() {
     const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
@@ -81,8 +83,21 @@ export default function NavBar() {
             const response = await API.get(`/api/Notifications/CollectDoctorNotifications/${userData.UserID}`);
 
             if (response.status == 200){
-                console.log(response.data.results)
-            }
+                setNotifications(response.data.results)
+            } else {
+                setNotifications([{
+                    Date: new Date().toString(),
+                    RequesteeID: -1,
+                    RequesteeName: userData.UserName,
+                    RequesterID: userData.UserID,
+                    RequesterName: "SYSTEM",
+                    Urgency: 0,
+                    NotificationText: "Oops No data",
+                    RequestType: "No Notifications",
+                    CompletedStatus: false
+                }]);
+            };
+
         } else if (isUser) {
             console.log("Collecting User Notifications");
             const response = await API.get(`/api/Notifications/CollectUserNotifications/${userData.UserID}`);
@@ -97,9 +112,11 @@ export default function NavBar() {
                     RequesterID: userData.UserID,
                     RequesterName: "SYSTEM",
                     Urgency: 0,
-                    NotificationText: "Oops No data"
-                }])
-            }
+                    NotificationText: "Oops No data",
+                    RequestType: "No Notifications",
+                    CompletedStatus: false
+                }]);
+            };
         }
     }
     useEffect(() => {
@@ -158,17 +175,16 @@ const WideScreenNavBar = ({ isUser, notifications }: { isUser: boolean, notifica
                     <ul className="z-[1] bg-white border absolute right-0 top-[5vh] pt-5 pb-5 p-1 w-[50%] text-black overflow-auto ">
                         {notifications.map((notification: NotificationStructure, index: number) => (
                                 <li key={index} className="text-black h-[50px] p-2 w-full h-full flex flex-col border-b">
-                                    <div className=" flex flex-col font-bold ">
-                                        <h3>
-                                            From {notification.RequesterName} 
-                                        </h3>
-                                        <p>
-                                            Date: {notification.Date}
-                                        </p>
-                                    </div>
+                                    <h3 className=" flex flex-col font-bold ">
+                                        {notification.RequestType} From {notification.RequesterName} 
+                                    </h3>
                                     <p>
                                         {notification.NotificationText}
+                                    </p>                                    
+                                    <p className="text-sm text-gray-400">
+                                        On {notification.Date.split("T")[0]}
                                     </p>
+
                                 </li>
                         ))
                         }
