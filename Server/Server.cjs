@@ -29,14 +29,14 @@ const { error } = require("console");
 const db = mysql.createConnection({
 	host: process.env.DATABASE_HOST,
 	user: process.env.DATABASE_USER,
-	PassWord: process.env.DATABASE_PassWord,
+	password: process.env.DATABASE_PASSWORD,
 	database: process.env.DATABASE_DATABASE,
 });
 
 console.log(
 	process.env.DATABASE_HOST,
 	process.env.DATABASE_USER,
-	process.env.DATABASE_PassWord,
+	process.env.DATABASE_PASSWORD,
 	process.env.DATABASE_DATABASE
 );
 
