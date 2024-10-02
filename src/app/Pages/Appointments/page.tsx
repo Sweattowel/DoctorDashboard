@@ -6,7 +6,7 @@ import DoctorDisplay from './Components/DoctorDisplay';
 import AppointmentDisplay from './Components/AppointmentDisplay';
 import NavBar from '@/app/GlobalComponents/Nav/Navigation';
 import { userContext } from '@/app/Context/ContextProvider';
-import UserBook from './Components/UserBook';
+import UserBook from './Components/UserCreateAppointment';
 import Tail from '@/app/GlobalComponents/Tail/Tail';
 
 export default function Appointment() {

@@ -3,11 +3,6 @@ import Tail from "./GlobalComponents/Tail/Tail";
 import "./Interceptor";
 import Link from "next/link";
 
-const DoctorPictures : string[] = [
-  "https://img.freepik.com/free-photo/beautiful-young-female-doctor-looking-camera-office_1301-7807.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1726790400&semt=ais_hybrid",
-  "https://www.shutterstock.com/image-photo/healthcare-medical-staff-concept-portrait-600nw-2281024823.jpg",
-]
-
 export default function Home() {
 
   return (
