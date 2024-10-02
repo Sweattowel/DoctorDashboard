@@ -2,11 +2,11 @@
 const { HASH, COMPARE } = require("./Handlers/EncryptionHandle.cjs");
 const {
 	CreateToken,
-	TVerifyTokenToken,
+	VerifyToken,
 	DecodeToken,
 	RefreshToken,
 	CreateAdminToken,
-	TVerifyTokenAdminToken,
+	VerifyAdminToken,
 	RefreshAdminToken,
     VerifyToken,
 } = require("./Handlers/TokenHandle.cjs");
@@ -159,7 +159,7 @@ app.get("/api/testCookie", function (req, res) {
 			return res.status(401).json({ message: "No Authorization cookie found" });
 		}
 
-		if (TVerifyTokenToken(cookie)) {
+		if (VerifyToken(cookie)) {
 			return res.status(200).json({ message: "Success" });
 		} else {
 			return res.status(401).json({ message: "Invalid token" });
@@ -257,7 +257,7 @@ app.post("/api/Authorization/Login", function (req, res) {
 	}
 });
 app.post("/api/Authorization/Register", async function (req, res) {
-	const SQLTVerifyTokenNotExist = "SELECT UserName FROM UserData WHERE UserName = ?";
+	const SQLVerifyTokenNotExist = "SELECT UserName FROM UserData WHERE UserName = ?";
 	const SQLPlaceData =
 		"INSERT INTO UserData (UserName, Password, EmailAddress, Address, PhoneNumber, Title) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -277,7 +277,7 @@ app.post("/api/Authorization/Register", async function (req, res) {
 	console.log("Registration attempt for new user", `${Title} ${UserName}`);
 
 	try {
-		const users = await db.execute(SQLTVerifyTokenNotExist, [UserName]);
+		const users = await db.execute(SQLVerifyTokenNotExist, [UserName]);
 		if (users.length > 0) {
 			return res.status(400).json({ error: "User already exists" });
 		}
@@ -308,7 +308,7 @@ app.post("/api/Authorization/Register", async function (req, res) {
 app.get("/api/Profile/getUserAppointments/:UserID", async function (req, res) {
 	const cookie = req.cookies["Authorization"];
 
-	if (!cookie || !TVerifyTokenToken(cookie)) {
+	if (!cookie || !VerifyToken(cookie)) {
 		res.header("Removal-Request", "True");
 		return res.status(401).json({ message: "Token Verification Failed" });
 	}
@@ -375,7 +375,7 @@ app.get("/api/Authorization/DoctorLogin", function (req, res) {
 	}
 });
 app.post("/api/Authorization/DoctorRegister", async function (req, res) {
-	const SQLTVerifyTokenNotExist =
+	const SQLVerifyTokenNotExist =
 		"SELECT UserName FROM DoctorData WHERE UserName = ?";
 	const SQLPlaceData =
 		"INSERT INTO DoctorData (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
@@ -388,7 +388,7 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
 	console.log("Registration attempt for new Doctor", `Dr ${UserName}`);
 
 	try {
-		const users = await db.execute(SQLTVerifyTokenNotExist, [UserName]);
+		const users = await db.execute(SQLVerifyTokenNotExist, [UserName]);
 		if (users.length > 0) {
 			return res.status(400).json({ error: "Doctor already exists" });
 		}
@@ -459,7 +459,7 @@ app.post("/api/Authorization/AdminLogin", function (req, res) {
 	}
 });
 app.post("/api/Authorization/AdminCreate", async function (req, res) {
-	const SQLTVerifyTokenNotExist = "SELECT UserName FROM AdminData WHERE UserName = ?";
+	const SQLVerifyTokenNotExist = "SELECT UserName FROM AdminData WHERE UserName = ?";
 	const SQLPlaceData =
 		"INSERT INTO AdminData (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
 
@@ -471,7 +471,7 @@ app.post("/api/Authorization/AdminCreate", async function (req, res) {
 	console.log("Registration attempt for new Admin", `Dr ${UserName}`);
 
 	try {
-		const users = await db.execute(SQLTVerifyTokenNotExist, [UserName]);
+		const users = await db.execute(SQLVerifyTokenNotExist, [UserName]);
 		if (users.length > 0) {
 			return res.status(400).json({ error: "Doctor already exists" });
 		}
@@ -507,7 +507,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
 		const cookie = req.cookies["Authorization"];
 		console.log("Finding previous session");
 
-		if (!TVerifyTokenToken(cookie)) {
+		if (!VerifyToken(cookie)) {
 			res.header("Removal-Request", "True");
 			return res.status(401).json({ message: "Invalid token" });
 		}
@@ -522,7 +522,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
 				return res.status(500).json({ error: "Database query error" });
 			}
 			if (results.length === 0) {
-				return res.status(401).json({ error: "Failed to TVerifyToken" });
+				return res.status(401).json({ error: "Failed to VerifyToken" });
 			}
 			let { Password, ...userData } = results[0];
 			let token = await CreateToken(userData);
@@ -557,7 +557,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
             }
             const cookie = req.cookies["Authorization"];
 
-            if (!TVerifyTokenToken(cookie)) {
+            if (!VerifyToken(cookie)) {
                 res.header("Removal-Request", "True");
                 return res.status(401).json({ message: "Invalid token" });
             }
