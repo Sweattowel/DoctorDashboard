@@ -1,14 +1,7 @@
 // Helper Functions
 const { HASH, COMPARE } = require("./Handlers/EncryptionHandle.cjs");
 const {
-	CreateToken,
-	VerifyToken,
-	DecodeToken,
-	RefreshToken,
-	CreateAdminToken,
-	VerifyAdminToken,
-	RefreshAdminToken,
-    VerifyToken,
+	CreateToken, VerifyToken, DecodeToken, RefreshToken, CreateAdminToken, VerifyAdminToken, RefreshAdminToken,
 } = require("./Handlers/TokenHandle.cjs");
 // CORE functions
 const express = require("express");
