@@ -562,7 +562,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
 
             db.execute(SQL, [RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, DATE], (err, result) => {
                 if (err) {
-                    console.error("Failed to make notification")
+                    console.error("Failed to make Doctor notification", err)
                     return res.status(500).json({ error: "Internal Server Error" });
                 }
                 if (result.affectedRows == 1){
@@ -591,7 +591,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
     
             db.execute(SQL, [UserID], (err, results) => {
                 if (err) {
-                    console.error("Failed to make notification")
+                    console.error("Failed to Collect User notification", err)
                     return res.status(500).json({ error: "Internal Server Error" });
                 }
                 return res.status(200).json({ results });
@@ -626,7 +626,7 @@ app.post("/api/Notifications/CreateUserNotification", function (req, res) {
 
         db.execute(SQL, [RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, DATE], (err, result) => {
             if (err) {
-                console.error("Failed to make notification")
+                console.error("Failed to make User notification", err)
                 return res.status(500).json({ error: "Internal Server Error" });
             }
             if (result.affectedRows == 1){
@@ -655,7 +655,7 @@ app.get("/api/Notifications/CollectDoctorNotifications/:DoctorID" , function (re
 
         db.execute(SQL, [DoctorID], (err, results) => {
             if (err) {
-                console.error("Failed to make notification")
+                console.error("Failed to Collect Doctor notification", err)
                 return res.status(500).json({ error: "Internal Server Error" });
             }
             return res.status(200).json({ results });
