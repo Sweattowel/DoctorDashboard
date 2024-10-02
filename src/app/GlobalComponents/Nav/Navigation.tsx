@@ -88,7 +88,7 @@ export default function NavBar() {
             const response = await API.get(`/api/Notifications/CollectUserNotifications/${userData.UserID}`);
             
             if (response.status == 200){
-                console.log(response.data.results)
+                console.log(response.data)
             }
         }
     }

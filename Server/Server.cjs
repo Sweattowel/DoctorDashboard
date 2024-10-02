@@ -586,7 +586,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
             }
             console.log("Received Notification Request");
     
-            const UserID = req.params;
+            const UserID = req.params.UserID;
             const SQL = "SELECT * FROM UserNotifications WHERE RequesteeID = ?";
     
             db.execute(SQL, [UserID], (err, results) => {
