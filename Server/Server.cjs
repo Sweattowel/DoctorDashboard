@@ -661,10 +661,12 @@ app.get("/api/Notifications/CollectDoctorNotifications/:DoctorID" , function (re
         if (!VerifyAdminToken(cookie)) {
 			res.header("Removal-Request", "True");
 			return res.status(401).json({ message: "Invalid token" });
-		}
-        console.log("Received Notification for Doctor Request");
+		};
 
-        const DoctorID = req.params;
+        const DoctorID = req.params.DoctorID;
+        console.log("Received Notification Request for Doctor ", DoctorID);
+
+        
         const SQL = "SELECT * FROM DoctorNotifications WHERE RequesteeID = ?";
 
         db.execute(SQL, [DoctorID], (err, results) => {

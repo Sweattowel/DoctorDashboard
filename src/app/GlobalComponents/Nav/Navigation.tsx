@@ -17,7 +17,7 @@ interface NotificationStructure {
     CompletedStatus: boolean
 }
 export default function NavBar() {
-    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
+    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, doctorData, setDoctorData, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
     const [wantedScreen, setWantedScreen] = useState<string>("Wide");
     const [ notifications, setNotifications ] = useState<NotificationStructure[]>([]);
     const called = useRef(false);
@@ -79,11 +79,12 @@ export default function NavBar() {
     async function collectNotifications(){
         if (!isUser && !isAdmin && !isDoctor) {return};
         if (isDoctor) {
-            console.log("Collecting Doctor Notifications");
-            const response = await API.get(`/api/Notifications/CollectDoctorNotifications/${userData.UserID}`);
+            console.log(`Collecting Doctor Notifications ${doctorData.id}`);
+            const response = await API.get(`/api/Notifications/CollectDoctorNotifications/${doctorData.id}`);
 
             if (response.status == 200){
                 setNotifications(response.data.results)
+                console.log(response.data)
             } else {
                 setNotifications([{
                     Date: new Date().toString(),
@@ -97,7 +98,7 @@ export default function NavBar() {
                     CompletedStatus: false
                 }]);
             };
-
+            return;
         } else if (isUser) {
             console.log("Collecting User Notifications");
             const response = await API.get(`/api/Notifications/CollectUserNotifications/${userData.UserID}`);
@@ -117,7 +118,8 @@ export default function NavBar() {
                     CompletedStatus: false
                 }]);
             };
-        }
+            return;
+        };
     }
     useEffect(() => {
         if (sessionStorage.getItem("PreviousSessionChecked") !== "True") {

@@ -10,7 +10,7 @@ import { FormEvent, useState } from "react";
 // Define formData and userData interfaces
 interface formDataStruc {
     UserName: string;
-    Password: string;
+    PassWord: string;
 }
 
 interface userDataStruc {
@@ -30,7 +30,7 @@ export default function Login() {
 
     const [formData, setFormData] = useState<formDataStruc>({
         UserName: "",
-        Password: "",
+        PassWord: "",
     });
 
     async function handleLogin(e: FormEvent<HTMLFormElement>) {
@@ -102,14 +102,14 @@ export default function Login() {
                                     UserName: e.target.value,
                                 }))}
                             />
-                            <h2>Enter Password</h2>
+                            <h2>Enter PassWord</h2>
                             <input
                                 className="w-[40%] border rounded shadow"
-                                placeholder="Password"
-                                type="password" // Changed to 'password' for security
+                                placeholder="PassWord"
+                                type="passWord" // Changed to 'passWord' for security
                                 onChange={(e) => setFormData((prevData) => ({
                                     ...prevData,
-                                    Password: e.target.value,
+                                    PassWord: e.target.value,
                                 }))}
                             />
                             <p className="text-red-800 text-center max-w-[60%] min-h-[80px]">{error}</p>

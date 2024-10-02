@@ -20,12 +20,35 @@ const DefaultUserStatus : UserDataStruc = {
   Title: ""
 };
 
+interface DoctorDataStruc {
+  id: number
+  UserName: string
+  Speciality: string
+  PhoneNumber: string
+  EmailAddress: string
+  address: string
+  yearsOfExperience: Number
+  hospitalAffiliation: string
+};
+const DefaultDoctorStatus : DoctorDataStruc = {
+  id: -1,
+  UserName: "",
+  Speciality: "",
+  PhoneNumber: "",
+  EmailAddress: "",
+  address: "",
+  yearsOfExperience: -1,
+  hospitalAffiliation: "",
+};
 const UserContext = createContext<{
     userData: UserDataStruc;
     setUserData: React.Dispatch<React.SetStateAction<UserDataStruc>>;
 
     isUser: boolean;
     setIsUser: React.Dispatch<React.SetStateAction<boolean>>;
+
+    doctorData: DoctorDataStruc;
+    setDoctorData: React.Dispatch<React.SetStateAction<DoctorDataStruc>>;
 
     isDoctor: boolean;
     setIsDoctor: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,6 +65,9 @@ const UserContext = createContext<{
     isUser: false,
     setIsUser: () => {},
 
+    doctorData: DefaultDoctorStatus,
+    setDoctorData: () => {},
+
     isDoctor: false,
     setIsDoctor: () => {},
 
@@ -56,7 +82,10 @@ export default function UserContextProvider({children,}: Readonly<{ children: Re
 
     const [userData, setUserData] = useState<UserDataStruc>(DefaultUserStatus);
     const [isUser, setIsUser] = useState<boolean>(false);
+
+    const [doctorData, setDoctorData] = useState<DoctorDataStruc>(DefaultDoctorStatus);
     const [isDoctor, setIsDoctor] = useState<boolean>(false);
+
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [wantLogOut, setWantLogOut] = useState<boolean>(false);
     
@@ -66,6 +95,7 @@ export default function UserContextProvider({children,}: Readonly<{ children: Re
         { 
           userData, setUserData,
           isUser, setIsUser,
+          doctorData, setDoctorData,
           isDoctor, setIsDoctor,
           isAdmin, setIsAdmin,
           wantLogOut,setWantLogOut

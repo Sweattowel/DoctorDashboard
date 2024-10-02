@@ -13,11 +13,12 @@ interface formData {
 export default function DoctorLogin(){
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ error, setError ] = useState<string>("Please Enter Details") 
-    const { isDoctor, setIsDoctor } = userContext();
+    const { doctorData, setDoctorData, isDoctor, setIsDoctor } = userContext();
     const [ formData, setFormData ] = useState<formData>({
         UserName: "",
         PassWord: ""
     });
+    
 
     async function DoctorLogin(e: { preventDefault: () => void; }){
         e.preventDefault();
@@ -33,6 +34,8 @@ export default function DoctorLogin(){
             switch(response.status){
                 case 200:
                     setIsDoctor(true);
+                    setDoctorData(response.data.UserData)
+                    console.log(response)
                     break;
                 case 404:
                     setError("No User found");
@@ -53,7 +56,7 @@ export default function DoctorLogin(){
 
     return (
         <main className="h-full w-full">
-            {!isDoctor &&
+            {!isDoctor ?
                 <section className="bg-white w-[80%] mt-10 m-auto p-5 shadow-2xl rounded-2xl">
                     <h1 className="text-xl font-bold border-b">
                         Login
@@ -75,7 +78,11 @@ export default function DoctorLogin(){
                         )}
                     </form>
                 </section>
-            }
+             : (
+                <h2 className="bg-white text-center w-[80%] m-auto rounded p-2 mt-10 shadow font-serif">
+                    Welcome Doctor
+                </h2>
+             )}
         </main>
     )
 }
