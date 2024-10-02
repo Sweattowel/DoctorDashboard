@@ -29,14 +29,14 @@ const { error } = require("console");
 const db = mysql.createConnection({
 	host: process.env.DATABASE_HOST,
 	user: process.env.DATABASE_USER,
-	password: process.env.DATABASE_PASSWORD,
+	PassWord: process.env.DATABASE_PassWord,
 	database: process.env.DATABASE_DATABASE,
 });
 
 console.log(
 	process.env.DATABASE_HOST,
 	process.env.DATABASE_USER,
-	process.env.DATABASE_PASSWORD,
+	process.env.DATABASE_PassWord,
 	process.env.DATABASE_DATABASE
 );
 
@@ -207,10 +207,10 @@ app.post("/api/Authorization/RefreshToken", async function (req, res) {
 app.post("/api/Authorization/Login", function (req, res) {
 	try {
 		const SQL =
-			"SELECT UserID, UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
-		const { UserName, Password } = req.body;
+			"SELECT UserID, UserName, PassWord, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
+		const { UserName, PassWord } = req.body;
 
-		if (!UserName || !Password) {
+		if (!UserName || !PassWord) {
 			return res.status(400).json({ error: "Missing Parameters" });
 		}
 		console.log("User is attempting to login Username:".concat(UserName));
@@ -221,11 +221,11 @@ app.post("/api/Authorization/Login", function (req, res) {
 				return res.status(500).json({ error: "Database query error" });
 			}
 			if (results.length === 0) {
-				return res.status(401).json({ error: "Invalid username or password" });
+				return res.status(401).json({ error: "Invalid username or PassWord" });
 			}
-			if (COMPARE(Password, results[0].Password)) {
+			if (COMPARE(PassWord, results[0].PassWord)) {
 				console.log("Successfully compared");
-				let { Password, ...userData } = results[0];
+				let { PassWord, ...userData } = results[0];
 				let token = await CreateToken(userData);
 
 				res.cookie("Authorization", token, {
@@ -252,15 +252,15 @@ app.post("/api/Authorization/Login", function (req, res) {
 app.post("/api/Authorization/Register", async function (req, res) {
 	const SQLVerifyTokenNotExist = "SELECT UserName FROM UserData WHERE UserName = ?";
 	const SQLPlaceData =
-		"INSERT INTO UserData (UserName, Password, EmailAddress, Address, PhoneNumber, Title) VALUES (?, ?, ?, ?, ?, ?)";
+		"INSERT INTO UserData (UserName, PassWord, EmailAddress, Address, PhoneNumber, Title) VALUES (?, ?, ?, ?, ?, ?)";
 
-	const { Title, UserName, Password, EmailAddress, Address, PhoneNumber } =
+	const { Title, UserName, PassWord, EmailAddress, Address, PhoneNumber } =
 		req.body;
 
 	if (
 		!Title ||
 		!UserName ||
-		!Password ||
+		!PassWord ||
 		!EmailAddress ||
 		!Address ||
 		!PhoneNumber
@@ -275,10 +275,10 @@ app.post("/api/Authorization/Register", async function (req, res) {
 			return res.status(400).json({ error: "User already exists" });
 		}
 
-		const hashedPassword = await HASH(Password);
+		const hashedPassWord = await HASH(PassWord);
 		db.execute(
 			SQLPlaceData,
-			[UserName, hashedPassword, EmailAddress, Address, PhoneNumber, Title],
+			[UserName, hashedPassWord, EmailAddress, Address, PhoneNumber, Title],
 			function (err, result) {
 				if (err) {
 					console.error("Server error:", error);
@@ -335,7 +335,7 @@ app.post("/api/Authorization/DoctorLogin", function (req, res) {
         if (!UserName || !PassWord){
             return res.status(401).json({ error: "Bad request"});
         }
-        
+
 		db.execute(SQL, [UserName], async (err, result) => {
 			if (err) {
 				console.error("Server error:", err);
@@ -345,7 +345,7 @@ app.post("/api/Authorization/DoctorLogin", function (req, res) {
 				const check = await COMPARE(PassWord, result[0].PassWord);
 
 				if (check) {
-					const newToken = await CreateAdminToken([UserName]);
+					const newToken = await CreateAdminToken({UserName});
 
 					res.cookie("Authorization", newToken, {
 						httpOnly: true,
@@ -383,11 +383,11 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
 	const SQLVerifyTokenNotExist =
 		"SELECT UserName FROM DoctorData WHERE UserName = ?";
 	const SQLPlaceData =
-		"INSERT INTO DoctorData (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
+		"INSERT INTO DoctorData (UserName, PassWord, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
 
-	const { UserName, Password, EmailAddress, PhoneNumber } = req.body;
+	const { UserName, PassWord, EmailAddress, PhoneNumber } = req.body;
 
-	if (!UserName || !Password || !EmailAddress || !PhoneNumber) {
+	if (!UserName || !PassWord || !EmailAddress || !PhoneNumber) {
 		return res.status(400).json({ error: "Missing Parameters" });
 	}
 	console.log("Registration attempt for new Doctor", `Dr ${UserName}`);
@@ -399,11 +399,11 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
 			return res.status(400).json({ error: "Doctor already exists" });
 		}
 
-		const hashedPassword = await HASH(Password);
+		const hashedPassWord = await HASH(PassWord);
 
 		db.execute(
 			SQLPlaceData,
-			[UserName, hashedPassword, EmailAddress, PhoneNumber],
+			[UserName, hashedPassWord, EmailAddress, PhoneNumber],
 			function (err, result) {
 				if (err) {
 					console.error("Server error:", err);
@@ -448,7 +448,7 @@ app.post("/api/Authorization/AdminLogin", function (req, res) {
 					res.header("Access-Control-Allow-Origin", "http://localhost:3000");
 					res.header("Access-Control-Allow-Credentials", "true");
 
-					const { Password, ...UserData } = result[0];
+					const { PassWord, ...UserData } = result[0];
 
 					return res
 						.status(200)
@@ -468,11 +468,11 @@ app.post("/api/Authorization/AdminLogin", function (req, res) {
 app.post("/api/Authorization/AdminCreate", async function (req, res) {
 	const SQLVerifyTokenNotExist = "SELECT UserName FROM AdminData WHERE UserName = ?";
 	const SQLPlaceData =
-		"INSERT INTO AdminData (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
+		"INSERT INTO AdminData (UserName, PassWord, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
 
-	const { UserName, Password, EmailAddress, PhoneNumber } = req.body;
+	const { UserName, PassWord, EmailAddress, PhoneNumber } = req.body;
 
-	if (!UserName || !Password || !EmailAddress || !PhoneNumber) {
+	if (!UserName || !PassWord || !EmailAddress || !PhoneNumber) {
 		return res.status(400).json({ error: "Missing Parameters" });
 	}
 	console.log("Registration attempt for new Admin", `Dr ${UserName}`);
@@ -483,11 +483,11 @@ app.post("/api/Authorization/AdminCreate", async function (req, res) {
 			return res.status(400).json({ error: "Doctor already exists" });
 		}
 
-		const hashedPassword = await HASH(Password);
+		const hashedPassWord = await HASH(PassWord);
 
 		db.execute(
 			SQLPlaceData,
-			[UserName, hashedPassword, EmailAddress, PhoneNumber],
+			[UserName, hashedPassWord, EmailAddress, PhoneNumber],
 			function (err, result) {
 				if (err) {
 					console.error("Server error:", error);
@@ -510,7 +510,7 @@ app.post("/api/Authorization/AdminCreate", async function (req, res) {
 app.get("/api/Authorize/PreviousSession", async function (req, res) {
 	try {
 		const SQL =
-			"SELECT UserID, UserName, Password, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
+			"SELECT UserID, UserName, PassWord, EmailAddress, Address, PhoneNumber, Title FROM UserData WHERE UserName = ?";
 		const cookie = req.cookies["Authorization"];
 		console.log("Finding previous session");
 
@@ -531,7 +531,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
 			if (results.length === 0) {
 				return res.status(401).json({ error: "Failed to VerifyToken" });
 			}
-			let { Password, ...userData } = results[0];
+			let { PassWord, ...userData } = results[0];
 			let token = await CreateToken(userData);
 
 			res.cookie("Authorization", token, {

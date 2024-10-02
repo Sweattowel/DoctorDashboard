@@ -12,20 +12,27 @@ async function HASH(plainText) {
         return hashedPassword;
     } catch (error) {
         console.error("Error hashing password:", error);
-        throw error;  // Let the calling function handle the error
+        throw error;  
     }
 }
 
 async function COMPARE(plainText, hashedPassword) {
     try {
+        console.log("Plaintext password:", plainText);
+        console.log("Hashed password:", hashedPassword);
+
+        if (!plainText || !hashedPassword) {
+            console.error("Missing data for password comparison");
+            return false;
+        }
+
         console.log("Comparing password");
         const isMatch = await bcrypt.compare(plainText, hashedPassword);
         return isMatch;
     } catch (error) {
         console.error("Error comparing password:", error);
-        throw error;  // Let the calling function handle the error
+        throw error;
     }
 }
 
-// Export the functions
 module.exports = { HASH, COMPARE };
