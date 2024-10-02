@@ -119,7 +119,7 @@ export default function NavBar() {
                 }]);
             };
             return;
-        };
+        }
     }
     useEffect(() => {
         if (sessionStorage.getItem("PreviousSessionChecked") !== "True") {

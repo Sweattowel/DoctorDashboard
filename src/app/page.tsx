@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function Home() {
 
   return (
-    <main className="bg-gray-200 min-h-[100vh] h-full w-[100vw] border pb-10">
+    <main className="bg-gray-200 min-h-[100vh] h-full max-w-[100vw] pb-10">
       <NavBar />
       <section className=" w-[90%] h-full shadow-lg m-auto mt-10 rounded-xl flex flex-col justify-center items-center">
         <h2 className="w-full flex justify-center items-center text-center text-3xl bg-blue-600 font-bold font-serif p-5 rounded text-white">
