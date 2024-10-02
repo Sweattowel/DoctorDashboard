@@ -376,7 +376,7 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
 	}
 
 	const SQLVerifyTokenNotExist =
-		"SELECT name FROM Doctors WHERE UserName = ?";
+		"SELECT name FROM Doctors WHERE name = ?";
 	const SQLPlaceData =
 		"INSERT INTO Doctors (name, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
 
