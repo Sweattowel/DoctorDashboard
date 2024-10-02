@@ -67,7 +67,7 @@ httpServer.listen(port, process.env.SERVER_ADDRESS, () => {
 
 app.get("/api/getDoctorData/:DoctorID", function (req, res) {
 	try {
-		const SQL = "SELECT * FROM Doctors WHERE id = ?";
+		const SQL = "SELECT * FROM DoctorData WHERE id = ?";
 		const { DoctorID } = req.params;
 		console.log("Getting Data for ".concat(DoctorID));
 		if (!DoctorID) {
@@ -88,10 +88,10 @@ app.get("/api/getDoctorData/:DoctorID", function (req, res) {
 });
 app.get("/api/getDoctors", function (req, res) {
 	try {
-		console.log("Getting Doctors");
+		console.log("Getting DoctorData");
 
 		let SQL =
-			"SELECT * FROM Doctors \n                     LEFT JOIN Appointments \n                     ON Doctors.ID = Appointments.DoctorID";
+			"SELECT * FROM DoctorData \n                     LEFT JOIN Appointments \n                     ON DoctorData.id = Appointments.DoctorID";
 		db.execute(SQL, function (err, results) {
 			if (err) {
 				console.error("Error executing query:", err);
@@ -109,7 +109,7 @@ app.get("/api/getDoctorNames", async (req, res) => {
 	try {
 		console.log("Getting Doctor Names");
 
-		let SQL = "SELECT id, name FROM Doctors";
+		let SQL = "SELECT id, UserName FROM DoctorData";
 
 		db.execute(SQL, function (err, results) {
 			if (err) {
@@ -376,9 +376,9 @@ app.post("/api/Authorization/DoctorRegister", async function (req, res) {
 	}
 
 	const SQLVerifyTokenNotExist =
-		"SELECT name FROM Doctors WHERE name = ?";
+		"SELECT UserName FROM DoctorData WHERE UserName = ?";
 	const SQLPlaceData =
-		"INSERT INTO Doctors (name, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
+		"INSERT INTO DoctorData (UserName, Password, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
 
 	const { UserName, Password, EmailAddress, PhoneNumber } = req.body;
 
