@@ -179,7 +179,7 @@ app.post("/api/Authorization/RefreshToken", async function (req, res) {
 				newToken = await RefreshAdminToken(cookie, data);
 				break;
 			case data.isDoctor:
-				newToken = await RefreshToken(cookie, data);
+				newToken = await RefreshAdminToken(cookie, data);
 				break;
 			case data.isUser:
 				newToken = await RefreshToken(cookie, data);

@@ -111,7 +111,7 @@ const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
 
   const [displayData, setDisplayData] = useState<Appointment[]>(data);
 
-  const [currentTime, setCurrentTime ] = useState(new Date().toISOString());
+  const [currentTime, setCurrentTime ] = useState(new Date().toISOString().split("T")[0]);
   const [ currentYear, setCurrentYear ] = useState<number>(parseInt(currentTime.split("T")[0].split("-")[0]));
   const [ currentMonth, setCurrentMonth ] = useState<number>(parseInt(currentTime.split("T")[0].split("-")[1]));
   const [ currentDay, setCurrentDay ] = useState<number>(parseInt(currentTime.split("T")[0].split("-")[2]));
@@ -154,18 +154,40 @@ const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
 
   return (
     <div className="p-5 w-full h-full flex flex-col justify-evenly items-center">
-      <div className="font-bold text-2xl p-2 flex">
+      <div className="font-bold text-2xl p-2 flex justify-evenly w-full">
+        <button className="bg-blue-600 text-white flex justify-center items-center w-[50px] rounded shadow hover:opacity-60"
+          onClick={() => {
+            const newTime = new Date(currentYear, currentMonth - 1, currentDay - 7)
+            setCurrentTime(newTime.toISOString().split("T")[0])
+            setCurrentYear(newTime.getFullYear());
+            setCurrentMonth(newTime.getMonth() + 1);
+            setCurrentDay(newTime.getDate());
+          }}
+        >
+          -
+        </button>
         <input
-            type="datetime-local"
+            type="date"
             value={currentTime}
             onChange={(e) => {
-              setCurrentTime(e.target.value);
+              setCurrentTime(e.target.value.split("T")[0]);
               const selectedDate = new Date(e.target.value);
               setCurrentYear(selectedDate.getFullYear());
               setCurrentMonth(selectedDate.getMonth() + 1);
               setCurrentDay(selectedDate.getDate());
             }}
           />
+        <button className="bg-blue-600 text-white flex justify-center items-center w-[50px] rounded shadow hover:opacity-60"
+          onClick={() => {
+            const newTime = new Date(currentYear, currentMonth - 1, currentDay + 7)
+            setCurrentTime(newTime.toISOString().split("T")[0])
+            setCurrentYear(newTime.getFullYear());
+            setCurrentMonth(newTime.getMonth() + 1);
+            setCurrentDay(newTime.getDate());
+          }}
+        >
+          +
+        </button>
       </div>
       {appointmentParam == "" ? (
         <ul className="flex flex-col justify-evenly items-center min-w-[100%]">
@@ -178,7 +200,7 @@ const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
               {Hour.map((Day : Appointment, dayIndex) => (
                 <div className="border text-center w-[14%] h-[8%] flex items-center justify-center rounded" key={dayIndex}>
                   {Day ? (
-                    <button className="hover:opacity-60 hover:bg-blue-800 bg-blue-600 text-white h-16  w-full p-2 rounded"
+                    <button className={`${Day.Result == 'Completed' && "bg-gray-400"} hover:opacity-60 hover:bg-blue-800 bg-blue-600 text-white h-16  w-full p-2 rounded`}
                       onClick={() => setExpandedData(Day)}
                     >
                       {Day.ClientName}
