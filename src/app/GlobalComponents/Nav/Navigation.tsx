@@ -198,13 +198,13 @@ const WideScreenNavBar = ({ isUser, notifications }: { isUser: boolean, notifica
                                     <h3 className=" flex flex-col font-bold ">
                                         {notification.RequestType} From {notification.RequesterName} 
                                     </h3>
-                                    <p>
+                                    <div>
                                         {notification.NotificationText.split("%:").map((Text: string, TextIndex: number) => (
-                                            <p>
+                                            <p key={TextIndex}>
                                                 {Text}
                                             </p>
                                         ))}
-                                    </p>                                    
+                                    </div>                                    
                                     <p className="text-sm text-gray-400">
                                         On {notification.Date.split("T")[0]}
                                     </p>

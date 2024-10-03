@@ -312,7 +312,9 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
             Title: "",
           });
         break;
-        
+          case 401:
+            setError("Unauthorized");
+          break;
         default:
           setError("Unknown Error, Please Refresh");
         break;
@@ -330,7 +332,7 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
       <h2 className="border-b font-bold font-serif">
         Create new Appointment for {DoctorName}
       </h2>
-      <form className="flex flex-col p-2">
+      <form onSubmit={(e) => HandleSubmit(e)} className="flex flex-col p-2">
         <label className="font-bold">Client Name:</label>
         <input className="border p-1" value={formData.ClientName}
           onChange={(e) => setFormData((prevData) => ({...prevData, ClientName: e.target.value}))} type="text" required
