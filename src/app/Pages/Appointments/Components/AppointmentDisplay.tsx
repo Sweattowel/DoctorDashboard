@@ -2,7 +2,7 @@
 
 import { userContext } from "@/app/Context/ContextProvider";
 import API from "@/app/Interceptor"
-import { useEffect, useState } from "react"
+import { AwaitedReactNode, JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react"
 
 // Types for Appointments
 interface Appointment {
@@ -46,6 +46,7 @@ export default function AppointmentDisplay({ selectedDoctor, getAppointments }: 
       try {
         const response = await API.get(`/api/getAppointments/${selectedDoctor.DoctorID}`);
         if (response.status === 200) {
+          console.log(response.data.results)
           setAppointments(response.data.results);
         }
       } catch (error) {
@@ -105,8 +106,15 @@ interface AppointmentListProps {
 }
 
 const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
+  const [expandedData, setExpandedData] = useState<Appointment | null>(null);
   const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
+
   const [displayData, setDisplayData] = useState<Appointment[]>(data);
+
+  const [currentTime, setCurrentTime ] = useState(new Date().toISOString());
+  const [ currentYear, setCurrentYear ] = useState<number>(parseInt(currentTime.split("T")[0].split("-")[0]));
+  const [ currentMonth, setCurrentMonth ] = useState<number>(parseInt(currentTime.split("T")[0].split("-")[1]));
+  const [ currentDay, setCurrentDay ] = useState<number>(parseInt(currentTime.split("T")[0].split("-")[2]));
 
   useEffect(() => {
     const filteredAppointments = data.filter((client) =>
@@ -116,27 +124,102 @@ const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
     console.log(filteredAppointments)
   }, [appointmentParam, data]);
 
+  let calendar : Appointment[][] = new Array(24).fill(null).map(() => new Array(7).fill(null));
+
+  for (let i = 0; i < data.length; i++){
+    let currentAppointment = data[i];
+
+    const appointmentYear = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[0]);
+    if (appointmentYear !== currentYear){
+      //console.log(appointmentYear, currentYear, "FAILED TO MATCH YEAR")
+      continue;
+    }
+    const appointmentMonth = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[1]);
+    if (appointmentMonth !== currentMonth){
+      console.log(appointmentMonth, currentMonth)
+      continue;
+    }
+    const appointmentDay = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[2]);  
+    if (appointmentDay < currentDay || appointmentDay >= currentDay + 7){
+      //console.log(appointmentDay, currentDay, "FAILED TO MATCH DAYS")
+      continue;
+    }
+    const appointmentHour = parseInt(currentAppointment.AppointmentDate.split('T')[1].split(":")[0]); 
+    //console.log(appointmentYear, appointmentHour, appointmentDay)
+    const dayIndex = appointmentDay - currentDay;
+    calendar[appointmentHour][dayIndex] = currentAppointment;
+    
+  }
+  //console.log(calendar);
+
   return (
-    <ul className="divide-y overflow-auto">
-      {displayData.map((client: Appointment, index: number) => (
-        <li key={index} className="transition-all ease-in-out duration-500">
-          <div className="flex flex-col items-center md:flex-row w-full h-full p-5">
-            <p className="w-full md:w-[25%]">{client.AppointmentDate.replace("T", " ")}</p>
-            <p className="w-full md:w-[25%]">{client.ClientName}</p>
-            <p className="w-full md:w-[25%]">{client.Issue}</p>
-            <button
-              className="w-full md:w-[25%] p-2 rounded hover:opacity-60 bg-blue-600 text-white hover:opacity-60 hover:shadow-md hover:shadow-black transition-all duration-500 ease-in-out"
-              onClick={() => setExpandedAppointment(expandedAppointment === index ? null : index)}
-            >
-              {expandedAppointment === index ? "COLLAPSE" : "EXPAND"}
-            </button>
-          </div>
-          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedAppointment === index ? 'h-[200px]' : 'h-0'}`}>
-            {expandedAppointment === index && <Expansion data={client} />}
-          </div>
-        </li>
-      ))}
-    </ul>
+    <div className="p-5 w-full h-full flex flex-col justify-evenly items-center">
+      <div className="font-bold text-2xl p-2 flex">
+        <input
+            type="datetime-local"
+            value={currentTime}
+            onChange={(e) => {
+              setCurrentTime(e.target.value);
+              const selectedDate = new Date(e.target.value);
+              setCurrentYear(selectedDate.getFullYear());
+              setCurrentMonth(selectedDate.getMonth() + 1);
+              setCurrentDay(selectedDate.getDate());
+            }}
+          />
+      </div>
+      {appointmentParam == "" ? (
+        <ul className="flex flex-col justify-evenly items-center min-w-[100%]">
+          {calendar.map((Hour, HourIndex) => (
+            <div className="flex min-w-full h-full" key={HourIndex}>
+              <p className="w-[60px] text-cetner">
+                {HourIndex < 12 ? `${HourIndex}:AM` : `${HourIndex}:PM`}: 
+              </p>
+              
+              {Hour.map((Day : Appointment, dayIndex) => (
+                <div className="border text-center w-[14%] h-[8%] flex items-center justify-center rounded" key={dayIndex}>
+                  {Day ? (
+                    <button className="hover:opacity-60 hover:bg-blue-800 bg-blue-600 text-white h-16  w-full p-2 rounded"
+                      onClick={() => setExpandedData(Day)}
+                    >
+                      {Day.ClientName}
+                    </button>
+                  ) : (
+                    <p className="h-16 min-w-full p-2 rounded flex items-center justify-center">
+                      FREE
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}         
+        </ul>        
+      ) : (
+        <ul className="divide-y overflow-auto w-[80%]">
+          {displayData.map((client: Appointment, index: number) => (
+            <li key={index} className="transition-all ease-in-out duration-500">
+              <div className="flex flex-col items-center md:flex-row w-full h-full p-5">
+                <p className="w-full md:w-[25%]">{client.AppointmentDate.replace("T", " ")}</p>
+                <p className="w-full md:w-[25%]">{client.ClientName}</p>
+                <p className="w-full md:w-[25%]">{client.Issue}</p>
+                <button
+                  className="w-full md:w-[25%] p-2 rounded hover:opacity-60 bg-blue-600 text-white hover:opacity-60 hover:shadow-md hover:shadow-black transition-all duration-500 ease-in-out"
+                  onClick={() => setExpandedAppointment(expandedAppointment === index ? null : index)}
+                >
+                  {expandedAppointment === index ? "COLLAPSE" : "EXPAND"}
+                </button>
+              </div>
+              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedAppointment === index ? 'h-[200px]' : 'h-0'}`}>
+                {expandedAppointment === index && <Expansion data={client} />}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+        <div className="w-[80%]">
+          {expandedData !== null ? <Expansion data={expandedData}/> : <>Please</>}
+        </div>
+        
+    </div>
   );
 };
 
@@ -147,7 +230,7 @@ interface ExpansionProps {
 
 const Expansion = ({ data }: ExpansionProps) => {
   return (
-    <section className="p-5 border rounded-2xl overflow-hidden transition-all duration-500 ease-in-out flex flex-col justify-evenly">
+    <section className="p-5 border rounded-2xl overflow-hidden transition-all duration-500 ease-in-out flex flex-col justify-evenly w-full mt-10">
       <h2 className="text-lg font-bold">{data.Title} - {data.ClientName}</h2>
       <input placeholder={`${data.Issue}`} />
       <input placeholder={`LEVEL: ${data.LOA} Access`} />
@@ -187,7 +270,7 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
       </h2>
       <form className="flex flex-col p-2">
         <label className="font-bold">Client Name:</label>
-        <input className="border"
+        <input className="border p-1" value={formData.ClientName}
           onChange={(e) => setFormData((prevData) => ({...prevData, ClientName: e.target.value}))} type="text" required
         />
         <h2>Client Title</h2>
@@ -236,15 +319,15 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
             </label>
         </div>
         <label className="font-bold">Client Status:</label>
-        <input className="border"
+        <input className="border p-1" value={formData.ClientStatus}
           onChange={(e) => setFormData((prevData) => ({...prevData, ClientStatus: e.target.value}))} type="text" required 
         />
         <label className="font-bold">Session purpose:</label>
-        <input className="border"
+        <input className="border p-1" value={formData.Issue}
           onChange={(e) => setFormData((prevData) => ({...prevData, Issue: e.target.value}))} type="text" required 
         />
         <label className="font-bold">Appointment Time & Date:</label>
-        <input className="border"
+        <input className="border p-1" value={formData.AppointmentDate}
           onChange={(e) => setFormData((prevData) => ({...prevData, AppointmentDate: e.target.value}))} type="datetime-local" required 
         />
         <label className={`${formData.LOA == 0 ? "bg-white" : formData.LOA == 1 ? "bg-blue-400" : formData.LOA == 2 ? "bg-blue-600" : formData.LOA == 3 ? "bg-red-400" : "" } font-bold p-2 mt-2 mb-2 rounded transition-all duration-500 ease-in-out`}> 
@@ -263,15 +346,15 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
           Communication 
         </h2>
         <label className="font-bold">Email:</label>
-        <input className="border"
+        <input className="border p-1" value={formData.Email}
           onChange={(e) => setFormData((prevData) => ({...prevData, Email: e.target.value}))} type="text" required 
         />
         <label className="font-bold">Phone:</label>
-        <input className="border"
+        <input className="border p-1" value={formData.Phone}
           onChange={(e) => setFormData((prevData) => ({...prevData, Phone: e.target.value}))} type="text" required 
         />
         <label className="font-bold">Address:</label>
-        <input className="border"
+        <input className="border p-1" value={formData.Address}
           onChange={(e) => setFormData((prevData) => ({...prevData, Address: e.target.value}))} type="text" required 
         />
 

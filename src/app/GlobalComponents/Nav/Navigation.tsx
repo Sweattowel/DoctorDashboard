@@ -157,7 +157,7 @@ export default function NavBar() {
             clearTimeout(RefreshInterval);
         };
     }, []);
-    
+
     useEffect(() => {
         if (isUser || isAdmin || isDoctor){
             collectNotifications();
@@ -199,7 +199,11 @@ const WideScreenNavBar = ({ isUser, notifications }: { isUser: boolean, notifica
                                         {notification.RequestType} From {notification.RequesterName} 
                                     </h3>
                                     <p>
-                                        {notification.NotificationText}
+                                        {notification.NotificationText.split("%:").map((Text: string, TextIndex: number) => (
+                                            <p>
+                                                {Text}
+                                            </p>
+                                        ))}
                                     </p>                                    
                                     <p className="text-sm text-gray-400">
                                         On {notification.Date.split("T")[0]}

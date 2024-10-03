@@ -43,6 +43,10 @@ export default function UserBook({ selectedDoctor }: importProps)
     const [loading, setLoading] = useState<boolean>(false); 
     const [error, setError] = useState<string | null>(null);
 
+    // Data to Concatenate
+    const [ EmailAddress, setEmailAddress ] = useState<string>("");
+    const [ PhoneNumber, setPhoneNumber ] = useState<string>("");
+
     const [formData, setFormData] = useState({
         Urgency: -1,
         Issue: '',
@@ -76,13 +80,13 @@ export default function UserBook({ selectedDoctor }: importProps)
             e.preventDefault();
             
             const notificationRequest = {
-                RequestType: "Appointment",
+                RequestType: "Appointment Request",
                 Urgency: formData.Urgency,
                 RequesterID: userData.UserID,
                 RequesterName: userData.UserName,
                 RequesteeID: selectedDoctor.DoctorID,
                 RequesteeName: selectedDoctor.DoctorName,
-                NotificationText: formData.Issue
+                NotificationText: formData.Issue + `%:${EmailAddress}` + `%:${PhoneNumber}`
                 
             };
 
@@ -142,6 +146,20 @@ export default function UserBook({ selectedDoctor }: importProps)
                             type="text"
                             value={formData.Issue}
                             onChange={(e) => setFormData({ ...formData, Issue: e.target.value })}
+                            required
+                        />
+                        <label className="font-bold">Email:</label>
+                        <input className="border"
+                            type="text"
+                            value={EmailAddress}
+                            onChange={(e) => setEmailAddress(e.target.value)}
+                            required
+                        />
+                        <label className="font-bold">Phone Number:</label>
+                        <input className="border"
+                            type="number"
+                            value={PhoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
                             required
                         />
                         <label className={`${formData.Urgency == 0 ? "bg-white" : formData.Urgency == 1 ? "bg-blue-400" : formData.Urgency == 2 ? "bg-blue-600" : formData.Urgency == 3 ? "bg-red-400" : "" } font-bold p-2 mt-2 mb-2 rounded transition-all duration-500 ease-in-out`}> 
