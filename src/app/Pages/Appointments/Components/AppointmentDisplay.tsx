@@ -19,7 +19,6 @@ interface Appointment {
   Phone: string,
   Result: string,
   Title: string,
-  id: number,
 }
 
 const titles: string[] = ["Date", "Name", "Purpose" ];
@@ -267,6 +266,8 @@ const Expansion = ({ data }: ExpansionProps) => {
 
 const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
   const { userData, setUserData, isUser, isDoctor, isAdmin } = userContext();
+  const [ loading, setLoading ] = useState<boolean>(false);
+  const [ error, setError ] = useState<string>("");
 
   const [formData, setFormData] = useState<Appointment>({
     Address: "",
@@ -282,9 +283,48 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
     Phone: "",
     Result: "N/A",
     Title: "",
-    id: 1,
   })
   
+  async function HandleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await API.post("/api/Appointments/Create", formData);
+
+      switch (response.status){
+        case 200:
+          setError("Success");
+          setFormData({
+            Address: "",
+            AppointmentDate: "",
+            ClientName: "",
+            ClientStatus: "",
+            DoctorID:  userData.UserID,
+            Email: "",
+            FurtherAction: "N/A",
+            Issue: "",
+            LOA:  -1,
+            Occupation: "",
+            Phone: "",
+            Result: "N/A",
+            Title: "",
+          });
+        break;
+        
+        default:
+          setError("Unknown Error, Please Refresh");
+        break;
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Failed to create appointment, please refresh");
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <section className="pt-10">
       <h2 className="border-b font-bold font-serif">
@@ -379,10 +419,21 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
         <input className="border p-1" value={formData.Address}
           onChange={(e) => setFormData((prevData) => ({...prevData, Address: e.target.value}))} type="text" required 
         />
+        {loading ? (
+          <p className="bg-blue-600 text-white w-[60%] m-auto mt-2 p-2 rounded shadow animate-pulse text-center">
+            Loading...
+          </p>
+          ) : (
+          <button type="submit" className="bg-blue-600 text-white w-[60%] m-auto mt-2 p-2 rounded shadow hover:opacity-60">
+            Create Appointment
+          </button>
+        )}
+        {error != "" && 
+          <p className="p-2 text-red-600 animate-pulse text-center">
+            {error}    
+          </p>
+        }
 
-        <button type="submit" className="bg-blue-600 text-white w-[60%] m-auto mt-2 p-2 rounded shadow hover:opacity-60">
-          Create Appointment
-        </button>
       </form>
     </section>
   )
