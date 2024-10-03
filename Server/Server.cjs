@@ -555,7 +555,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////// Requests and notifications
 // USER HANDLE NOTIFICATIONS
-    app.post("/api/Notifications/CreateDoctorNotification", function (req, res) {
+    app.post("N/CreateDoctorNotification/:id/complete", function (req, res) {}, function (req, res) {
         try {
             const { RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText} = req.body
 
@@ -591,7 +591,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
         };
     });
     // COLLECT
-    app.get("/api/Notifications/CollectUserNotifications/:UserID" , function (req, res) {
+    app.get("N/CollectUserNotifications/:id/complete/, function (req, res) {}:UserID" , function (req, res) {
         try {        
             const cookie = req.cookies["Authorization"];
             if (!VerifyToken(cookie)) {
@@ -619,7 +619,7 @@ app.get("/api/Authorize/PreviousSession", async function (req, res) {
     })
 // DOCTOR HANDLE NOTIFICATIONS
 
-app.post("/api/Notifications/CreateUserNotification", function (req, res) {
+app.post("N/CreateUserNotification/:id/complete", function (req, res) {}, function (req, res) {
     try {
         const { RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText} = req.body
 
@@ -655,7 +655,7 @@ app.post("/api/Notifications/CreateUserNotification", function (req, res) {
     };
 });
 // Collect Notifications
-app.get("/api/Notifications/CollectDoctorNotifications/:DoctorID" , function (req, res) {
+app.get("N/CollectDoctorNotifications/:id/complete/, function (req, res) {}:DoctorID" , function (req, res) {
     try {        
         const cookie = req.cookies["Authorization"];
         if (!VerifyAdminToken(cookie)) {
@@ -738,23 +738,57 @@ app.post("/api/Appointments/Create", function (req, res) {
     };
 })
 
+app.patch("/api/Notifications/:NotificationID/complete", function (req, res) {
+	try {        
+		// TODO Implement a method to serperate User Doctor and admin traffic here i.e. check for Status and then check the token and change accordingly
+		const cookie = req.cookies["Authorization"];
+		if (!VerifyAdminToken(cookie)) {
+			res.header("Removal-Request", "True");
+			return res.status(401).json({ message: "Invalid token" });
+		};
 
+		const { NotificationID } = req.params.id;
+		console.log("Received Complete Notification Request for ".concat(NotificationID));
 
+		db.execute(SQL, [NotificationID], (err) => {
+			if (err) {
+				return res.status(500).json({ error: "Internal Server Error" });
+			}
+			return res.status(200).json({ message: "Success" });
+		})
 
+	} catch (error) {
+		console.error("Server error:", error);
+		res.header("Removal-Request", "True");
+		return res.status(500).json({ error: "Internal Server Error" });
+	};
+})
 
+app.patch("/api/Notifications/:NotificationID/unComplete", function (req, res) {
+	try {        
+		const cookie = req.cookies["Authorization"];
+		if (!VerifyAdminToken(cookie)) {
+			res.header("Removal-Request", "True");
+			return res.status(401).json({ message: "Invalid token" });
+		};
 
+		const { NotificationID } = req.params.id;
+		const SQL = "UPDATE TABLE "
+		console.log("Received Complete Notification Request for ".concat(NotificationID));
 
+		db.execute(SQL, [NotificationID], (err) => {
+			if (err) {
+				return res.status(500).json({ error: "Internal Server Error" });
+			}
+			return res.status(200).json({ message: "Success" });
+		})
 
-
-
-
-
-
-
-
-
-
-
+	} catch (error) {
+		console.error("Server error:", error);
+		res.header("Removal-Request", "True");
+		return res.status(500).json({ error: "Internal Server Error" });
+	};
+})
 
 
 

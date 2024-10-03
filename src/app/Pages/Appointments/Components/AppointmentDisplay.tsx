@@ -12,7 +12,7 @@ interface Appointment {
   ClientStatus: string,
   DoctorID:  number,
   Email: string,
-  FurtherAction: string,
+  FurtherAction: boolean,
   Issue: string,
   LOA:  number,
   Occupation: string,
@@ -38,7 +38,12 @@ export default function AppointmentDisplay({ selectedDoctor, getAppointments }: 
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [searchParam, setSearchParam] = useState<string>("")
   const [glow, setGlow] = useState<boolean>(false);
-
+  const [ newQuickSetTime, setNewQuickSetTime ] = useState("") 
+  
+  function HandleQuickChangeTime(newTime: string){
+    setNewQuickSetTime(newTime);
+  }
+  
   // Fetch Appointments from API
   async function handleGetAppointments() {
     if (selectedDoctor.DoctorID !== -1) {
@@ -87,8 +92,8 @@ export default function AppointmentDisplay({ selectedDoctor, getAppointments }: 
                 placeholder="Search Client"
               />
             </ul>
-            <AppointmentList appointmentParam={searchParam} data={appointments} />
-            <CreateAppointMent DoctorName={selectedDoctor.DoctorName}/>
+            <AppointmentList appointmentParam={searchParam} data={appointments} changeQuickSetTime={HandleQuickChangeTime}/>
+            <CreateAppointMent DoctorName={selectedDoctor.DoctorName} DoctorID={selectedDoctor.DoctorID} QuickSetTime={newQuickSetTime}/>
           </ul>
         </section>
       ) : (
@@ -102,9 +107,10 @@ export default function AppointmentDisplay({ selectedDoctor, getAppointments }: 
 interface AppointmentListProps {
   appointmentParam: string;
   data: Appointment[];
+  changeQuickSetTime: (newQuickSetTime: string) => void;
 }
 
-const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
+const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: AppointmentListProps) => {
   const [expandedData, setExpandedData] = useState<Appointment | null>(null);
   const [expandedAppointment, setExpandedAppointment] = useState<number | null>(null);
 
@@ -135,7 +141,7 @@ const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
     }
     const appointmentMonth = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[1]);
     if (appointmentMonth !== currentMonth){
-      console.log(appointmentMonth, currentMonth)
+      //console.log(appointmentMonth, currentMonth)
       continue;
     }
     const appointmentDay = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[2]);  
@@ -205,9 +211,9 @@ const AppointmentList = ({ appointmentParam, data }: AppointmentListProps) => {
                       {Day.ClientName}
                     </button>
                   ) : (
-                    <p className="h-16 min-w-full p-2 rounded flex items-center justify-center">
+                    <button onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth, dayIndex, HourIndex, 0,0).toISOString())} className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center">
                       FREE
-                    </p>
+                    </button>
                   )}
                 </div>
               ))}
@@ -264,8 +270,8 @@ const Expansion = ({ data }: ExpansionProps) => {
 };
 
 
-const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
-  const { userData, setUserData, isUser, isDoctor, isAdmin } = userContext();
+const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName : string, DoctorID: number, QuickSetTime : string }) => {
+  const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, doctorData, setDoctorData, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ error, setError ] = useState<string>("");
 
@@ -274,9 +280,9 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
     AppointmentDate: "",
     ClientName: "",
     ClientStatus: "",
-    DoctorID:  userData.UserID,
+    DoctorID:  DoctorID,
     Email: "",
-    FurtherAction: "N/A",
+    FurtherAction: false,
     Issue: "",
     LOA:  -1,
     Occupation: "",
@@ -285,12 +291,20 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
     Title: "",
   })
   
+  useEffect(() => {
+    setFormData((prevData) => ({ ...prevData, AppointmentDate: new Date(QuickSetTime).toISOString().slice(0,16)}))
+  },[QuickSetTime])
+
   async function HandleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
       setLoading(true);
       setError("");
-
+      if (DoctorID == -1 || formData.Title == ""){
+        setError("Missing Parameters");
+        return
+      }
+      setFormData((prevData) => ({...prevData, DoctorID: DoctorID}))
       const response = await API.post("/api/Appointments/Create", formData);
 
       switch (response.status){
@@ -301,9 +315,9 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
             AppointmentDate: "",
             ClientName: "",
             ClientStatus: "",
-            DoctorID:  userData.UserID,
+            DoctorID:  DoctorID,
             Email: "",
-            FurtherAction: "N/A",
+            FurtherAction: false,
             Issue: "",
             LOA:  -1,
             Occupation: "",
@@ -421,6 +435,13 @@ const CreateAppointMent = ({ DoctorName } : { DoctorName : string }) => {
         <input className="border p-1" value={formData.Address}
           onChange={(e) => setFormData((prevData) => ({...prevData, Address: e.target.value}))} type="text" required 
         />
+        <div className="flex p-1">
+          <label className="font-bold">Further Action Needed?</label>
+          <input className="border p-1 ml-5" value={formData.FurtherAction}
+            onChange={(e) => setFormData((prevData) => ({...prevData, FurtherAction: e.target.checked}))} type="checkbox"  
+          />          
+        </div>
+
         {loading ? (
           <p className="bg-blue-600 text-white w-[60%] m-auto mt-2 p-2 rounded shadow animate-pulse text-center">
             Loading...
