@@ -157,9 +157,13 @@ export default function NavBar() {
             clearTimeout(RefreshInterval);
         };
     }, []);
+    
     useEffect(() => {
-        collectNotifications();
-    },[userData.UserID])
+        if (isUser || isAdmin || isDoctor){
+            collectNotifications();
+        }
+    },[isUser, isAdmin, isDoctor]);
+
     return (
         <>
             {wantedScreen === "Mobile" ? <MobileNavBar notifications={notifications} isUser={isUser} /> : <WideScreenNavBar notifications={notifications} isUser={isUser} />}

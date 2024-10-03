@@ -57,10 +57,10 @@ export default function Appointment() {
         <UserBook selectedDoctor={selectedDoctor}/>
       ) : (
         <p className='w-[80%] bg-white mt-10 m-auto p-5 rounded-2xl shadow-2xl text-center animate-pulse'>
-          {message}
+          {isDoctor || isAdmin ? "Please make appointment below" : message}
         </p>
       )}
-      {isDoctor || isAdmin && <AppointmentDisplay selectedDoctor={selectedDoctor} getAppointments={getAppointments}/>}
+      {(isDoctor || isAdmin) && <AppointmentDisplay selectedDoctor={selectedDoctor} getAppointments={getAppointments}/>}
       <Tail />
     </main>
   );

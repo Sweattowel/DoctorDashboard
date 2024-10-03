@@ -38,7 +38,8 @@ export default function Login() {
         try {
             setLoading(true);
             setError("");
-
+            setWantLogOut(true);
+            
             // Check if any fields are missing
             const missingFields = Object.entries(formData).filter(([_, value]) => value === "");
             if (missingFields.length > 0) {

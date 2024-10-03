@@ -13,7 +13,7 @@ interface formData {
 export default function ADMINLogin(){
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ error, setError ] = useState<string>("Please Enter Details") 
-    const { isAdmin, setIsAdmin } = userContext();
+    const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, doctorData, setDoctorData, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
     const [ formData, setFormData ] = useState<formData>({
         UserName: "",
         PassWord: ""
@@ -23,6 +23,8 @@ export default function ADMINLogin(){
         e.preventDefault();
 
         try {
+            setWantLogOut(true);
+            
             setLoading(true);
             const missingFields = Object.entries(formData).filter(([key, value]) => value === "");
             if (missingFields.length > 0){
