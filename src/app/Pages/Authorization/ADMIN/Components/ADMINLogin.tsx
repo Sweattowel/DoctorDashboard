@@ -53,16 +53,16 @@ export default function ADMINLogin(){
 
     return (
         <main className="h-full w-full">
-            {!isAdmin &&
+            {!isAdmin ?
                 <section className="bg-white w-[80%] mt-10 m-auto p-5 shadow-2xl rounded-2xl">
                     <h1 className="text-xl font-bold border-b">
-                        Login
+                        Administration Login
                     </h1>
                     <form onSubmit={(e) => AdminLogin(e)} className="flex flex-col">
                         <label>Enter Name: </label>
-                        <input onChange={(e) => setFormData((prevData) => ({...prevData, UserName: e.target.value}))} className="border" type="text" id="Name" required/>
+                        <input onChange={(e) => setFormData((prevData) => ({...prevData, UserName: e.target.value}))} className="border p-1" type="text" id="Name" required/>
                         <label>Enter PassWord: </label>
-                        <input onChange={(e) => setFormData((prevData) => ({...prevData, PassWord: e.target.value}))} className="border" type="password" id="PassWord" required/>
+                        <input onChange={(e) => setFormData((prevData) => ({...prevData, PassWord: e.target.value}))} className="border p-1" type="password" id="PassWord" required/>
                         <p className="animate-pulse text-red-600">{error}</p>
                         {!loading ? (
                             <button className="bg-blue-600 text-white w-[50%] p-2 mt-2 m-auto rounded hover:opacity-60">
@@ -75,6 +75,10 @@ export default function ADMINLogin(){
                         )}
                     </form>
                 </section>
+            :
+                <p className="bg-white w-[80%] m-auto p-1 text-center font-serif mt-10 rounded shadow">
+                    Welcome Admin
+                </p>
             }
         </main>
     )

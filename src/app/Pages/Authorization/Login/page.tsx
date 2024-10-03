@@ -94,7 +94,7 @@ export default function Login() {
                         <form onSubmit={handleLogin} className="h-[60%] flex flex-col justify-center items-center">
                             <h2>Enter Username</h2>
                             <input
-                                className="w-[40%] border rounded shadow"
+                                className="w-[40%] border rounded shadow p-1"
                                 placeholder="Username"
                                 type="text"
                                 onChange={(e) => setFormData((prevData) => ({
@@ -104,7 +104,7 @@ export default function Login() {
                             />
                             <h2>Enter PassWord</h2>
                             <input
-                                className="w-[40%] border rounded shadow"
+                                className="w-[40%] border rounded shadow p-1"
                                 placeholder="PassWord"
                                 type="passWord" // Changed to 'passWord' for security
                                 onChange={(e) => setFormData((prevData) => ({

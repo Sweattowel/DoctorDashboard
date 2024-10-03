@@ -77,7 +77,7 @@ export default function DoctorRegister() {
                         <label>Enter Name: </label>
                         <input
                             onChange={(e) => setFormData((prevData) => ({ ...prevData, UserName: e.target.value }))}
-                            className="border"
+                            className="border p-1"
                             type="text"
                             id="Name"
                             value={formData.UserName}
@@ -86,7 +86,7 @@ export default function DoctorRegister() {
                         <label>Enter Password: </label>
                         <input
                             onChange={(e) => setFormData((prevData) => ({ ...prevData, Password: e.target.value }))}
-                            className="border"
+                            className="border p-1"
                             type="password"
                             id="PassWord"
                             value={formData.Password}
@@ -95,7 +95,7 @@ export default function DoctorRegister() {
                         <label>Enter Email Address: </label>
                         <input
                             onChange={(e) => setFormData((prevData) => ({ ...prevData, EmailAddress: e.target.value }))}
-                            className="border"
+                            className="border p-1"
                             type="text"
                             id="EmailAddress"
                             value={formData.EmailAddress}
@@ -104,7 +104,7 @@ export default function DoctorRegister() {
                         <label>Enter Phone Number: </label>
                         <input
                             onChange={(e) => setFormData((prevData) => ({ ...prevData, PhoneNumber: e.target.value }))}
-                            className="border"
+                            className="border p-1"
                             type="text"
                             id="PhoneNumber"
                             value={formData.PhoneNumber}

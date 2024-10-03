@@ -75,16 +75,15 @@ export default function NavBar() {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
+
     async function collectNotifications(){
-        if (!isUser && !isAdmin && !isDoctor) {return};
         if (isDoctor) {
             console.log(`Collecting Doctor Notifications ${doctorData.id}`);
             const response = await API.get(`/api/Notifications/CollectDoctorNotifications/${doctorData.id}`);
 
             if (response.status == 200){
                 setNotifications(response.data.results)
-                console.log(response.data)
             } else {
                 setNotifications([{
                     Date: new Date().toString(),
@@ -119,13 +118,28 @@ export default function NavBar() {
                 }]);
             };
             return;
-        }
-    }
+        } else {
+            setNotifications([{
+                Date: new Date().toString(),
+                RequesteeID: -1,
+                RequesteeName: userData.UserName,
+                RequesterID: userData.UserID,
+                RequesterName: "SYSTEM",
+                Urgency: 0,
+                NotificationText: "Oops No data",
+                RequestType: "No Notifications",
+                CompletedStatus: false
+            }]);
+            return;
+        };
+    };
+
     useEffect(() => {
         if (sessionStorage.getItem("PreviousSessionChecked") !== "True") {
             existingSessionCheck();
         }
-    
+        refreshToken();
+        collectNotifications();
         const RefreshInterval = setTimeout(() => {
             refreshToken();
             collectNotifications();
@@ -192,8 +206,6 @@ const WideScreenNavBar = ({ isUser, notifications }: { isUser: boolean, notifica
                         }
                     </ul>                
                 }
-
-
             </ul>
         </main>
     );

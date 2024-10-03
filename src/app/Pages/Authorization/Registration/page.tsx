@@ -126,7 +126,7 @@ export default function Register(){
                         <h2>
                             Enter new UserName
                         </h2>
-                        <input className="w-[40%] border rounded shadow" placeholder="UserName" type="text" 
+                        <input className="w-[40%] border rounded shadow p-1" placeholder="UserName" type="text" 
                             onChange={(e) => {
                                 setFormData((prevData) => ({
                                     ...prevData,
@@ -136,7 +136,7 @@ export default function Register(){
                         <h2>
                             Enter new Password
                         </h2>
-                        <input className="w-[40%] border rounded shadow" placeholder="Password" type="text" 
+                        <input className="w-[40%] border rounded shadow p-1" placeholder="Password" type="text" 
                             onChange={(e) => {
                                 setFormData((prevData) => ({
                                     ...prevData,
@@ -147,7 +147,7 @@ export default function Register(){
                         <h2>
                             Enter new EmailAddress
                         </h2>
-                        <input className="w-[40%] border rounded shadow" placeholder="EmailAddress" type="text" 
+                        <input className="w-[40%] border rounded shadow p-1" placeholder="EmailAddress" type="text" 
                             onChange={(e) => {
                                 setFormData((prevData) => ({
                                     ...prevData,
@@ -158,7 +158,7 @@ export default function Register(){
                         <h2>
                             Enter new Address
                         </h2>
-                        <input className="w-[40%] border rounded shadow" placeholder="Address" type="text" 
+                        <input className="w-[40%] border rounded shadow p-1" placeholder="Address" type="text" 
                             onChange={(e) => {
                                 setFormData((prevData) => ({
                                     ...prevData,
@@ -169,7 +169,7 @@ export default function Register(){
                         <h2>
                             Enter new PhoneNumber
                         </h2>
-                        <input className="w-[40%] border rounded shadow" placeholder="PhoneNumber" type="tel" 
+                        <input className="w-[40%] border rounded shadow p-1" placeholder="PhoneNumber" type="tel" 
                             onChange={(e) => {
                                 setFormData((prevData) => ({
                                     ...prevData,
