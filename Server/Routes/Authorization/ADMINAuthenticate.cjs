@@ -14,6 +14,13 @@ const {
     VerifyAdminToken, 
     RefreshAdminToken,
 } = require("../../Handlers/TokenHandle.cjs");
+
+// Encryption Handle
+
+const { 
+	HASH, COMPARE 
+} = require("../../Handlers/EncryptionHandle.cjs");
+
 /////////////////////////////////////
 // MiddleWare and DATABASE handling//
 /////////////////////////////////////
