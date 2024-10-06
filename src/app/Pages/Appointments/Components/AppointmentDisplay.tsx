@@ -2,7 +2,7 @@
 
 import { userContext } from "@/app/Context/ContextProvider";
 import API from "@/app/Interceptor"
-import { AwaitedReactNode, JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react"
+import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react"
 
 // Types for Appointments
 interface Appointment {
@@ -129,7 +129,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
     console.log(filteredAppointments)
   }, [appointmentParam, data]);
 
-  let calendar : Appointment[][] = new Array(24).fill(null).map(() => new Array(7).fill(null));
+  let calendar : Appointment[][] = new Array(7).fill(null).map(() => new Array(25).fill(null));
 
   for (let i = 0; i < data.length; i++){
     let currentAppointment = data[i];
@@ -152,7 +152,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
     const appointmentHour = parseInt(currentAppointment.AppointmentDate.split('T')[1].split(":")[0]); 
     //console.log(appointmentYear, appointmentHour, appointmentDay)
     const dayIndex = appointmentDay - currentDay;
-    calendar[appointmentHour][dayIndex] = currentAppointment;
+    calendar[dayIndex][appointmentHour] = currentAppointment;
     
   }
   //console.log(calendar);
@@ -162,11 +162,17 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
       <div className="font-bold text-2xl p-2 flex justify-evenly w-full">
         <button className="bg-blue-600 text-white flex justify-center items-center w-[50px] rounded shadow hover:opacity-60"
           onClick={() => {
-            const newTime = new Date(currentYear, currentMonth - 1, currentDay - 7)
+            const newTime = new Date(currentYear, currentMonth - 1, currentDay - 5)
+            if (newTime.getMonth() !== (currentMonth - 1)) {
+              const lastDayOfPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
+              setCurrentDay(lastDayOfPrevMonth);
+            } else {
+              setCurrentDay(newTime.getDate()); 
+            }
             setCurrentTime(newTime.toISOString().split("T")[0])
             setCurrentYear(newTime.getFullYear());
             setCurrentMonth(newTime.getMonth() + 1);
-            setCurrentDay(newTime.getDate());
+            
           }}
         >
           -
@@ -184,39 +190,48 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
           />
         <button className="bg-blue-600 text-white flex justify-center items-center w-[50px] rounded shadow hover:opacity-60"
           onClick={() => {
-            const newTime = new Date(currentYear, currentMonth - 1, currentDay + 7)
+            const newTime = new Date(currentYear, currentMonth - 1, currentDay + 5)
+            if (newTime.getMonth() > (currentMonth - 1)) {
+              setCurrentDay(1);
+            } else {
+              setCurrentDay(newTime.getDate());
+            }
             setCurrentTime(newTime.toISOString().split("T")[0])
             setCurrentYear(newTime.getFullYear());
             setCurrentMonth(newTime.getMonth() + 1);
-            setCurrentDay(newTime.getDate());
+            
           }}
         >
           +
         </button>
       </div>
       {appointmentParam == "" ? (
-        <ul className="flex flex-col justify-evenly items-center min-w-[100%]">
-          {calendar.map((Hour, HourIndex) => (
-            <div className="flex min-w-full h-full" key={HourIndex}>
-              <p className="w-[60px] text-cetner">
-                {HourIndex < 12 ? `${HourIndex}:AM` : `${HourIndex}:PM`}: 
+        <ul className="flex flex-row justify-evenly items-center min-w-[100%]">
+          {calendar.map((Day, DayIndex) => new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).getMonth() == currentMonth - 1 && (
+            <div className="flex  flex-col h-full w-full" key={DayIndex}>
+              <p className="w-full text-center">
+                {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).toString().slice(0,10)} 
               </p>
-              
-              {Hour.map((Day : Appointment, dayIndex) => (
-                <div className="border text-center w-[14%] h-[8%] flex items-center justify-center rounded" key={dayIndex}>
-                  {Day ? (
-                    <button className={`${Day.Result == 'Completed' && "bg-gray-400"} hover:opacity-60 hover:bg-blue-800 bg-blue-600 text-white h-16  w-full p-2 rounded`}
-                      onClick={() => setExpandedData(Day)}
-                    >
-                      {Day.ClientName}
-                    </button>
-                  ) : (
-                    <button onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth, dayIndex, HourIndex, 0,0).toISOString())} className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center">
-                      FREE
-                    </button>
-                  )}
-                </div>
-              ))}
+              <ul className="flex flex-col w-full h-full">
+                {Day.map((Day : Appointment, HourIndex: number) => (
+                  <div className="border text-center flex flex-col items-center justify-center rounded" key={HourIndex}>
+                    {Day ? (
+                      <button className={`${Day.Result == 'Completed' && "bg-gray-400"} hover:opacity-60 hover:bg-blue-800 bg-blue-600 text-white h-16  w-full p-2 rounded`}
+                        onClick={() => setExpandedData(Day)}
+                      >
+                        {Day.ClientName}
+                      </button>
+                    ) : (
+                      <button className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center"
+                        onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex - 2, 0,0).toString())} 
+                      >
+                        {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex, 0,0).toString().slice(16,21)}
+                      </button>
+                    )}
+                  </div>
+                ))}                
+              </ul>
+
             </div>
           ))}         
         </ul>        
@@ -292,7 +307,10 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
   })
   
   useEffect(() => {
-    setFormData((prevData) => ({ ...prevData, AppointmentDate: new Date(QuickSetTime).toISOString().slice(0,16)}))
+    if (QuickSetTime !== ''){
+      setFormData((prevData) => ({ ...prevData, AppointmentDate: new Date(QuickSetTime).toISOString().slice(0,16)}));
+    };
+    
   },[QuickSetTime])
 
   async function HandleSubmit(e: React.FormEvent) {
