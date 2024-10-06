@@ -20,7 +20,7 @@ const {
 const express = require("express");
 
 const router = express.Router();
-const db = require("../../Database.cjs");
+const db = require("../Database.cjs");
 
 // Routing Functions
 
