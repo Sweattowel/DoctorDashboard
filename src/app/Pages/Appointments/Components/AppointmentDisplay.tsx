@@ -135,22 +135,14 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
     let currentAppointment = data[i];
 
     const appointmentYear = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[0]);
-    if (appointmentYear !== currentYear){
-      //console.log(appointmentYear, currentYear, "FAILED TO MATCH YEAR")
-      continue;
-    }
     const appointmentMonth = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[1]);
-    if (appointmentMonth !== currentMonth){
-      //console.log(appointmentMonth, currentMonth)
-      continue;
-    }
-    const appointmentDay = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[2]);  
-    if (appointmentDay < currentDay || appointmentDay >= currentDay + 7){
-      //console.log(appointmentDay, currentDay, "FAILED TO MATCH DAYS")
-      continue;
-    }
-    const appointmentHour = parseInt(currentAppointment.AppointmentDate.split('T')[1].split(":")[0]); 
-    //console.log(appointmentYear, appointmentHour, appointmentDay)
+    const appointmentDay = parseInt(currentAppointment.AppointmentDate.split('T')[0].split("-")[2]);
+    const appointmentHour = parseInt(currentAppointment.AppointmentDate.split('T')[1].split(":")[0]);
+    
+    if (appointmentYear !== currentYear){continue};
+    if (appointmentMonth !== currentMonth){continue};
+    if (appointmentDay < currentDay || appointmentDay >= currentDay + 7){ continue };
+     
     const dayIndex = appointmentDay - currentDay;
     calendar[dayIndex][appointmentHour] = currentAppointment;
     
@@ -162,7 +154,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
       <div className="font-bold text-2xl p-2 flex justify-evenly w-full">
         <button className="bg-blue-600 text-white flex justify-center items-center w-[50px] rounded shadow hover:opacity-60"
           onClick={() => {
-            const newTime = new Date(currentYear, currentMonth - 1, currentDay - 5)
+            const newTime = new Date(currentYear, currentMonth - 1, currentDay - 7)
             if (newTime.getMonth() !== (currentMonth - 1)) {
               const lastDayOfPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
               setCurrentDay(lastDayOfPrevMonth);
@@ -190,7 +182,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
           />
         <button className="bg-blue-600 text-white flex justify-center items-center w-[50px] rounded shadow hover:opacity-60"
           onClick={() => {
-            const newTime = new Date(currentYear, currentMonth - 1, currentDay + 5)
+            const newTime = new Date(currentYear, currentMonth - 1, currentDay + 7)
             if (newTime.getMonth() > (currentMonth - 1)) {
               setCurrentDay(1);
             } else {
@@ -210,7 +202,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
           {calendar.map((Day, DayIndex) => new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).getMonth() == currentMonth - 1 && (
             <div className="flex  flex-col h-full w-full" key={DayIndex}>
               <p className="w-full text-center">
-                {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).toString().slice(0,10)} 
+                {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).toISOString().slice(0,10)} 
               </p>
               <ul className="flex flex-col w-full h-full">
                 {Day.map((Day : Appointment, HourIndex: number) => (
@@ -223,9 +215,9 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
                       </button>
                     ) : (
                       <button className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center"
-                        onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex - 2, 0,0).toString())} 
+                        onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex + 10, 0,0).toISOString())} 
                       >
-                        {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex, 0,0).toString().slice(16,21)}
+                        {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex + 10, 0,0).toISOString().slice(16,21)}
                       </button>
                     )}
                   </div>
@@ -258,7 +250,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
         </ul>
       )}
         <div className="w-[80%]">
-          {expandedData !== null ? <Expansion data={expandedData}/> : <>Please</>}
+          {expandedData !== null ? <Expansion data={expandedData}/> : <p className="font-bold text-center border-t border-b mt-10">Please Select an appointment</p>}
         </div>
         
     </div>
@@ -273,7 +265,7 @@ interface ExpansionProps {
 const Expansion = ({ data }: ExpansionProps) => {
   return (
     <section className="p-5 border rounded-2xl overflow-hidden transition-all duration-500 ease-in-out flex flex-col justify-evenly w-full mt-10">
-      <h2 className="text-lg font-bold">{data.Title} - {data.ClientName}</h2>
+      <h2 className="text-lg font-bold">{data.Title} - {data.ClientName} - {data.AppointmentDate}</h2>
       <input placeholder={`${data.Issue}`} />
       <input placeholder={`LEVEL: ${data.LOA} Access`} />
       <input placeholder={data.ClientStatus} />
@@ -424,10 +416,10 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
         />
         <label className="font-bold">Appointment Time & Date:</label>
         <input className="border p-1" value={formData.AppointmentDate}
-          onChange={(e) => setFormData((prevData) => ({...prevData, AppointmentDate: e.target.value}))} type="datetime-local" required 
+          onChange={(e) => setFormData((prevData) => ({...prevData, AppointmentDate: new Date(e.target.value).toISOString().slice(0,16) }))} type="datetime-local" required 
         />
         <label className={`${formData.LOA == 0 ? "bg-white" : formData.LOA == 1 ? "bg-blue-400" : formData.LOA == 2 ? "bg-blue-600" : formData.LOA == 3 ? "bg-red-400" : "" } font-bold p-2 mt-2 mb-2 rounded transition-all duration-500 ease-in-out`}> 
-            Level Of Access:
+            Level Of Access: {formData.LOA === 3 && "If issue is life threatening please notify emergency services"}
         </label>
         <input 
             type="range"
@@ -455,7 +447,7 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
         />
         <div className="flex p-1">
           <label className="font-bold">Further Action Needed?</label>
-          <input className="border p-1 ml-5" value={formData.FurtherAction}
+          <input className="border p-1 ml-5" value={formData.FurtherAction ? "true" : "false"}
             onChange={(e) => setFormData((prevData) => ({...prevData, FurtherAction: e.target.checked}))} type="checkbox"  
           />          
         </div>
