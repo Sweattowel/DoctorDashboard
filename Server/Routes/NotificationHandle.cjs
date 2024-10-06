@@ -13,7 +13,7 @@ const {
     CreateAdminToken, 
     VerifyAdminToken, 
     RefreshAdminToken,
-} = require("../../Handlers/TokenHandle.cjs");
+} = require("../Handlers/TokenHandle.cjs");
 /////////////////////////////////////
 // MiddleWare and DATABASE handling//
 /////////////////////////////////////
