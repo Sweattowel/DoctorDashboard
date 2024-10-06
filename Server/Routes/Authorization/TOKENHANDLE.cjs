@@ -24,7 +24,7 @@ const db = require("../../Database.cjs");
 
 // Routing Functions
 
-app.post("/Authorization/RefreshToken", async function (req, res) {
+router.post("/Authorization/RefreshToken", async function (req, res) {
 	try {
 		console.log("Refreshing Cookie");
 		const data = req.body;
