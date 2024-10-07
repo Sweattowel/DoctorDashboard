@@ -129,8 +129,8 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
     console.log(filteredAppointments)
   }, [appointmentParam, data]);
 
-  let calendar : Appointment[][] = new Array(7).fill(null).map(() => new Array(25).fill(null));
-
+  let calendar : Appointment[][] = new Array(7).fill(null).map(() => new Array(24).fill(null));
+  /*
   for (let i = 0; i < data.length; i++){
     let currentAppointment = data[i];
 
@@ -147,7 +147,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
     calendar[dayIndex][appointmentHour] = currentAppointment;
     
   }
-  //console.log(calendar);
+  /*/
 
   return (
     <div className="p-5 w-full h-full flex flex-col justify-evenly items-center">
@@ -171,7 +171,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
         </button>
         <input
             type="date"
-            value={currentTime}
+            value={new Date(currentTime).toISOString().slice(0,10)}
             onChange={(e) => {
               setCurrentTime(e.target.value.split("T")[0]);
               const selectedDate = new Date(e.target.value);
@@ -205,23 +205,58 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
                 {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).toISOString().slice(0,10)} 
               </p>
               <ul className="flex flex-col w-full h-full">
-                {Day.map((Day : Appointment, HourIndex: number) => (
-                  <div className="border text-center flex flex-col items-center justify-center rounded" key={HourIndex}>
-                    {Day ? (
-                      <button className={`${Day.Result == 'Completed' && "bg-gray-400"} hover:opacity-60 hover:bg-blue-800 bg-blue-600 text-white h-16  w-full p-2 rounded`}
-                        onClick={() => setExpandedData(Day)}
-                      >
-                        {Day.ClientName}
-                      </button>
-                    ) : (
-                      <button className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center"
-                        onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex + 10, 0,0).toISOString())} 
-                      >
-                        {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex + 10, 0,0).toISOString().slice(16,21)}
-                      </button>
-                    )}
-                  </div>
-                ))}                
+                  {Day.map((Day : Appointment, HourIndex: number) => (
+                    <div className="border text-center flex flex-col items-center justify-center rounded" key={HourIndex}>
+                    {
+                      (() => {
+                        const FoundAppointment = data.filter(function (appointment) {
+                          return appointment.AppointmentDate === new Date(currentYear, currentMonth - 1, currentDay + DayIndex - 1, HourIndex + 10, 0,0).toISOString();
+                        });
+
+                        return (
+                          <>
+                            {FoundAppointment.length > 0
+                              ? FoundAppointment.map((appt, index) => (
+                                <button className={`${appt.Result == 'Completed' && "bg-gray-400"} hover:opacity-60 hover:bg-blue-800 bg-blue-600 text-white h-16  w-full p-2 rounded`}
+                                  key={index}  
+                                  onClick={() => setExpandedData(appt)}
+                                >
+                                  {appt.ClientName}
+                                </button>
+                                ))
+                              : 
+                              <button className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center"
+                              onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex - 1, HourIndex + 10, 0,0).toISOString())} 
+                              >
+                                No appointments
+                              </button>
+                              }
+                          </>
+                        );
+                      })()
+                    }
+
+                    </div>
+                  ))}                  
+
+
+                 
+                {/*                      
+                {Day ? (
+                        <button className={`${Day.Result == 'Completed' && "bg-gray-400"} hover:opacity-60 hover:bg-blue-800 bg-blue-600 text-white h-16  w-full p-2 rounded`}
+                          onClick={() => setExpandedData(Day)}
+                        >
+                          {Day.ClientName}
+                        </button>
+                      ) : (
+                        <button className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center"
+                          onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex - 1, HourIndex + 10, 0,0).toISOString())} 
+                        >
+                          {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex + 10, 0,0).toISOString().slice(11,16)}
+                        </button>
+                      )}                
+                  */}
+             
               </ul>
 
             </div>
@@ -314,7 +349,8 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
         setError("Missing Parameters");
         return
       }
-      setFormData((prevData) => ({...prevData, DoctorID: DoctorID}))
+      setFormData((prevData) => ({...prevData, DoctorID: DoctorID}));
+      
       const response = await API.post("/api/Appointments/Create", formData);
 
       switch (response.status){

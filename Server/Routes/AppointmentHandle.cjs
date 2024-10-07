@@ -34,11 +34,15 @@ router.post("/Appointments/Create", function (req, res) {
 		};
 
         const { Address,AppointmentDate,ClientName,ClientStatus,DoctorID,Email,FurtherAction,Issue,LOA,Occupation,Phone,Result,Title} = req.body;
-        console.log("Received Create Appointment Request for ", DoctorID, "By DoctorID ", DoctorID);
+        
+		AppointmentDate = new Date(AppointmentDate).toISOString();
+		console.log("Received Create Appointment Request for ", DoctorID, "By DoctorID ", DoctorID);
 
         // Verify that no prior appointment exists at the time with hour time
 		const appointmentStart = new Date(AppointmentDate);
         const appointmentEnd = new Date(appointmentStart);
+
+		console.log(AppointmentDate, new Date(AppointmentDate).toISOString(), appointmentStart, appointmentEnd)
         appointmentEnd.setHours(appointmentStart.getHours() + 1); 
 
         const SQL = `

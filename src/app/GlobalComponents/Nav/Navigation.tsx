@@ -53,7 +53,7 @@ export default function NavBar() {
                 setIsUser(true);
                 console.log(response.data.userData);
                 setUserData(response.data.userData);
-            } else {
+            } else if (response.status === 401) {
                 console.log("no previous session");
             }
         } catch (error) {
