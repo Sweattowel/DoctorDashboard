@@ -38,10 +38,11 @@ router.post("/Appointments/Create", function (req, res) {
 		console.log("Received Create Appointment Request for ", DoctorID, "By DoctorID ", DoctorID);
 
         // Verify that no prior appointment exists at the time with hour time
-		const appointmentStart = new Date(AppointmentDate);
+		const adjustedDate = new Date(AppointmentDate)
+		const appointmentStart = new Date(adjustedDate);
         const appointmentEnd = new Date(appointmentStart);
 
-		console.log(AppointmentDate, new Date(AppointmentDate).toISOString(), appointmentStart, appointmentEnd)
+		console.log(AppointmentDate, new Date(AppointmentDate).toISOString())
         appointmentEnd.setHours(appointmentStart.getHours() + 1); 
 
         const SQL = `
@@ -64,7 +65,7 @@ router.post("/Appointments/Create", function (req, res) {
 			}
 
 			const insertSQL = "INSERT INTO Appointments (Address, AppointmentDate, ClientName, ClientStatus, DoctorID, Email, FurtherAction, Issue, LOA, Occupation, Phone, Result, Title) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			const appointmentData = [Address, AppointmentDate, ClientName, ClientStatus, DoctorID, Email, FurtherAction, Issue, LOA, Occupation, Phone, Result, Title];
+			const appointmentData = [Address, adjustedDate.toISOString(), ClientName, ClientStatus, DoctorID, Email, FurtherAction, Issue, LOA, Occupation, Phone, Result, Title];
 
 			db.execute(insertSQL, appointmentData, (err) => {
 				if (err) {

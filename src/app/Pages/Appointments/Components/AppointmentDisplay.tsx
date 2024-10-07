@@ -129,7 +129,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
     console.log(filteredAppointments)
   }, [appointmentParam, data]);
 
-  let calendar : Appointment[][] = new Array(7).fill(null).map(() => new Array(24).fill(null));
+  let calendar : Appointment[][] = new Array(7).fill(null).map(() => new Array(25).fill(null));
   /*
   for (let i = 0; i < data.length; i++){
     let currentAppointment = data[i];
@@ -350,7 +350,7 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
         return
       }
       setFormData((prevData) => ({...prevData, DoctorID: DoctorID}));
-      
+
       const response = await API.post("/api/Appointments/Create", formData);
 
       switch (response.status){
