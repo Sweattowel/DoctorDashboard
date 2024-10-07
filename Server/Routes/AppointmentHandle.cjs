@@ -34,8 +34,7 @@ router.post("/Appointments/Create", function (req, res) {
 		};
 
         const { Address,AppointmentDate,ClientName,ClientStatus,DoctorID,Email,FurtherAction,Issue,LOA,Occupation,Phone,Result,Title} = req.body;
-        
-		AppointmentDate = new Date(AppointmentDate).toISOString();
+ 
 		console.log("Received Create Appointment Request for ", DoctorID, "By DoctorID ", DoctorID);
 
         // Verify that no prior appointment exists at the time with hour time
