@@ -338,7 +338,11 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
       setFormData((prevData) => ({ ...prevData, AppointmentDate: new Date(QuickSetTime).toISOString().slice(0,16)}));
     };
     
-  },[QuickSetTime])
+  },[QuickSetTime]);
+
+  useEffect(() => {
+    console.log(formData.AppointmentDate);
+  },[formData]);
 
   async function HandleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -350,6 +354,9 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
         return
       }
       setFormData((prevData) => ({...prevData, DoctorID: DoctorID}));
+      
+      const utcDate = new Date(new Date(formData.AppointmentDate).getTime() + (new Date().getTimezoneOffset() * 60000));
+      formData.AppointmentDate = utcDate.toISOString().slice(0, 19);
 
       const response = await API.post("/api/Appointments/Create", formData);
 
