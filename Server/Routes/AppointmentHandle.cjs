@@ -33,28 +33,19 @@ router.post("/Appointments/Create", function (req, res) {
 			return res.status(401).json({ message: "Invalid token" });
 		};
 
-        const { Address,AppointmentDate,ClientName,ClientStatus,DoctorID,Email,FurtherAction,Issue,LOA,Occupation,Phone,Result,Title} = req.body;
- 
+        const { Address,AppointmentDate, ClientName,ClientStatus,DoctorID,Email,FurtherAction,Issue,LOA,Occupation,Phone,Result,Title} = req.body;
+		
 		console.log("Received Create Appointment Request for ", DoctorID, "By DoctorID ", DoctorID);
 		
-        // Verify that no prior appointment exists at the time with hour time
-		const appointmentStart = new Date(AppointmentDate + "Z");
-        const appointmentEnd = new Date(appointmentStart);
-
-		console.log(AppointmentDate, new Date(AppointmentDate).toISOString())
         appointmentEnd.setHours(appointmentStart.getHours() + 1); 
 
         const SQL = `
             SELECT * 
             FROM Appointments 
-            WHERE DoctorID = ? 
-              AND (
-                  (AppointmentDate BETWEEN ? AND ?) OR 
-                  (AppointmentDate + INTERVAL 1 HOUR BETWEEN ? AND ?)
-              )
+            WHERE DoctorID = ? AND AppointmentDate = ?)
         `;
 
-        db.execute(SQL, [DoctorID, appointmentStart, appointmentEnd, appointmentStart, appointmentEnd], (err, results) => {
+        db.execute(SQL, [DoctorID, AppointmentDate], (err, results) => {
             if (err) {
                 console.error("Failed to Check for Appointment overlap", err)
                 return res.status(500).json({ error: "Internal Server Error" });

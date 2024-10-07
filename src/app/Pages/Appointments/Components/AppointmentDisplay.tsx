@@ -210,7 +210,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
                     {
                       (() => {
                         const FoundAppointment = data.filter(function (appointment) {
-                          return appointment.AppointmentDate === new Date(currentYear, currentMonth - 1, currentDay + DayIndex - 1, HourIndex + 10, 0,0).toISOString();
+                          return new Date(appointment.AppointmentDate).toISOString() === new Date(currentYear, currentMonth - 1, currentDay + DayIndex - 1, HourIndex + 10, 0,0).toISOString();
                         });
 
                         return (
