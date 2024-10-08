@@ -37,7 +37,7 @@ router.post("/Appointments/Create", function (req, res) {
 		
 		console.log("Received Create Appointment Request for ", DoctorID, "By DoctorID ", DoctorID);
 		
-        appointmentEnd.setHours(appointmentStart.getHours() + 1); 
+        //appointmentEnd.setHours(appointmentStart.getHours() + 1); 
 
         const SQL = `
             SELECT * 

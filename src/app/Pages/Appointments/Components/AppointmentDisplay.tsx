@@ -171,7 +171,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
         </button>
         <input
             type="date"
-            value={new Date(currentTime).toISOString().slice(0,10)}
+            value={new Date(currentTime).toISOString().slice(5,16)}
             onChange={(e) => {
               setCurrentTime(e.target.value.split("T")[0]);
               const selectedDate = new Date(e.target.value);
@@ -202,7 +202,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
           {calendar.map((Day, DayIndex) => new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).getMonth() == currentMonth - 1 && (
             <div className="flex  flex-col h-full w-full" key={DayIndex}>
               <p className="w-full text-center">
-                {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).toISOString().slice(0,10)} 
+                {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).toISOString()} 
               </p>
               <ul className="flex flex-col w-full h-full">
                   {Day.map((Day : Appointment, HourIndex: number) => (
@@ -226,7 +226,8 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
                                 ))
                               : 
                               <button className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center"
-                              onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex - 1, HourIndex + 10, 0,0).toISOString())} 
+                              onClick={() => 
+                                changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex - 1, HourIndex, 0,0).toISOString().slice(0, 16))} 
                               >
                                 No appointments
                               </button>
@@ -335,7 +336,8 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
   
   useEffect(() => {
     if (QuickSetTime !== ''){
-      setFormData((prevData) => ({ ...prevData, AppointmentDate: new Date(QuickSetTime).toISOString().slice(0,16)}));
+      setFormData((prevData) => ({ ...prevData, AppointmentDate: QuickSetTime }));
+      console.log(formData)
     };
     
   },[QuickSetTime]);
@@ -355,8 +357,8 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
       }
       setFormData((prevData) => ({...prevData, DoctorID: DoctorID}));
       
-      const utcDate = new Date(new Date(formData.AppointmentDate).getTime() + (new Date().getTimezoneOffset() * 60000));
-      formData.AppointmentDate = utcDate.toISOString().slice(0, 19);
+      //const utcDate = new Date(new Date(formData.AppointmentDate).getTime() + (new Date().getTimezoneOffset() * 60000));
+      //formData.AppointmentDate = utcDate.toISOString().slice(0, 19);
 
       const response = await API.post("/api/Appointments/Create", formData);
 
