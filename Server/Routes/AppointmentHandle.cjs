@@ -87,32 +87,34 @@ router.patch("/Appointments/Update/:AppointmentID", async function (req, res) {
 		
 		const SQL = `UPDATE Appointments
 						SET 
-							Address = ?
-							AppointmentDate = ?
-							ClientName = ?
-							ClientStatus = ?
-							DoctorID = ?
-							Email = ?
-							FurtherAction = ?
-							Issue = ?
-							LOA = ?
-							Occupation = ?
-							Phone = ?
-							Result = ?
-							Title = ?
+							Address = ?,
+							AppointmentDate = ?,
+							ClientName = ?,
+							ClientStatus = ?,
+							DoctorID = ?,
+							Email = ?,
+							FurtherAction = ?,
+							Issue = ?,
+							LOA = ?,
+							Occupation = ?,
+							Phone = ?,
+							Result = ?,
+							Title = ?,
 						WHERE 
 							id = ?;
 					`;
         db.execute(SQL, [Address,AppointmentDate, ClientName,ClientStatus,DoctorID,Email,FurtherAction,Issue,LOA,Occupation,Phone,Result,Title, AppointmentID], (error, results) => {
-			if (error) {
-				console.error("Server error:", error);
-				res.header("Removal-Request", "True");
-				return res.status(500).json({ error: "Internal Server Error" });
-			} else if (results.affectedRows == 1) {
-				return res.status(200).json({ message: "Successfully updated row"});
-			} else if (results.affectedRows > 1) {
-				return res.status(500).json({ error: "Please notify system manager"});
-			}
+            if (error) {
+                console.error("Server error:", error);
+                res.header("Removal-Request", "True");
+                return res.status(500).json({ error: "Internal Server Error" });
+            } else if (results.affectedRows == 1) {
+                return res.status(200).json({ message: "Successfully updated appointment." });
+            } else if (results.affectedRows === 0) {
+                return res.status(404).json({ error: "Appointment not found or no changes made." });
+            } else {
+                return res.status(500).json({ error: "Unexpected issue, please contact system administrator." });
+            }
 		})
     } catch (error) {
         console.error("Server error:", error);

@@ -409,7 +409,7 @@ const Expansion = ({ data, QuickSetTime } : ExpansionProps ) => {
           <p>New Time: {QuickSetTime !== "" ? QuickSetTime.replace("T", " ") : "Please select clear timeslot"}</p>
         </div>      
         <label className="font-bold">Client Name:</label>
-        <input value={formData.Issue} placeholder={`${formData.ClientName}`} 
+        <input value={formData.ClientName} placeholder={`${formData.ClientName}`} 
           onChange={(e) => {
               setFormData((prevData) => ({
                   ...prevData,
