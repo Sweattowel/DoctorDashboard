@@ -213,7 +213,7 @@ router.patch("/Notifications/:NotificationID/complete", function (req, res) {
 	try {        
 		const cookie = req.cookies["Authorization"];
 
-        const { isUser, isDoctor, isAdmin } = req.params
+        const { isUser, isDoctor, isAdmin } = req.body
         let SQL = ""
         if (isUser){
             if (!VerifyToken(cookie)) {
@@ -257,7 +257,7 @@ router.patch("/Notifications/:NotificationID/unComplete", function (req, res) {
 	try {        
 		const cookie = req.cookies["Authorization"];
 
-        const { isUser, isDoctor, isAdmin } = req.params
+        const { isUser, isDoctor, isAdmin } = req.body
         let SQL = ""
         if (isUser){
             if (!VerifyToken(cookie)) {

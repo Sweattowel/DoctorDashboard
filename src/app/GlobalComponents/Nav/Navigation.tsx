@@ -145,7 +145,7 @@ export default function NavBar() {
         try {
             const choice = status == true ? "unComplete" : "complete";
 
-            const response = await API.patch(`/Notifications/${NotificationID}/${choice}`);
+            const response = await API.patch(`/api/Notifications/${NotificationID}/${choice}`, {isUser, isDoctor, isAdmin});
 
             if (response.status == 200){
                 collectNotifications();
