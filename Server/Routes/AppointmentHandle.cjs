@@ -42,7 +42,7 @@ router.post("/Appointments/Create", function (req, res) {
         const SQL = `
             SELECT * 
             FROM Appointments 
-            WHERE DoctorID = ? AND AppointmentDate = ?)
+            WHERE DoctorID = ? AND AppointmentDate = ?
         `;
 
         db.execute(SQL, [DoctorID, AppointmentDate], (err, results) => {
