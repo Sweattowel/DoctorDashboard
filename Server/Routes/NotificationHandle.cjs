@@ -88,59 +88,6 @@ router.get("/Notifications/CollectUserNotifications/:UserID" , function (req, re
         return res.status(500).json({ error: "Internal Server Error" });
     };
 })
-router.patch("/Notifications/:NotificationID/complete", function (req, res) {
-	try {        
-		// TODO Implement a method to serperate User Doctor and admin traffic here i.e. check for Status and then check the token and change accordingly
-		const cookie = req.cookies["Authorization"];
-
-		if (!VerifyAdminToken(cookie)) {
-			res.header("Removal-Request", "True");
-			return res.status(401).json({ message: "Invalid token" });
-		};
-
-		const NotificationID = req.params.NotificationID;
-        const SQL = "UPDATE Notifications SET CompletedStatus = true WHERE NotificationID = ?"
-		console.log("Received Complete Notification Request for ".concat(NotificationID));
-
-		db.execute(SQL, [NotificationID], (err) => {
-			if (err) {
-				return res.status(500).json({ error: "Internal Server Error" });
-			}
-			return res.status(200).json({ message: "Success" });
-		})
-
-	} catch (error) {
-		console.error("Server error:", error);
-		res.header("Removal-Request", "True");
-		return res.status(500).json({ error: "Internal Server Error" });
-	};
-})
-
-router.patch("/Notifications/:NotificationID/unComplete", function (req, res) {
-	try {        
-		const cookie = req.cookies["Authorization"];
-		if (!VerifyAdminToken(cookie)) {
-			res.header("Removal-Request", "True");
-			return res.status(401).json({ message: "Invalid token" });
-		};
-
-		const NotificationID = req.params.NotificationID;
-		const SQL = "UPDATE Notifications SET CompletedStatus = false WHERE NotificationID = ?"
-		console.log("Received Complete Notification Request for ".concat(NotificationID));
-
-		db.execute(SQL, [NotificationID], (err) => {
-			if (err) {
-				return res.status(500).json({ error: "Internal Server Error" });
-			}
-			return res.status(200).json({ message: "Success" });
-		})
-
-	} catch (error) {
-		console.error("Server error:", error);
-		res.header("Removal-Request", "True");
-		return res.status(500).json({ error: "Internal Server Error" });
-	};
-})
 ////////////////////////////////////// DOCTOR HANDLE NOTIFICATIONS
 
 router.post("/Notifications/CreateDoctorNotification", function (req, res) {}, function (req, res) {
@@ -214,7 +161,7 @@ router.patch("/Notifications/:NotificationID/complete", function (req, res) {
 		const cookie = req.cookies["Authorization"];
 
         const { isUser, isDoctor, isAdmin } = req.body
-        console.log(req.body)
+        console.log(req.body, "here")
         let SQL = ""
         if (isUser){
             if (!VerifyToken(cookie)) {
