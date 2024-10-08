@@ -204,7 +204,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
           {calendar.map((Day, DayIndex) => new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).getMonth() == currentMonth - 1 && (
             <div className="flex  flex-col h-full w-full" key={DayIndex}>
               <p className="w-full text-center">
-                {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, 0, 0,0).toISOString()} 
+                {new Date(currentYear, currentMonth - 1, currentDay + DayIndex + 1).toISOString().slice(0, 10)} 
               </p>
               <ul className="flex flex-col w-full h-full">
                   {Day.map((Day : Appointment, HourIndex: number) => (

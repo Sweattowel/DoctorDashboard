@@ -220,7 +220,7 @@ const WideScreenNavBar = ({ isUser, notifications, wantUpdate }: { isUser: boole
                 {showNotifications &&
                     <ul className="z-[1] bg-white border absolute right-0 top-[5vh] pt-5 pb-5 p-1 w-[50%] text-black overflow-auto ">
                         {notifications.map((notification: NotificationStructure, index: number) => (
-                                <li key={index} className="text-black h-[50px] p-2 w-full h-full flex flex-col border-b">
+                                <li key={index} className={`${notification.CompletedStatus && "bg-gray-200 opacity-60"} rounded text-black h-[50px] p-2 w-full h-full flex flex-col border-b`}>
                                     <h3 className=" flex flex-col font-bold ">
                                         {notification.RequestType} From {notification.RequesterName} 
                                     </h3>
