@@ -214,6 +214,7 @@ router.patch("/Notifications/:NotificationID/complete", function (req, res) {
 		const cookie = req.cookies["Authorization"];
 
         const { isUser, isDoctor, isAdmin } = req.body
+        console.log(req.body)
         let SQL = ""
         if (isUser){
             if (!VerifyToken(cookie)) {
@@ -243,7 +244,7 @@ router.patch("/Notifications/:NotificationID/complete", function (req, res) {
 
 		db.execute(SQL, [NotificationID], (err) => {
 			if (err) {
-                console.error("Failed ot Complete notification ", err);
+                console.error("Failed to Complete notification ", err);
 				return res.status(500).json({ error: "Internal Server Error" });
 			}
 			return res.status(200).json({ message: "Success" });

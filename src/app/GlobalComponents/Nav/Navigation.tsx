@@ -144,7 +144,8 @@ export default function NavBar() {
     async function HandleNotificationUpdate(NotificationID : number, status : boolean){
         try {
             const choice = status == true ? "unComplete" : "complete";
-
+            console.log(NotificationID, choice, status);
+            
             const response = await API.patch(`/api/Notifications/${NotificationID}/${choice}`, {isUser, isDoctor, isAdmin});
 
             if (response.status == 200){
