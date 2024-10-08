@@ -233,6 +233,8 @@ router.patch("/Notifications/:NotificationID/complete", function (req, res) {
                 return res.status(401).json({ message: "Invalid token" });
             };            
             return res.status(500).json({ message: "No Access"});
+        } else {
+            return res.status(400).json({ message: "Invalid user type" });
         }
 
 		const NotificationID = req.params.NotificationID;
@@ -241,6 +243,7 @@ router.patch("/Notifications/:NotificationID/complete", function (req, res) {
 
 		db.execute(SQL, [NotificationID], (err) => {
 			if (err) {
+                console.error("Failed ot Complete notification ", err);
 				return res.status(500).json({ error: "Internal Server Error" });
 			}
 			return res.status(200).json({ message: "Success" });
@@ -277,6 +280,8 @@ router.patch("/Notifications/:NotificationID/unComplete", function (req, res) {
                 return res.status(401).json({ message: "Invalid token" });
             };            
             return res.status(500).json({ message: "No Access"});
+        } else {
+            return res.status(400).json({ message: "Invalid user type" });
         }
 
 		const NotificationID = req.params.NotificationID;
@@ -285,6 +290,7 @@ router.patch("/Notifications/:NotificationID/unComplete", function (req, res) {
 
 		db.execute(SQL, [NotificationID], (err) => {
 			if (err) {
+                console.error("Failed to unComplete notification ", err);
 				return res.status(500).json({ error: "Internal Server Error" });
 			}
 			return res.status(200).json({ message: "Success" });
