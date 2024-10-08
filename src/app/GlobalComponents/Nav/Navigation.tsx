@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 interface NotificationStructure {
+    NotificationID: number
     Urgency: number
     RequesterID: number
     RequesterName: string
@@ -15,6 +16,9 @@ interface NotificationStructure {
     Date: string
     RequestType: string
     CompletedStatus: boolean
+}
+interface UpdateStruc {
+    (NotificationID: number, status: boolean): void;
 }
 export default function NavBar() {
     const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, doctorData, setDoctorData, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
@@ -86,6 +90,7 @@ export default function NavBar() {
                 setNotifications(response.data.results)
             } else {
                 setNotifications([{
+                    NotificationID: -1,
                     Date: new Date().toString(),
                     RequesteeID: -1,
                     RequesteeName: userData.UserName,
@@ -106,6 +111,7 @@ export default function NavBar() {
                 setNotifications(response.data.results)
             } else {
                 setNotifications([{
+                    NotificationID: -1,
                     Date: new Date().toString(),
                     RequesteeID: -1,
                     RequesteeName: userData.UserName,
@@ -120,6 +126,7 @@ export default function NavBar() {
             return;
         } else {
             setNotifications([{
+                NotificationID: -1,
                 Date: new Date().toString(),
                 RequesteeID: -1,
                 RequesteeName: userData.UserName,
@@ -134,6 +141,20 @@ export default function NavBar() {
         };
     };
 
+    async function HandleNotificationUpdate(NotificationID : number, status : boolean){
+        try {
+            const choice = status == true ? "unComplete" : "complete";
+
+            const response = await API.patch(`/Notifications/${NotificationID}/${choice}`);
+
+            if (response.status == 200){
+                collectNotifications();
+            }
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
     useEffect(() => {
         if (sessionStorage.getItem("PreviousSessionChecked") !== "True") {
             existingSessionCheck();
@@ -166,12 +187,16 @@ export default function NavBar() {
 
     return (
         <>
-            {wantedScreen === "Mobile" ? <MobileNavBar notifications={notifications} isUser={isUser} /> : <WideScreenNavBar notifications={notifications} isUser={isUser} />}
+            {wantedScreen === "Mobile" ? 
+                <MobileNavBar wantUpdate={HandleNotificationUpdate} notifications={notifications} isUser={isUser} /> 
+                : 
+                <WideScreenNavBar wantUpdate={HandleNotificationUpdate} notifications={notifications} isUser={isUser} />
+            }
         </>
     );
 }
 
-const WideScreenNavBar = ({ isUser, notifications }: { isUser: boolean, notifications: any }) => {
+const WideScreenNavBar = ({ isUser, notifications, wantUpdate }: { isUser: boolean, notifications: NotificationStructure[], wantUpdate : UpdateStruc }) => {
     const [ showNotifications, setShowNotifications ] = useState<boolean>(false);
 
     return (
@@ -208,7 +233,9 @@ const WideScreenNavBar = ({ isUser, notifications }: { isUser: boolean, notifica
                                     <p className="text-sm text-gray-400">
                                         On {notification.Date.split("T")[0]}
                                     </p>
-
+                                    {notification.RequesterName !== "SYSTEM" && <button onClick={() => wantUpdate(notification.NotificationID, notification.CompletedStatus)} className="bg-blue-600 text-white rounded shadow p-1 m-2">
+                                        {notification.CompletedStatus ? "Mark Incomplete" : "Mark Complete"}
+                                    </button>}
                                 </li>
                         ))
                         }
@@ -219,7 +246,7 @@ const WideScreenNavBar = ({ isUser, notifications }: { isUser: boolean, notifica
     );
 };
 
-const MobileNavBar = ({ isUser, notifications }: { isUser: boolean, notifications: any }) => {
+const MobileNavBar = ({ isUser, notifications, wantUpdate }: { isUser: boolean, notifications: any, wantUpdate : UpdateStruc }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [ showNotifications, setShowNotifications ] = useState<boolean>(false);
 

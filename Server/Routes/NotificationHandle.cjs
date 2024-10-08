@@ -165,7 +165,8 @@ router.patch("/Notifications/:NotificationID/complete", function (req, res) {
 			return res.status(401).json({ message: "Invalid token" });
 		};
 
-		const { NotificationID } = req.params.id;
+		const NotificationID = req.params.NotificationID;
+        const SQL = "UPDATE Notifications SET CompletedStatus = true WHERE NotificationID = ?"
 		console.log("Received Complete Notification Request for ".concat(NotificationID));
 
 		db.execute(SQL, [NotificationID], (err) => {
@@ -190,8 +191,8 @@ router.patch("/Notifications/:NotificationID/unComplete", function (req, res) {
 			return res.status(401).json({ message: "Invalid token" });
 		};
 
-		const { NotificationID } = req.params.id;
-		const SQL = "UPDATE TABLE "
+		const NotificationID = req.params.NotificationID;
+		const SQL = "UPDATE Notifications SET CompletedStatus = false WHERE NotificationID = ?"
 		console.log("Received Complete Notification Request for ".concat(NotificationID));
 
 		db.execute(SQL, [NotificationID], (err) => {
