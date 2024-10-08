@@ -342,6 +342,7 @@ const Expansion = ({ data, QuickSetTime } : ExpansionProps ) => {
   useEffect(() => {
     setWantToAdjust(false);
   }, [data])
+
   if (loading){
     return (
       <section className="p-5 border rounded-2xl overflow-hidden transition-all duration-500 ease-in-out flex flex-col justify-evenly w-full mt-10 animate-pulse text-red-600 text-center">
@@ -407,6 +408,11 @@ const Expansion = ({ data, QuickSetTime } : ExpansionProps ) => {
         <div className="flex  flex-col">
           <p>Previous Time: {formData.AppointmentDate.replace("T", " ")}</p>
           <p>New Time: {QuickSetTime !== "" ? QuickSetTime.replace("T", " ") : "Please select clear timeslot"}</p>
+          <button className="bg-blue-600 text-white w-[50%] mt-1 mb-1 rounded shadow hover:opacity-60"
+            onClick={() => setFormData((prevData) => ({ ...prevData, AppointmentDate: QuickSetTime}))}
+          >
+            Switch
+          </button>
         </div>      
         <label className="font-bold">Client Name:</label>
         <input value={formData.ClientName} placeholder={`${formData.ClientName}`} 
@@ -418,11 +424,11 @@ const Expansion = ({ data, QuickSetTime } : ExpansionProps ) => {
           }}
         />        
         <label className="font-bold">Client Issue:</label>
-        <input value={formData.Issue} placeholder={`${data.Issue}`} 
+        <input value={formData.Issue} placeholder={`${formData.Issue}`} 
           onChange={(e) => {
               setFormData((prevData) => ({
                   ...prevData,
-                  Title: e.target.value
+                  Issue: e.target.value
               }));
           }}
         />
@@ -540,7 +546,6 @@ const CreateAppointMent = ({ DoctorName, DoctorID, QuickSetTime } : { DoctorName
   useEffect(() => {
     if (QuickSetTime !== ''){
       setFormData((prevData) => ({ ...prevData, AppointmentDate: QuickSetTime }));
-      console.log(formData)
     };
     
   },[QuickSetTime]);
