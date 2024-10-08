@@ -73,7 +73,53 @@ router.post("/Appointments/Create", function (req, res) {
 })
 
 
+router.patch("/Appointments/Update/:AppointmentID", async function (req, res) {
+    try {        
+        const cookie = req.cookies["Authorization"];
+        if (!VerifyAdminToken(cookie)) {
+			res.header("Removal-Request", "True");
+			return res.status(401).json({ message: "Invalid token" });
+		};
 
+        const { Address,AppointmentDate, ClientName,ClientStatus,DoctorID,Email,FurtherAction,Issue,LOA,Occupation,Phone,Result,Title } = req.body;
+		const AppointmentID = req.params.AppointmentID
+		console.log("Received Update Appointment Request for ", ClientName, "By DoctorID ", DoctorID);
+		
+		const SQL = `UPDATE Appointments
+						SET 
+							Address = ?
+							AppointmentDate = ?
+							ClientName = ?
+							ClientStatus = ?
+							DoctorID = ?
+							Email = ?
+							FurtherAction = ?
+							Issue = ?
+							LOA = ?
+							Occupation = ?
+							Phone = ?
+							Result = ?
+							Title = ?
+						WHERE 
+							id = ?;
+					`;
+        db.execute(SQL, [Address,AppointmentDate, ClientName,ClientStatus,DoctorID,Email,FurtherAction,Issue,LOA,Occupation,Phone,Result,Title, AppointmentID], (error, results) => {
+			if (error) {
+				console.error("Server error:", error);
+				res.header("Removal-Request", "True");
+				return res.status(500).json({ error: "Internal Server Error" });
+			} else if (results.affectedRows == 1) {
+				return res.status(200).json({ message: "Successfully updated row"});
+			} else if (results.affectedRows > 1) {
+				return res.status(500).json({ error: "Please notify system manager"});
+			}
+		})
+    } catch (error) {
+        console.error("Server error:", error);
+        res.header("Removal-Request", "True");
+        return res.status(500).json({ error: "Internal Server Error" });
+    };
+})
 
 router.get("/Profile/getUserAppointments/:UserID", async function (req, res) {
 	const cookie = req.cookies["Authorization"];
