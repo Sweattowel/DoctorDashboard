@@ -123,6 +123,12 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth() + 1);
   const [currentDay, setCurrentDay] = useState(currentDate.getDate());
 
+  const [QuickSetTime ,setQuickSetTime] = useState<string>("");
+
+  useEffect(() => {
+    changeQuickSetTime(QuickSetTime)
+  },[QuickSetTime]);
+
   useEffect(() => {
     setCurrentTime(currentDate.toISOString().slice(0, 16));
   }, []);
@@ -210,7 +216,7 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
                         </button>
                       ) : (
                         <button className="hover:opacity-60 h-16 min-w-full p-2 rounded flex items-center justify-center"
-                          onClick={() => changeQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex + 10).toISOString().slice(0, 16))} 
+                          onClick={() => setQuickSetTime(new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex + 10).toISOString().slice(0, 16))} 
                         >
                           {new Date(currentYear, currentMonth - 1, currentDay + DayIndex, HourIndex + 10).toISOString().slice(0,16)}
                         </button>
@@ -275,14 +281,14 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
                 </button>
               </div>
               <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedAppointment === index ? 'h-[200px]' : 'h-0'}`}>
-                {expandedAppointment === index && <Expansion data={client} />}
+                {expandedAppointment === index && <Expansion QuickSetTime={QuickSetTime} data={client} />}
               </div>
             </li>
           ))}
         </ul>
       )}
         <div className="w-[80%]">
-          {expandedData !== null ? <Expansion data={expandedData}/> : <p className="font-bold text-center border-t border-b mt-10">Please Select an appointment</p>}
+          {expandedData !== null ? <Expansion data={expandedData} QuickSetTime={QuickSetTime}/> : <p className="font-bold text-center border-t border-b mt-10">Please Select an appointment</p>}
         </div>
         
     </div>
@@ -292,9 +298,10 @@ const AppointmentList = ({ appointmentParam, data, changeQuickSetTime }: Appoint
 // Expansion Component for appointment details
 interface ExpansionProps {
   data: Appointment;
+  QuickSetTime : string
 }
 
-const Expansion = ({ data }: ExpansionProps) => {
+const Expansion = ({ data, QuickSetTime } : ExpansionProps ) => {
   const [ wantToAdjust, setWantToAdjust ] = useState<boolean>(false);
   const [ error, setError ] = useState<string>("");
   const [ loading, setLoading ] = useState<boolean>(false);
@@ -303,11 +310,17 @@ const Expansion = ({ data }: ExpansionProps) => {
     ...data
   })
   
-  function HandleAdjustAppointment(e: FormEvent<HTMLFormElement>){
+  async function HandleAdjustAppointment(e: FormEvent<HTMLFormElement>){
     try {
       e.preventDefault();
       setLoading(true);
 
+      let MissingFields = Object.entries(formData).filter(([key, value]) => value == "" && value !== false)
+      if (MissingFields.length > 0){
+        setError(`Missing: ${MissingFields.map(([key]) => key).join(", ")}`);
+      }
+
+      //const response = await API.patch("/api/Appointments/UpdateAppointment", formData);
 
 
     } catch (error) {
@@ -318,6 +331,9 @@ const Expansion = ({ data }: ExpansionProps) => {
     }
   }
 
+  useEffect(() => {
+    setWantToAdjust(false);
+  }, [data])
   if (loading){
     return (
       <section className="p-5 border rounded-2xl overflow-hidden transition-all duration-500 ease-in-out flex flex-col justify-evenly w-full mt-10 animate-pulse text-red-600 text-center">
@@ -334,7 +350,8 @@ const Expansion = ({ data }: ExpansionProps) => {
                   <input
                       type="radio"
                       name="title"
-                      value="Mr"
+                      value={formData.Title}
+                      placeholder="Mr"
                       onChange={(e) => {
                           setFormData((prevData) => ({
                               ...prevData,
@@ -348,7 +365,8 @@ const Expansion = ({ data }: ExpansionProps) => {
                   <input
                       type="radio"
                       name="title"
-                      value="Mrs"
+                       value={formData.Title}
+                      placeholder="Mrs"
                       onChange={(e) => {
                           setFormData((prevData) => ({
                               ...prevData,
@@ -362,7 +380,8 @@ const Expansion = ({ data }: ExpansionProps) => {
                   <input
                       type="radio"
                       name="title"
-                      value="Mrs"
+                      value={formData.Title}
+                      placeholder="Else"
                       onChange={(e) => {
                           setFormData((prevData) => ({
                               ...prevData,
@@ -373,8 +392,13 @@ const Expansion = ({ data }: ExpansionProps) => {
                   Else
               </label>
           </div>
-          <input type="text" value={formData.ClientName} placeholder={data.ClientName} />
+
         </section>
+        <label className="font-bold">New Date & time:</label>
+        <div className="flex  flex-col">
+          <p>Previous Time: {formData.AppointmentDate}</p>
+          <p>New Time: {QuickSetTime !== "" ? QuickSetTime : "Please select clear timeslot"}</p>
+        </div>      
         <label className="font-bold">Client Name:</label>
         <input value={formData.Issue} placeholder={`${formData.ClientName}`} 
           onChange={(e) => {
@@ -412,7 +436,7 @@ const Expansion = ({ data }: ExpansionProps) => {
           }}
         />
         <label className="font-bold">New Result:</label>
-        <input value={formData.ClientStatus} placeholder={formData.Result} 
+        <input value={formData.Result} placeholder={formData.Result} 
           onChange={(e) => {
               setFormData((prevData) => ({
                   ...prevData,
@@ -420,9 +444,15 @@ const Expansion = ({ data }: ExpansionProps) => {
               }));
           }}
         />
+        <div className="flex p-1">
+          <label className="font-bold">Further Action Needed?</label>
+          <input className="border p-1 ml-5" value={formData.FurtherAction ? "true" : "false"}
+            onChange={(e) => setFormData((prevData) => ({...prevData, FurtherAction: e.target.checked}))} type="checkbox"  
+          />          
+        </div>
         <label className="font-bold mt-2 mb-2 border-b">Communication:</label>
         <label className="font-bold">Email:</label>
-        <input value={formData.ClientStatus} placeholder={formData.Email} 
+        <input value={formData.Email} placeholder={formData.Email} 
           onChange={(e) => {
               setFormData((prevData) => ({
                   ...prevData,
@@ -431,7 +461,7 @@ const Expansion = ({ data }: ExpansionProps) => {
           }}
         />
         <label className="font-bold">Phone Number:</label>
-        <input value={formData.ClientStatus} placeholder={formData.Phone} 
+        <input value={formData.Phone} placeholder={formData.Phone} 
           onChange={(e) => {
               setFormData((prevData) => ({
                   ...prevData,
@@ -440,7 +470,7 @@ const Expansion = ({ data }: ExpansionProps) => {
           }}
         />
         <label className="font-bold">Address:</label>
-        <input value={formData.ClientStatus} placeholder={formData.Address} 
+        <input value={formData.Address} placeholder={formData.Address} 
           onChange={(e) => {
               setFormData((prevData) => ({
                   ...prevData,
@@ -448,6 +478,9 @@ const Expansion = ({ data }: ExpansionProps) => {
               }));
           }}
         />
+        <p className="text-red-600 animate-pulse">
+          {error || "waiting..."}
+        </p>
         <button type="submit" className="bg-blue-600 text-white rounded shadow p-1 mt-2 hover:opacity-60">
           Submit Adjustment
         </button>
