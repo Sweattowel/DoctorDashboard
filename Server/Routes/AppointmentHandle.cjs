@@ -85,7 +85,7 @@ router.patch("/Appointments/Update/:AppointmentID", async function (req, res) {
 		const AppointmentID = req.params.AppointmentID
 		console.log("Received Update Appointment Request for ", ClientName, "By DoctorID ", DoctorID);
 		
-		const SQL = `UPDATE Appointments SET Address = ?, AppointmentDate = ?, ClientName = ?, ClientStatus = ?, DoctorID = ?, Email = ?, FurtherAction = ?, Issue = ?, LOA = ?, Occupation = ?, Phone = ?, Result = ?, Title = ?, WHERE id = ?;`;
+		const SQL = `UPDATE Appointments SET Address = ?, AppointmentDate = ?, ClientName = ?, ClientStatus = ?, DoctorID = ?, Email = ?, FurtherAction = ?, Issue = ?, LOA = ?, Occupation = ?, Phone = ?, Result = ?, Title = ? WHERE id = ?;`;
         db.execute(SQL, [Address,AppointmentDate, ClientName,ClientStatus,DoctorID,Email,FurtherAction,Issue,LOA,Occupation,Phone,Result,Title, AppointmentID], (error, results) => {
             if (error) {
                 console.error("Server error:", error);
