@@ -26,7 +26,7 @@ const db = require("../Database.cjs");
 
 //////////////////////////////////// USER HANDLE NOTIFICATIONS
 
-router.post("/Notifications/CreateUserNotification/:id/complete", function (req, res) {}, function (req, res) {
+router.post("/Notifications/CreateUserNotification/:id/complete", function (req, res) {
     try {
         const { RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText} = req.body
 
@@ -90,7 +90,7 @@ router.get("/Notifications/CollectUserNotifications/:UserID" , function (req, re
 })
 ////////////////////////////////////// DOCTOR HANDLE NOTIFICATIONS
 
-router.post("/Notifications/CreateDoctorNotification", function (req, res) {}, function (req, res) {
+router.post("/Notifications/CreateDoctorNotification", function (req, res) {
     try {
         const { RequestType, Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText} = req.body
 

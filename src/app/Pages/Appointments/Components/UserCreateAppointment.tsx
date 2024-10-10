@@ -41,7 +41,7 @@ export default function UserBook({ selectedDoctor }: importProps)
     const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
     const [doctor, setDoctor] = useState<Doctor | null>(null); 
     const [loading, setLoading] = useState<boolean>(false); 
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>("Please fill form");
 
     // Data to Concatenate
     const [ EmailAddress, setEmailAddress ] = useState<string>("");
@@ -56,7 +56,7 @@ export default function UserBook({ selectedDoctor }: importProps)
     {
         if (selectedDoctor.DoctorID !== -1) {  
             setLoading(true);
-            setError(null); 
+            setError(""); 
 
             try {
                 const response = await API.get(`/api/getDoctorData/${selectedDoctor.DoctorID}`);
@@ -95,6 +95,10 @@ export default function UserBook({ selectedDoctor }: importProps)
             switch (response.status) {
                 case 200:
                     setError("Successfully made request");
+                    setFormData({
+                        Issue: "",
+                        Urgency: 0
+                    })
                     break;
                 case 404:
                     setError("Doctor no longer exists");
@@ -174,7 +178,9 @@ export default function UserBook({ selectedDoctor }: importProps)
                             onChange={(e) => setFormData({ ...formData, Urgency: parseInt(e.target.value)})}
                             required
                         />
-
+                        <p className="bg-white text-red-600 p-5 m-auto w-[85%] mt-10 rounded shadow-2xl">
+                            {error}
+                        </p>
                         <button type="submit" className="border bg-blue-600 text-white p-2 rounded w-[50%] m-auto mt-2 hover:opacity-60">
                             Submit Request
                         </button>

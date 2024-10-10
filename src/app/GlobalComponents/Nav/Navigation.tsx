@@ -2,10 +2,11 @@
 
 import { userContext } from "@/app/Context/ContextProvider";
 import API from "@/app/Interceptor";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import MobileNavBar from "./NavComponents/MobileScreenNavigation";
+import WideScreenNavBar from "./NavComponents/WideScreenNavigation";
 
-interface NotificationStructure {
+export interface NotificationStructure {
     NotificationID: number
     Urgency: number
     RequesterID: number
@@ -17,14 +18,13 @@ interface NotificationStructure {
     RequestType: string
     CompletedStatus: boolean
 }
-interface UpdateStruc {
+export interface UpdateStruc {
     (NotificationID: number, status: boolean): void;
 }
 export default function NavBar() {
     const { userData, setUserData, isUser, setIsUser, isAdmin, setIsAdmin, doctorData, setDoctorData, isDoctor, setIsDoctor, wantLogOut, setWantLogOut } = userContext();
     const [wantedScreen, setWantedScreen] = useState<string>("Wide");
     const [ notifications, setNotifications ] = useState<NotificationStructure[]>([]);
-    const called = useRef(false);
 
     useEffect(() => {
         if (wantLogOut == true) {
@@ -194,141 +194,5 @@ export default function NavBar() {
                 <WideScreenNavBar wantUpdate={HandleNotificationUpdate} notifications={notifications} isUser={isUser} />
             }
         </>
-    );
-}
-
-const WideScreenNavBar = ({ isUser, notifications, wantUpdate }: { isUser: boolean, notifications: NotificationStructure[], wantUpdate : UpdateStruc }) => {
-    const [ showNotifications, setShowNotifications ] = useState<boolean>(false);
-
-    return (
-        <main className="flex shadow justify-evenly items-center p-2 bg-white max-w-[100vw]">
-            <h1 className="p-2 pl-5 h-full text-2xl font-serif font-bold">Medicite</h1>
-            <ul className="w-full flex justify-evenly items-center">
-                <NavBarLink href="/" text="Home" />
-                <NavBarLink href="/Pages/Appointments" text="Book" />
-                {isUser ? (
-                    <NavBarLink href="/Pages/Profile" text="Profile" />
-                ) : (
-                    <NavBarLink href="/Pages/Authorization/Login" text="Login" />
-                )}
-                <NavBarLink href="/Pages/Injection" text="Inject" />
-                <button className={`${showNotifications && "bg-blue-600 animate-pulse scale-110"} animate-all duration-1000 ease-in-out text-white p-2 pl-5 pr-5 rounded transition-all ease-in-out duration-1000`} 
-                    onClick={() => setShowNotifications(!showNotifications)}
-                >
-                    &#128276;
-                </button>
-                {showNotifications &&
-                    <ul className="z-[1] bg-white border absolute right-0 top-[5vh] pt-5 pb-5 p-1 w-[50%] text-black overflow-auto ">
-                        {notifications.map((notification: NotificationStructure, index: number) => (
-                                <li key={index} className={`${notification.CompletedStatus && "bg-gray-200 opacity-60"} rounded text-black h-[50px] p-2 w-full h-full flex flex-col border-b`}>
-                                    <h3 className=" flex flex-col font-bold ">
-                                        {notification.RequestType} From {notification.RequesterName} 
-                                    </h3>
-                                    <div>
-                                        {notification.NotificationText.split("%:").map((Text: string, TextIndex: number) => (
-                                            <p key={TextIndex}>
-                                                {Text}
-                                            </p>
-                                        ))}
-                                    </div>                                    
-                                    <p className="text-sm text-gray-400">
-                                        On {notification.Date.split("T")[0]}
-                                    </p>
-                                    {notification.RequesterName !== "SYSTEM" && <button onClick={() => wantUpdate(notification.NotificationID, notification.CompletedStatus)} className="bg-blue-600 text-white rounded shadow p-1 m-2">
-                                        {notification.CompletedStatus ? "Mark Incomplete" : "Mark Complete"}
-                                    </button>}
-                                </li>
-                        ))
-                        }
-                    </ul>                
-                }
-            </ul>
-        </main>
-    );
-};
-
-const MobileNavBar = ({ isUser, notifications, wantUpdate }: { isUser: boolean, notifications: any, wantUpdate : UpdateStruc }) => {
-    const [visible, setVisible] = useState<boolean>(false);
-    const [ showNotifications, setShowNotifications ] = useState<boolean>(false);
-
-    return (
-        <main className="w-full flex justify-between pr-5 pl-5 p-2 relative bg-white shadow">
-            <h1 className="p-2 pl-5 h-full text-2xl font-serif font-bold">Medicite</h1>
-            <button
-                className={`${visible && "animate-pulse"} bg-blue-600 w-[25%] text-white rounded`}
-                onClick={() => {setVisible(!visible); setShowNotifications(false)}}
-            >
-                &#9776;
-            </button>
-            <button className={`${showNotifications && "bg-blue-600 animate-pulse scale-110"} animate-all duration-1000 ease-in-out text-white p-2 pl-5 pr-5 rounded transition-all ease-in-out duration-1000`} 
-                onClick={() => {setShowNotifications(!showNotifications); setVisible(false)}}
-            >
-                &#128276;
-            </button>
-            {showNotifications &&
-                <ul className="z-[1] bg-white border absolute right-0 top-[8vh] pt-5 pb-5 p-1 w-[50%] text-black overflow-auto ">
-                    {notifications.map((notification: NotificationStructure, index: number) => (
-                            <li key={index} className="text-black h-[50px] p-2 w-full h-full flex flex-col border-b">
-                                <div className=" flex flex-col font-bold ">
-                                    <h3>
-                                        From {notification.RequesterName} 
-                                    </h3>
-                                    <p>
-                                        Date: {notification.Date}
-                                    </p>
-                                </div>
-                                <p>
-                                    {notification.NotificationText}
-                                </p>
-                            </li>
-                    ))
-                    }
-                </ul>                
-                }
-            <div
-            className={`absolute top-[8vh] right-0 bg-white transition-all duration-700 ease-in-out w-[50vw] ${
-                visible ? "h-full" : "h-0"
-            }`}
-            >
-                {visible &&
-                <ul className="flex flex-col h-full transition-all ease-in-out duration-700">
-                    <NavBarLink href="/" text="Home" handleClick={() => setVisible(false)} />
-                    <NavBarLink href="/Pages/Appointments" text="Book" handleClick={() => setVisible(false)} />
-                    {isUser ? (
-                        <NavBarLink href="/Pages/Profile" text="Profile" handleClick={() => setVisible(false)} />
-                    ) : (
-                        <NavBarLink href="/Pages/Authorization/Login" text="Login" handleClick={() => setVisible(false)} />
-                    )}
-                    <NavBarLink href="/Pages/Injection" text="Inject" handleClick={() => setVisible(false)} />
-                </ul>
-                }
-            </div>
-        </main>
-    );
-};
-
-
-const NavBarLink = ({ href, text, handleClick }: { href: string; text: string; handleClick?: () => void }) => {
-    const [mobile, setMobile] = useState(false);
-
-    useEffect(() => {
-        // Set Nav for screen size
-        if (window.innerWidth < 750) {
-            setMobile(true);
-        } else {
-            setMobile(false);
-        }
-    }, []);
-
-    return (
-        <Link
-            className={`animate-all duration-1000 ease-in-out bg-blue-600 text-white p-2 pl-5 pr-5 rounded hover:pl-10 hover:pr-10 hover:opacity-60 transition-all ease-in-out duration-1000 ${
-                !mobile ? "max-w-[25%]" : "border border-white"
-            }`}
-            href={href}
-            onClick={handleClick}
-        >
-            {text}
-        </Link>
     );
 };
