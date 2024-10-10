@@ -74,6 +74,13 @@ router.post("/Authorization/AdminLogin", function (req, res) {
 	}
 });
 router.post("/Authorization/AdminCreate", async function (req, res) {
+	const cookie = req.cookies["Authorization"];
+
+	if (!VerifyAdminToken(cookie)) {
+		res.header("Removal-Request", "True");
+		return res.status(401).json({ message: "Invalid token" });
+	}
+
 	const SQLVerifyTokenNotExist = "SELECT UserName FROM AdminData WHERE UserName = ?";
 	const SQLPlaceData =
 		"INSERT INTO AdminData (UserName, PassWord, EmailAddress, PhoneNumber ) VALUES (?, ?, ?, ?)";
@@ -114,5 +121,20 @@ router.post("/Authorization/AdminCreate", async function (req, res) {
 		return res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+router.get("/Authorization/Verify", async function (req, res) {
+	try {
+		const cookie = req.cookies["Authorization"];
 
+        if (!VerifyAdminToken(cookie)) {
+            res.header("Removal-Request", "True");
+            return res.status(401).json({ message: "Invalid token" });
+        } else {
+			return res.status(200).json({ message: "Successfully Verified ADMIN"});
+		}
+
+	} catch (error) {
+		console.error("Server error:", error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
+})
 module.exports = router;

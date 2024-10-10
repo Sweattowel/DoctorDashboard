@@ -4,7 +4,7 @@ import { useState } from "react";
 import NavBarLink from "./NavBarLink";
 import { NotificationStructure, UpdateStruc } from "../Navigation";
 
-export default function WideScreenNavBar({ isUser, notifications, wantUpdate }: { isUser: boolean, notifications: NotificationStructure[], wantUpdate : UpdateStruc }) {
+export default function WideScreenNavBar({ isUser, isAdmin, notifications, wantUpdate }: { isUser: boolean, isAdmin: boolean, notifications: NotificationStructure[], wantUpdate : UpdateStruc }) {
     const [ showNotifications, setShowNotifications ] = useState<boolean>(false);
 
     return (
@@ -18,6 +18,8 @@ export default function WideScreenNavBar({ isUser, notifications, wantUpdate }: 
                 ) : (
                     <NavBarLink href="/Pages/Authorization/Login" text="Login" />
                 )}
+                {isAdmin && <NavBarLink href="/Pages/ADMIN" text="ADMIN" />}
+                
                 <NavBarLink href="/Pages/Injection" text="Inject" />
                 <button className={`${showNotifications && "bg-blue-600 animate-pulse scale-110"} animate-all duration-1000 ease-in-out text-white p-2 pl-5 pr-5 rounded transition-all ease-in-out duration-1000`} 
                     onClick={() => setShowNotifications(!showNotifications)}

@@ -185,9 +185,9 @@ export default function NavBar() {
     return (
         <>
             {wantedScreen === "Mobile" ? 
-                <MobileNavBar wantUpdate={HandleNotificationUpdate} notifications={notifications} isUser={isUser} /> 
+                <MobileNavBar wantUpdate={HandleNotificationUpdate} notifications={notifications} isUser={isUser} isAdmin={isAdmin} /> 
                 : 
-                <WideScreenNavBar wantUpdate={HandleNotificationUpdate} notifications={notifications} isUser={isUser} />
+                <WideScreenNavBar wantUpdate={HandleNotificationUpdate} notifications={notifications} isUser={isUser} isAdmin={isAdmin} />
             }
         </>
     );

@@ -5,7 +5,7 @@ import { UpdateStruc, NotificationStructure } from "../Navigation";
 import NavBarLink from "./NavBarLink";
 
 
-export default function MobileNavBar ({ isUser, notifications, wantUpdate }: { isUser: boolean, notifications: any, wantUpdate : UpdateStruc }) {
+export default function MobileNavBar ({ isUser, isAdmin, notifications, wantUpdate }: { isUser: boolean, isAdmin: boolean, notifications: any, wantUpdate : UpdateStruc }) {
     const [visible, setVisible] = useState<boolean>(false);
     const [ showNotifications, setShowNotifications ] = useState<boolean>(false);
 
@@ -57,6 +57,7 @@ export default function MobileNavBar ({ isUser, notifications, wantUpdate }: { i
                     ) : (
                         <NavBarLink href="/Pages/Authorization/Login" text="Login" handleClick={() => setVisible(false)} />
                     )}
+                    {isAdmin && <NavBarLink href="/Pages/ADMIN" text="ADMIN" handleClick={() => setVisible(false)} />}
                     <NavBarLink href="/Pages/Injection" text="Inject" handleClick={() => setVisible(false)} />
                 </ul>
                 }
