@@ -73,6 +73,7 @@ export default function CreateAppointMent ({ DoctorName, DoctorID, QuickSetTime 
                 Result: "N/A",
                 Title: "",
             });
+            
             break;
             case 401:
                 setError("Unauthorized");

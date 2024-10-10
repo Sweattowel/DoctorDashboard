@@ -82,48 +82,29 @@ export default function NavBar() {
     };
 
     async function collectNotifications(){
+        let cache = [];
+
         if (isDoctor) {
             console.log(`Collecting Doctor Notifications ${doctorData.id}`);
             const response = await API.get(`/api/Notifications/CollectDoctorNotifications/${doctorData.id}`);
 
             if (response.status == 200){
-                setNotifications(response.data.results)
-            } else {
-                setNotifications([{
-                    NotificationID: -1,
-                    Date: new Date().toString(),
-                    RequesteeID: -1,
-                    RequesteeName: userData.UserName,
-                    RequesterID: userData.UserID,
-                    RequesterName: "SYSTEM",
-                    Urgency: 0,
-                    NotificationText: "Oops No data",
-                    RequestType: "No Notifications",
-                    CompletedStatus: false
-                }]);
-            };
-            return;
+                cache = response.data.results;
+            }
         } else if (isUser) {
             console.log("Collecting User Notifications");
             const response = await API.get(`/api/Notifications/CollectUserNotifications/${userData.UserID}`);
             
             if (response.status == 200){
-                setNotifications(response.data.results)
-            } else {
-                setNotifications([{
-                    NotificationID: -1,
-                    Date: new Date().toString(),
-                    RequesteeID: -1,
-                    RequesteeName: userData.UserName,
-                    RequesterID: userData.UserID,
-                    RequesterName: "SYSTEM",
-                    Urgency: 0,
-                    NotificationText: "Oops No data",
-                    RequestType: "No Notifications",
-                    CompletedStatus: false
-                }]);
-            };
-            return;
+                cache = response.data.results;
+            }
+        } else if (isAdmin) {
+            console.log("Collecting User Notifications");
+            const response = await API.get(`/api/SYSTEM/SYSTEMNOTIFICATIONS/COLLECT`);
+            
+            if (response.status == 200){
+                cache = response.data.results;
+            }
         } else {
             setNotifications([{
                 NotificationID: -1,
@@ -137,8 +118,23 @@ export default function NavBar() {
                 RequestType: "No Notifications",
                 CompletedStatus: false
             }]);
-            return;
         };
+        if (cache.length !== 0){
+            setNotifications(cache);
+        } else {
+            setNotifications([{
+                NotificationID: -1,
+                Date: new Date().toString(),
+                RequesteeID: -1,
+                RequesteeName: userData.UserName,
+                RequesterID: userData.UserID,
+                RequesterName: "SYSTEM",
+                Urgency: 0,
+                NotificationText: "Oops No data",
+                RequestType: "No Notifications",
+                CompletedStatus: false
+            }]);
+        }
     };
 
     async function HandleNotificationUpdate(NotificationID : number, status : boolean){

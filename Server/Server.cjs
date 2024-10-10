@@ -28,6 +28,8 @@ const AppointmentRoutes = require("./Routes/AppointmentHandle.cjs");
 const GeneralDataCollectionRoutes = require("./Routes/DataCollectHandle.cjs");
 const NotificationRoutes = require("./Routes/NotificationHandle.cjs");
 
+const SYSTEMNOTIFICATIONS = require("./Routes/ADMINNOTIFICATION.cjs");
+
 app.use('/api', ADMINAUTH );
 app.use('/api', DoctorAUTH );
 app.use('/api', UserAUTH );
@@ -35,6 +37,9 @@ app.use('/api', TokenRoutes );
 app.use('/api', AppointmentRoutes );
 app.use('/api', GeneralDataCollectionRoutes );
 app.use('/api', NotificationRoutes );
+
+// ADMIN, HANDS' OFF PIRATES'
+app.use('/api', SYSTEMNOTIFICATIONS );
 
 const httpServer = https.createServer(credentials, app);
 
