@@ -18,6 +18,7 @@ const {
 // MiddleWare and DATABASE handling//
 /////////////////////////////////////
 const express = require("express");
+const app = require("../Server.cjs");
 
 const router = express.Router();
 const db = require("../Database.cjs");
@@ -62,15 +63,19 @@ router.post("/Appointments/Create", function (req, res) {
 					console.error("Failed to create appointment", err);
 					return res.status(500).json({ error: "Internal Server Error" });
 				}
-                app.post("/api/SYSTEM/SYSTEMNOTIFICATIONS/CREATE/:Authorization", {
-                    Urgency: 0,
-                    RequesterID: DoctorID,
-                    RequesterName: "SYSTEM",
-                    RequesteeID: 0,
-                    RequesteeName: "ADMIN",
-                    NotificationText: `DoctorID ${DoctorID}, Created Appointment with ${Title} ${ClientName} on ${AppointmentDate}`,
-                    RequestType: "DOCTORACTION"
-                });
+                try {
+                    createSystemNotification({
+                        Urgency: 0,
+                        RequesterID: DoctorID,
+                        RequesterName: "SYSTEM",
+                        RequesteeID: 0,
+                        RequesteeName: "ADMIN",
+                        NotificationText: `DoctorID ${DoctorID}, Created Appointment with ${Title} ${ClientName} on ${AppointmentDate}`,
+                        RequestType: "DOCTORACTION"
+                    });                    
+                } catch (error) {
+                    console.error("Failed to create Notificaiton, ", error );
+                } 
 				return res.status(200).json({ results });
 			})
         });

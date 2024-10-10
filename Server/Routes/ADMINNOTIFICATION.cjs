@@ -23,8 +23,8 @@ const router = express.Router();
 const db = require("../Database.cjs");
 
 // Routing Functions
-// Create appointment 
-router.post("/SYSTEM/SYSTEMNOTIFICATIONS/CREATE/:Authorization", function (req, res) {
+// Create SYSTEM NOTIFICATION 
+router.post("/SYSTEM/SYSTEMNOTIFICATIONS/CREATE/:Authorization", async function (req, res) {
     try {        
 		const cookie = req.params.Authorization;
 
@@ -35,18 +35,11 @@ router.post("/SYSTEM/SYSTEMNOTIFICATIONS/CREATE/:Authorization", function (req, 
 
 		console.log("Received Sys admin Notification CREATE request");
         const { Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, RequestType } = req.body;
-        const DATE = new Date().toISOString().split('T')[0];
-        const SQL = "INSERT INTO ADMINNotifications (Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, Date, RequestType, CompletedStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, false)"
 
-		db.execute(SQL, [Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, DATE, RequestType], (err) => {
-			if (err) {
-                console.error("Failed to Collect notifications", err);
-				return res.status(500).json({ error: "Internal Server Error" });
-			}
-			return res.status(200).json({ message: "Success" });
-		})
-
-	} catch (error) {
+		const result = await createSystemNotification(Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, RequestType);
+        
+        return res.status(200).json({ message: "Notification created successfully", data: result });
+    } catch (error) {
 		console.error("Server error:", error);
 		res.header("Removal-Request", "True");
 		return res.status(500).json({ error: "Internal Server Error" });
@@ -113,5 +106,32 @@ router.patch("/SYSTEM/SYSTEMNOTIFICATIONS/UPDATE/:NotificationID/:Complete", fun
 })
 
 
+
+
+// EXPORTED FUNCTIONS
+const createSystemNotification = async (notificationData) => {
+    try {
+
+        const { Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, RequestType } = notificationData;
+        const DATE = new Date().toISOString().split('T')[0];
+
+        const SQL = "INSERT INTO ADMINNotifications (Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, Date, RequestType, CompletedStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, false)";
+
+        // Return a promise that resolves when the query succeeds
+        return new Promise((resolve, reject) => {
+            db.execute(SQL, [Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, DATE, RequestType], (err, results) => {
+                if (err) {
+                    console.error("Error executing SQL for notification creation", err);
+                    reject(err);
+                } else {
+                    resolve({ message: "Notification created successfully", results });
+                }
+            });
+        });
+    } catch (error) {
+        console.error("Error creating notification:", error);
+        throw error;  // Rethrow the error for the caller to handle
+    }
+};
 // FINAL EXPORT
-module.exports = router;
+module.exports = { router, createSystemNotification };
