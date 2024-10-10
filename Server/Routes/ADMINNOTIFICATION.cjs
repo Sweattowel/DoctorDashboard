@@ -109,7 +109,7 @@ router.patch("/SYSTEM/SYSTEMNOTIFICATIONS/UPDATE/:NotificationID/:Complete", fun
 });
 
 // EXPORTED FUNCTIONS
-export async function createSystemNotification (notificationData) {
+const createSystemNotification = async (notificationData) => {
     try {
         const { Urgency, RequesterID, RequesterName, RequesteeID, RequesteeName, NotificationText, RequestType } = notificationData;
         const DATE = new Date().toISOString().split('T')[0];
@@ -133,4 +133,4 @@ export async function createSystemNotification (notificationData) {
 };
 
 // FINAL EXPORT
-module.exports = router;
+module.exports = { router, createSystemNotification };

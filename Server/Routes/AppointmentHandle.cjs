@@ -15,7 +15,7 @@ const {
     RefreshAdminToken,
 } = require("../Handlers/TokenHandle.cjs");
 
-const { createSystemNotification } = require("./ADMINNOTIFICATION.cjs");
+const { SYSTEMNOTIFICATIONS, createSystemNotification } = require("./Routes/ADMINNOTIFICATION.cjs");
 /////////////////////////////////////
 // MiddleWare and DATABASE handling//
 /////////////////////////////////////
