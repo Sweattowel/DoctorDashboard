@@ -62,6 +62,15 @@ router.post("/Appointments/Create", function (req, res) {
 					console.error("Failed to create appointment", err);
 					return res.status(500).json({ error: "Internal Server Error" });
 				}
+                app.post("/api/SYSTEM/SYSTEMNOTIFICATIONS/CREATE/:Authorization", {
+                    Urgency: 0,
+                    RequesterID: DoctorID,
+                    RequesterName: "SYSTEM",
+                    RequesteeID: 0,
+                    RequesteeName: "ADMIN",
+                    NotificationText: `DoctorID ${DoctorID}, Created Appointment with ${Title} ${ClientName} on ${AppointmentDate}`,
+                    RequestType: "DOCTORACTION"
+                });
 				return res.status(200).json({ results });
 			})
         });

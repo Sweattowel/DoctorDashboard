@@ -24,9 +24,9 @@ const db = require("../Database.cjs");
 
 // Routing Functions
 // Create appointment 
-router.post("/SYSTEM/SYSTEMNOTIFICATIONS/CREATE", function (req, res) {
+router.post("/SYSTEM/SYSTEMNOTIFICATIONS/CREATE/:Authorization", function (req, res) {
     try {        
-		const cookie = req.cookies["Authorization"];
+		const cookie = req.params.Authorization;
 
         if (!VerifyAdminToken(cookie)) {
             res.header("Removal-Request", "True");
