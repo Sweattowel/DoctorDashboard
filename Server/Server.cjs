@@ -5,7 +5,7 @@ const fs = require("fs");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
-const app = express();
+ const app = express();
 
 const privateKey = fs.readFileSync(`Certificates/${process.env.SERVER_ADDRESS}-key.pem`,"utf8");
 const certificate = fs.readFileSync(`Certificates/${process.env.SERVER_ADDRESS}.pem`,"utf8");
