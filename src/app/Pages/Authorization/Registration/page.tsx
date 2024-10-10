@@ -10,7 +10,7 @@ import { FormEvent, useState } from "react";
 interface formDataStruc {
     Title : string
     UserName : string
-    Password : string
+    PassWord : string
     EmailAddress : string
     Address : string
     PhoneNumber : string
@@ -23,7 +23,7 @@ export default function Register(){
     const [ formData, setFormData ] = useState<formDataStruc>({
         Title:"",
         UserName:"",
-        Password:"",
+        PassWord:"",
         EmailAddress:"",
         Address:"",
         PhoneNumber:"",
@@ -43,6 +43,10 @@ export default function Register(){
                 setError("Please fill in the following: ".concat(missingFieldNames));
                 setLoading(false);
             }
+
+            console.log(formData);
+            //setLoading(false)
+            //return
 
             const response = await API.post("/api/Authorization/Register", formData);
 
@@ -134,13 +138,13 @@ export default function Register(){
                                 }))
                             }}/>
                         <h2>
-                            Enter new Password
+                            Enter new PassWord
                         </h2>
-                        <input className="w-[40%] border rounded shadow p-1" placeholder="Password" type="text" 
+                        <input className="w-[40%] border rounded shadow p-1" placeholder="PassWord" type="text" 
                             onChange={(e) => {
                                 setFormData((prevData) => ({
                                     ...prevData,
-                                    Password: e.target.value
+                                    PassWord: e.target.value
                                 }))
                             }}
                         />

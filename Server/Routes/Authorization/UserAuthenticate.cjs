@@ -114,7 +114,7 @@ router.post("/Authorization/Register", async function (req, res) {
 					try {
 						createSystemNotification({
 							Urgency: 0,
-							RequesterID: DoctorID,
+							RequesterID: -1,
 							RequesterName: "SYSTEM",
 							RequesteeID: 0,
 							RequesteeName: "ADMIN",
