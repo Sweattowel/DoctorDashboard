@@ -99,7 +99,7 @@ export default function NavBar() {
                 cache = response.data.results;
             }
         } else if (isAdmin) {
-            console.log("Collecting User Notifications");
+            console.log("Collecting Admin Notifications");
             const response = await API.get(`/api/SYSTEM/SYSTEMNOTIFICATIONS/COLLECT`);
             
             if (response.status == 200){
