@@ -20,7 +20,7 @@ const {
 const { 
 	HASH, COMPARE 
 } = require("../../Handlers/EncryptionHandle.cjs");
-
+const { SYSTEMNOTIFICATIONS, createSystemNotification } = require("../ADMINNOTIFICATION.cjs");
 /////////////////////////////////////
 // MiddleWare and DATABASE handling//
 /////////////////////////////////////
@@ -115,6 +115,19 @@ router.post("/Authorization/DoctorRegister", async function (req, res) {
 
 					return res.status(500).json({ error: "Internal Server Error" });
 				} else if (result.affectedRows === 1) {
+					try {
+						createSystemNotification({
+							Urgency: 0,
+							RequesterID: UserData.AdminID,
+							RequesterName: "SYSTEM",
+							RequesteeID: 0,
+							RequesteeName: "ADMIN",
+							NotificationText: `Doctor ${UserName}, Created on ${new Date().toISOString()}`,
+							RequestType: "AUTHACTION"
+						});                    
+					} catch (error) {
+						console.error("Failed to create Notificaiton, ", error );
+					} 
 					return res.status(200).json({ message: "Successfully made account" });
 				} else {
 					return res

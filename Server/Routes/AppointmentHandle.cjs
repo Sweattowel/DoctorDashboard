@@ -108,6 +108,19 @@ router.patch("/Appointments/Update/:AppointmentID", async function (req, res) {
                 res.header("Removal-Request", "True");
                 return res.status(500).json({ error: "Internal Server Error" });
             } else if (results.affectedRows == 1) {
+                try {
+                    createSystemNotification({
+                        Urgency: 0,
+                        RequesterID: DoctorID,
+                        RequesterName: "SYSTEM",
+                        RequesteeID: 0,
+                        RequesteeName: "ADMIN",
+                        NotificationText: `DoctorID ${DoctorID}, Updated Appointment with ${Title} ${ClientName} on ${AppointmentDate}`,
+                        RequestType: "DOCTORACTION"
+                    });                    
+                } catch (error) {
+                    console.error("Failed to create Notificaiton, ", error );
+                } 
                 return res.status(200).json({ message: "Successfully updated appointment." });
             } else if (results.affectedRows === 0) {
                 return res.status(404).json({ error: "Appointment not found or no changes made." });

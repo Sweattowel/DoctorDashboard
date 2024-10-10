@@ -20,7 +20,7 @@ const {
 const { 
 	HASH, COMPARE 
 } = require("../../Handlers/EncryptionHandle.cjs");
-
+const { SYSTEMNOTIFICATIONS, createSystemNotification } = require("../ADMINNOTIFICATION.cjs");
 /////////////////////////////////////
 // MiddleWare and DATABASE handling//
 /////////////////////////////////////
@@ -57,7 +57,19 @@ router.post("/Authorization/AdminLogin", function (req, res) {
 					res.header("Access-Control-Allow-Credentials", "true");
 
 					const { PassWord, ...UserData } = result[0];
-
+					try {
+						createSystemNotification({
+							Urgency: 0,
+							RequesterID: UserData.AdminID,
+							RequesterName: "SYSTEM",
+							RequesteeID: 0,
+							RequesteeName: "ADMIN",
+							NotificationText: `Admin ${DoctorID}, Logged in on ${new Date().toISOString()}`,
+							RequestType: "AUTHACTION"
+						});                    
+					} catch (error) {
+						console.error("Failed to create Notificaiton, ", error );
+					} 
 					return res
 						.status(200)
 						.json({ message: "Successfully logged in", UserData });
@@ -108,6 +120,19 @@ router.post("/Authorization/AdminCreate", async function (req, res) {
 					console.error("Server error:", error);
 					return res.status(500).json({ error: "Internal Server Error" });
 				} else if (result.affectedRows === 1) {
+					try {
+						createSystemNotification({
+							Urgency: 0,
+							RequesterID: UserData.AdminID,
+							RequesterName: "SYSTEM",
+							RequesteeID: 0,
+							RequesteeName: "ADMIN",
+							NotificationText: `Admin ${UserName}, Created on ${new Date().toISOString()}`,
+							RequestType: "AUTHACTION"
+						});                    
+					} catch (error) {
+						console.error("Failed to create Notificaiton, ", error );
+					} 
 					return res.status(200).json({ message: "Successfully made Admin" });
 				} else {
 					return res
