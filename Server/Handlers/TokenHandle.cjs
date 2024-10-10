@@ -9,14 +9,14 @@ const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY;
 function CreateToken(input) {
     console.log("Creating Token");   
 
-    return JWT.sign(input, userPrivateKey, {expiresIn: "5m"});
+    return JWT.sign(input, userPrivateKey, {expiresIn: "20m"});
 };
 
 function VerifyToken(token) {
     console.log("Verifying Token");
 
     try {
-        JWT.verify(token, userPrivateKey, { maxAge: "5m" });
+        JWT.verify(token, userPrivateKey, { maxAge: "20m" });
         return true;
     } catch (error) {
         console.error("Token verification failed:", error.message);
@@ -56,7 +56,7 @@ function RefreshToken(token, data) {
 function CreateAdminToken(input) {
     console.log("Creating Token");   
 
-    return JWT.sign(input, adminPrivateKey, {expiresIn: "5m"});
+    return JWT.sign(input, adminPrivateKey, {expiresIn: "20m"});
 };
 
 function VerifyAdminToken(token) {

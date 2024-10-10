@@ -73,7 +73,6 @@ export default function NavBar() {
             const response = await API.post("/api/Authorization/RefreshToken",{ isUser,isDoctor,isAdmin });
 
             if (response.status === 200) {
-                setTimeout(() => refreshToken(), 240000);
                 console.log("Token Refreshed");
             }
         } catch (error) {
@@ -161,7 +160,7 @@ export default function NavBar() {
         const RefreshInterval = setTimeout(() => {
             refreshToken();
             collectNotifications();
-        }, 240000); // Call refresh after 240 seconds
+        }, 600000); // Call refresh after 240 seconds
     
         // Set Nav for screen size
         if (window.innerWidth < 750) {
