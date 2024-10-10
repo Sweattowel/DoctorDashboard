@@ -28,7 +28,7 @@ const AppointmentRoutes = require("./Routes/AppointmentHandle.cjs");
 const GeneralDataCollectionRoutes = require("./Routes/DataCollectHandle.cjs");
 const NotificationRoutes = require("./Routes/NotificationHandle.cjs");
 
-const { SYSTEMNOTIFICATIONS, createSystemNotification } = require("./Routes/ADMINNOTIFICATION.cjs");
+const { router: SYSTEMNOTIFICATIONS, createSystemNotification } = require("./Routes/ADMINNOTIFICATION.cjs");
 
 app.use('/api', ADMINAUTH );
 app.use('/api', DoctorAUTH );
